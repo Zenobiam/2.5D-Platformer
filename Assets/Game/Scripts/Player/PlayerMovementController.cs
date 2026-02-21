@@ -1,5 +1,5 @@
 using Game.Scripts.Core;
-using Game.Scripts.Services.Input;
+using Game.Scripts.Infrastructure;
 using Game.Scripts.Services.Input.Interfaces;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ namespace Game.Scripts.Player
         private void Awake()
         {   
             _playerVisual = GetComponentInChildren<PlayerVisual>();
-            _inputService = GameMain.InputService;
+            _inputService = ServiceLocator.Container.Single<IInputService>();
         }
 
         private void Update()
