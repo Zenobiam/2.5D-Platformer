@@ -1,51 +1,55 @@
 using UnityEngine;
 
-public class PlayerVisual : MonoBehaviour
+namespace Game.Scripts.Player
 {
-    [Header("Visual Settings")]
-    [SerializeField] private Transform modelTransform;
-    [SerializeField] private float rotationSpeed = 10f;
-    [SerializeField] private Animator animator;
-    [SerializeField] private bool defaultFacingRight = true;
-
-    private float currentRotation = 0f;
-    private float targetRotation = 0f;
-
-    private void Start()
+    public class PlayerVisual : MonoBehaviour
     {
-        // Устанавливаем начальное направление
-        currentRotation = defaultFacingRight ? 0f : 180f;
-        targetRotation = currentRotation;
-        UpdateModelRotation();
-    }
+        [Header("Visual Settings")] [SerializeField]
+        private Transform modelTransform;
 
-    public void UpdateVisuals(Vector3 moveDirection, bool isGrounded)
-    {
-        // Определяем направление поворота
-        if (moveDirection.x > 0.1f)
+        [SerializeField] private float rotationSpeed = 10f;
+        [SerializeField] private Animator animator;
+        [SerializeField] private bool defaultFacingRight = true;
+
+        private float _currentRotation = 0f;
+        private float _targetRotation = 0f;
+
+        private void Start()
         {
-            targetRotation = 0f; // Смотрим вправо
-        }
-        else if (moveDirection.x < -0.1f)
-        {
-            targetRotation = 180f; // Смотрим влево
+            // Устанавливаем начальное направление
+            _currentRotation = defaultFacingRight ? 0f : 180f;
+            _targetRotation = _currentRotation;
+            UpdateModelRotation();
         }
 
-        // Плавный поворот
-        currentRotation = Mathf.LerpAngle(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
-        UpdateModelRotation();
-
-        // Обновление анимаций
-        if (animator != null)
+        public void UpdateVisuals(Vector3 moveDirection, bool isGrounded)
         {
-            float moveSpeed = Mathf.Abs(moveDirection.x);
-            animator.SetFloat("MoveSpeed", moveSpeed);
-            animator.SetBool("IsGrounded", isGrounded);
+            // Определяем направление поворота
+            if (moveDirection.x > 0.1f)
+            {
+                _targetRotation = 0f; // Смотрим вправо
+            }
+            else if (moveDirection.x < -0.1f)
+            {
+                _targetRotation = 180f; // Смотрим влево
+            }
+
+            // Плавный поворот
+            _currentRotation = Mathf.LerpAngle(_currentRotation, _targetRotation, rotationSpeed * Time.deltaTime);
+            UpdateModelRotation();
+
+            // Обновление анимаций
+            if (animator != null)
+            {
+                float moveSpeed = Mathf.Abs(moveDirection.x);
+                animator.SetFloat("MoveSpeed", moveSpeed);
+                animator.SetBool("IsGrounded", isGrounded);
+            }
+        }
+
+        private void UpdateModelRotation()
+        {
+            modelTransform.rotation = Quaternion.Euler(0f, _currentRotation, 0f);
         }
     }
-
-    private void UpdateModelRotation()
-    {
-        modelTransform.rotation = Quaternion.Euler(0f, currentRotation, 0f);
-    }
-} 
+}
