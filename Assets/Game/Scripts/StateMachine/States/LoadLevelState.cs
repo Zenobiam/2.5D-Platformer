@@ -1,4 +1,5 @@
 using Game.Scripts.Factories.Interfaces;
+using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
 using UnityEngine;
 
@@ -12,18 +13,21 @@ namespace Game.Scripts.StateMachine.States
         private readonly SceneLoader _sceneLoader;
         private readonly LoadingCurtain _loadingCurtain;
         private readonly IGameFactory _gameFactory;
+        private IPersistentProgressService _progressService;
 
-        public LoadLevelState(GameStateMachine stateMachine, SceneLoader sceneLoader, LoadingCurtain loadingCurtain, IGameFactory gameFactory)
+        public LoadLevelState(GameStateMachine stateMachine, SceneLoader sceneLoader, LoadingCurtain loadingCurtain, IGameFactory gameFactory, IPersistentProgressService progressService)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
             _loadingCurtain = loadingCurtain;
             _gameFactory = gameFactory;
+            _progressService = progressService;
         }
 
         public void Enter(string sceneName)
         {
             _loadingCurtain.Show();
+            _gameFactory.CleanUp();
             _sceneLoader.Load(sceneName, OnLoaded);
         }
 
@@ -32,11 +36,25 @@ namespace Game.Scripts.StateMachine.States
 
         private void OnLoaded()
         {
+            SetupGameEnvironment();
+            InformProgressReaders();
+
+            _stateMachine.Enter<GameLoopState>();
+        }
+
+        private void InformProgressReaders()
+        {
+            foreach (var progressReader in _gameFactory.ProgressReaders)
+            {
+                progressReader.LoadProgress(_progressService.Progress);
+            }
+        }
+
+        private void SetupGameEnvironment()
+        {
             GameObject player = _gameFactory.CreatePlayer(GameObject.FindWithTag(InitialPointTag));
             _gameFactory.CreateHud();
             CameraFollow(player);
-
-            _stateMachine.Enter<GameLoopState>();
         }
 
         private static void CameraFollow(GameObject gameObject) =>

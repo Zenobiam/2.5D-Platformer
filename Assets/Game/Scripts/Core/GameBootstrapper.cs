@@ -8,13 +8,13 @@ namespace Game.Scripts.Core
 {
     public class GameBootstrapper : MonoBehaviour, ICoroutineRunner
     {
-        public LoadingCurtain LoadingCurtain;
+        public LoadingCurtain LoadingCurtainPrefab;
 
         private GameMain _game;
 
         private void Awake()
         {
-            _game = new GameMain(this, LoadingCurtain);
+            _game = new GameMain(this, Instantiate(LoadingCurtainPrefab));
             _game.StateMachine.Enter<BootstrapState>();
 
             DontDestroyOnLoad(this);

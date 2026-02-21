@@ -11,10 +11,10 @@ namespace Game.Scripts.Providers
             return Object.Instantiate(playerPrefab);
         }
 
-        public GameObject Instantiate(string path, Vector3 initPosition)
+        public GameObject Instantiate(string path, Vector3 at)
         {
             var playerPrefab = Resources.Load<GameObject>(path);
-            return Object.Instantiate(playerPrefab, initPosition, Quaternion.identity);
+            return Object.Instantiate(playerPrefab, at, Quaternion.identity);
         }
     }
 }
