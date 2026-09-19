@@ -2,9 +2,10 @@
 using Game.Scripts.Data.Extensions;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
+using Game.Scripts.Services.SaveLoad.Interfaces;
 using UnityEngine;
 
-namespace Game.Scripts.Services.SaveLoad.Interfaces
+namespace Game.Scripts.Services.SaveLoad
 {
     public class SaveLoadService : ISaveLoadService
     {
