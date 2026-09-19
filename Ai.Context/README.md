@@ -5,10 +5,11 @@
 ## Порядок чтения
 
 1. Этот README  
-2. [`project-context.md`](project-context.md) — цели, стек, правила, handoff  
-3. [`preferences.md`](preferences.md) — куда класть deliverables  
-4. При необходимости — [`../Ai.Issues/`](../Ai.Issues/) (прошлые проблемы и решения)  
-5. Архитектурный обзор — [`../Ai.Architecture/`](../Ai.Architecture/)
+2. [`agent-playbook.md`](agent-playbook.md) — **обязательно для workers**: роли, kickoff, минимум ops  
+3. [`project-context.md`](project-context.md) — цели, стек, правила, handoff  
+4. [`preferences.md`](preferences.md) — куда класть deliverables  
+5. При необходимости — [`../Ai.Issues/`](../Ai.Issues/) (прошлые проблемы и решения)  
+6. Архитектурный обзор — [`../Ai.Architecture/`](../Ai.Architecture/)
 
 ## Папки `Ai.*` в корне репо
 
