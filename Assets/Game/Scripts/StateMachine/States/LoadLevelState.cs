@@ -1,3 +1,4 @@
+using Game.Scripts.Camera;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
@@ -58,6 +59,6 @@ namespace Game.Scripts.StateMachine.States
         }
 
         private static void CameraFollow(GameObject gameObject) =>
-            Camera.main?.GetComponent<CameraController>()?.Follow(gameObject);
+            UnityEngine.Camera.main?.GetComponent<CameraController>()?.Follow(gameObject);
     }
 }

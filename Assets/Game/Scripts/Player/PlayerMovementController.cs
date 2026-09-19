@@ -30,7 +30,7 @@ namespace Game.Scripts.Player
         {
             Vector3 _movementVector = Vector3.zero;
 
-            _movementVector = Camera.main.transform.TransformDirection(_inputService.MoveInputAxis);
+            _movementVector = UnityEngine.Camera.main.transform.TransformDirection(_inputService.MoveInputAxis);
 
             _movementVector.y = 0f;
             _movementVector = _movementVector.normalized;
