@@ -4,7 +4,7 @@
 **Статус:** только сравнение (код игры не менялся)  
 **Наш путь:** `Assets/Game/Scripts/Enemy/`  
 **Курс:** `…\06 Fighting\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase\Enemy`  
-**Связанное:** `Ai.Issues/2026-09-19-aggro-wiring.md`
+**Связанное:** `Ai.Issues/features/2026-09-19-aggro-wiring.md`, `Ai.Issues/bugs/2026-09-19-aggro-cooldown.md`
 
 ## Важно про источник курса
 

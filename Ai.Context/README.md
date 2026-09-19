@@ -16,7 +16,7 @@
 | Папка | Назначение |
 |---|---|
 | `Ai.Context/` | Долгоживущий канон (этот раздел) |
-| `Ai.Issues/` | Один MD на issue: проблема → причина → что сделали |
+| `Ai.Issues/` | Issues в `bugs/` и `features/`: проблема → причина → что сделали |
 | `Ai.Architecture/` | Обзоры структуры кода / сверка с курсом |
 
 Имена папок именно `Ai.<name>`, не `issues` / `context` / `docs` для агентского канона.
@@ -29,4 +29,4 @@
 
 ## Схема имён Issues
 
-`Ai.Issues/YYYY-MM-DD-short-kebab.md` (дата сессии/фикса + короткий slug).
+`Ai.Issues/bugs|features/YYYY-MM-DD-short-kebab.md` (дата сессии/фикса + короткий slug).

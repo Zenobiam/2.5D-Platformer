@@ -13,12 +13,15 @@
 
 ## What we did
 
-- Каркас по курсу уже в WIP: `TriggerObserver` → события Enter/Exit; `Aggro` включает/выключает `Follow`/`AgentMoveToPlayer`.
-- **Этот issue не закрывать чужим агентом, пока идёт wiring** — не править Enemy/Aggro «вдогонку».
+- Каркас по курсу: `TriggerObserver` → события Enter/Exit; `Aggro` включает/выключает `Follow` (`AgentMoveToPlayer` или `RotateToHero`).
+- Поле Aggro — базовый `Follow`; cooldown с фиксом re-enter → см. [`../bugs/2026-09-19-aggro-cooldown.md`](../bugs/2026-09-19-aggro-cooldown.md).
+- **Осталось:** проводка на префабе/сцене (Collider isTrigger + ссылки в Inspector), если ещё не сделана.
 
-## Files touched (ожидаемые / WIP)
+## Files touched
 
 - `Assets/Game/Scripts/Enemy/Aggro.cs`
+- `Assets/Game/Scripts/Enemy/Follow.cs`
+- `Assets/Game/Scripts/Enemy/RotateToHero.cs`
 - `Assets/Game/Scripts/Enemy/TriggerObserver.cs`
 - `Assets/Game/Scripts/Enemy/AgentMoveToPlayer.cs`
 - префаб врага (Collider isTrigger + ссылки в Inspector)

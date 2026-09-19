@@ -28,4 +28,4 @@ GameBootstrapper → GameMain → GameStateMachine
 Дальше по курсу — довести Enemy (aggro/атаки/спавн), не выдумывая новый DI-стек.
 
 Подробности стека: [`../Ai.Context/project-context.md`](../Ai.Context/project-context.md).  
-Связанный issue: [`../Ai.Issues/2026-09-19-code-architecture-review.md`](../Ai.Issues/2026-09-19-code-architecture-review.md).
+Связанный issue: [`../Ai.Issues/features/2026-09-19-code-architecture-review.md`](../Ai.Issues/features/2026-09-19-code-architecture-review.md).
