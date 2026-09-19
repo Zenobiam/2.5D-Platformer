@@ -1,0 +1,46 @@
+---
+description: Стиль C# / Unity для проекта 2.5D Platformer
+globs: "**/*.cs"
+alwaysApply: true
+---
+
+# Стиль C# этого проекта
+
+Ориентируйся на код в `Assets/Game/Scripts`. Согласованность с соседними файлами важнее «общих best practices».
+
+## Именование
+
+- Приватные поля экземпляра: `_camelCase` (например `_animator`, `_stateMachine`)
+- Приватные static: `_camelCase` или `static readonly` хэши вроде `SpeedHash`
+- Публичные поля / ссылки из инспектора — как уже принято в фиче: `PascalCase` ок, где так уже есть (`BootstrapperPrefab`, `Collider`); не переводить всё слепо в `[SerializeField] private`
+- Namespaces: `Game.Scripts.<Area>` (Core, Enemy, Player, StateMachine, Services, …)
+- Интерфейсы: `IName` в папках `.../Interfaces/`
+- Хэши параметров Animator: `private static readonly int XHash = Animator.StringToHash("X");`
+
+## Связывание MonoBehaviour
+
+- Если зависимость на том же объекте (или известной иерархии) — `GetComponent` / `GetComponentInChildren` / ServiceLocator в `Awake` (как `EnemyAnimator`, `PlayerMovementController`)
+- Не навязывать `[SerializeField]` на каждую зависимость; SerializeField — когда ссылку реально вешают в Inspector (кросс-объект / опционально), как в `PlayerVisual`
+- Поля `private` + `_`, если в этой фиче нет уже принятых public Inspector-полей
+
+## Форма кода
+
+- Классы небольшие и по делу
+- Для простых one-liner — expression-bodied (`=>`)
+- Именованные аргументы, когда яснее (`sceneName:`, `at:`, `onLoaded:`)
+- Многострочные блоки — со скобками; короткие guard’ы без скобок ок, если так рядом (`if (!Collider) return;`)
+- Пустые строки между логическими блоками; без комментариев, которые просто повторяют код
+- Комментарии/TODO на русском — нормально; не разводить длинные английские пояснения
+
+## Архитектура (не придумывать новый стек)
+
+- Точка входа: `GameBootstrapper` → `GameMain` → `GameStateMachine`
+- Сервисы: `ServiceLocator.Container` + `IService` / `RegisterSingle` / `Single`
+- Геймплей-объекты создаёт `GameFactory`; ассеты — через `IAssetsProvider` + `AssetPath`
+- Состояния и сервисы — обычный C# без MonoBehaviour, где возможно; MonoBehaviour — только для сцены / runtime-хуков
+
+## При правках
+
+- Сначала копируй стиль файла, потом папки, потом это правило
+- Не «чисти» чужой стиль мимо задачи (public Inspector-поля, старые скрипты без namespace) без просьбы
+- Не внедрять DI-фреймворки, новую раскладку папок или SerializeField-everywhere без запроса

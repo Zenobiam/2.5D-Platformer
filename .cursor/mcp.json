@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "unity": {
+      "command": "C:\\Users\\Никита\\AppData\\Local\\Unity\\bin\\unity.exe",
+      "args": [
+        "mcp",
+        "--project-path",
+        "d:\\Unity\\Projects\\2.5D Platformer"
+      ]
+    }
+  }
+}

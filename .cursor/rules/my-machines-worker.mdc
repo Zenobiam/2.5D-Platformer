@@ -1,0 +1,27 @@
+---
+description: Как поднимать My Machines worker unity-pc на этом ПК
+alwaysApply: true
+---
+
+# My Machines worker (unity-pc)
+
+По запросу «запусти worker / онлайн / My Machines» — поднять личный worker на этом Windows-ПК.
+
+## Команды (PowerShell)
+
+```powershell
+$env:Path = "$env:LOCALAPPDATA\cursor-agent;$env:Path"
+# при необходимости: agent login
+Remove-Item "$env:LOCALAPPDATA\cursor-agent\worker.lock" -Force -ErrorAction SilentlyContinue
+Set-Location "D:\Unity\Projects\2.5D Platformer"
+agent worker start --name "unity-pc" --worker-dir . --computer-use
+```
+
+Процесс держать в фоне; не закрывать, пока нужен онлайн. Успех: `Worker is now running` → ответить «готово».
+
+## Проверки
+
+- Уже запущен: процесс `*cursor-agent*worker start*` или `agent worker debug` → Visibility `unity-pc`
+- CLI: `%LOCALAPPDATA%\cursor-agent` (часто не в PATH)
+- Ошибка better-sqlite3 (NODE 127 vs 137): заменить `.node` на prebuild `node-v137-win32-x64` из релизов WiseLibs
+- Computer-use на win32 GUI не даёт (X11); терминал/файлы проекта работают

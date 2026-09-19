@@ -1,0 +1,34 @@
+---
+description: Референс-код курса k-syndicate (KnowledgeIsPower) для сверки
+alwaysApply: true
+---
+
+# Референс курса (сверка с видео)
+
+При реализации фич по архитектуре / Enemy / Progress / States / Input — **сверяйся с кодом курса**, а не выдумывай свой вариант «лучше», если пользователь явно не просит отклониться.
+
+## Корневой путь курса
+
+`G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\`
+
+Внутри уроки по папкам, например:
+
+- `01 Input\...\Assets\CodeBase`
+- `02 States\...\Assets\CodeBase`
+- `04 Progress\...\Assets\CodeBase`
+- `05 Enemy\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase` ← текущий блок Enemy
+
+Актуальный CodeBase для Enemy:
+
+`G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\05 Enemy\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase`
+
+## Как использовать
+
+1. Перед добавлением класса из урока — **прочитай соответствующий файл в CodeBase курса**.
+2. Повторяй структуру и подход курса (имена, GetComponent, отсутствие лишнего null-conditional и т.п.), адаптируя namespace/пути под наш проект (`Game.Scripts.*`).
+3. Не «улучшай» код курса без явной просьбы (InParent/InChildren, лишние абстракции, другие DI).
+4. Если урок другой (не Enemy) — бери CodeBase из папки этого урока (`01`, `02`, `04`, …).
+
+## Наш проект
+
+Код пишем в `Assets/Game/Scripts`, архитектура как в project rules; референс — CodeBase курса выше.
