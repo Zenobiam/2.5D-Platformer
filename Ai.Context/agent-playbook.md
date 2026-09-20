@@ -10,7 +10,7 @@
 | **Coordinator** | Разбивка, маршрутизация, сверка статуса; не трогает Editor без нужды |
 | **unity-pc worker** | Локальный Editor/терминал/файлы на Windows-ПК |
 | **Ai.Context** | Долгоживущий канон (этот раздел, `project-context`, preferences) |
-| **Ai.Issues** | Архив фиксов: проблема → причина → что сделали |
+| **Ai.Issues** | Архив: `bugs/` и `features/` — проблема → причина → что сделали |
 
 ## Kickoff template
 
@@ -40,7 +40,7 @@
 
 ## После успеха
 
-Добавить или обновить запись в `Ai.Issues/` (`YYYY-MM-DD-short-kebab.md`).
+Добавить или обновить запись в `Ai.Issues/bugs/` или `Ai.Issues/features/` (`YYYY-MM-DD-short-kebab.md`).
 
 ## После задачи: Observations / Proposals
 

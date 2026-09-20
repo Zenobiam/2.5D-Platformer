@@ -10,7 +10,7 @@ namespace Game.Scripts.Core
 
         private void Awake()
         {
-            var bootstrapper = FindObjectsOfType<GameBootstrapper>();
+            var bootstrapper = FindObjectsByType<GameBootstrapper>(FindObjectsSortMode.None);
             
             if (bootstrapper == null || bootstrapper.Length == 0)
                 Instantiate(BootstrapperPrefab);

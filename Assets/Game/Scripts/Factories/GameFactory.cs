@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Scripts.Constants;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Providers.Interfaces;
@@ -14,13 +15,20 @@ namespace Game.Scripts.Factories
         public List<ISaveProgressReader> ProgressReaders { get; } = new List<ISaveProgressReader>();
         public List<ISaveProgress> ProgressWriters { get; } = new List<ISaveProgress>();
         
+        public GameObject PlayerGameObject { get; set; }
+        public event Action PlayerCreated;
+        
         public GameFactory(IAssetsProvider assetsProvider)
         {
             _assetsProvider = assetsProvider;
         }
 
-        public GameObject CreatePlayer(GameObject InitialPoint) => 
-            InstantiateAndRegister(AssetPath.PlayerPath, InitialPoint.transform.position);
+        public GameObject CreatePlayer(GameObject InitialPoint)
+        {
+            PlayerGameObject = InstantiateAndRegister(AssetPath.PlayerPath, InitialPoint.transform.position);
+            PlayerCreated?.Invoke();
+            return PlayerGameObject;
+        }
 
         public void CreateHud() => 
             InstantiateAndRegister(AssetPath.HudPath);

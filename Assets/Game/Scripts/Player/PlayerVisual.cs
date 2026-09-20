@@ -11,15 +11,22 @@ namespace Game.Scripts.Player
         [SerializeField] private Animator animator;
         [SerializeField] private bool defaultFacingRight = true;
 
+        private static readonly int SpeedHash = Animator.StringToHash("Speed");
+
         private float _currentRotation = 0f;
         private float _targetRotation = 0f;
 
         private void Start()
         {
-            // Устанавливаем начальное направление
-            _currentRotation = defaultFacingRight ? 0f : 180f;
+            // 2.5D: модель смотрит вдоль ±X (камера с -Z), не в ±Z
+            _currentRotation = defaultFacingRight ? 90f : -90f;
             _targetRotation = _currentRotation;
             UpdateModelRotation();
+        }
+
+        // CC двигает root — не даём root motion клипам сдвигать CharacterController.
+        private void OnAnimatorMove()
+        {
         }
 
         public void UpdateVisuals(Vector3 moveDirection, bool isGrounded)
@@ -27,29 +34,30 @@ namespace Game.Scripts.Player
             // Определяем направление поворота
             if (moveDirection.x > 0.1f)
             {
-                _targetRotation = 0f; // Смотрим вправо
+                _targetRotation = 90f; // Вправо (+X)
             }
             else if (moveDirection.x < -0.1f)
             {
-                _targetRotation = 180f; // Смотрим влево
+                _targetRotation = -90f; // Влево (-X)
             }
 
             // Плавный поворот
             _currentRotation = Mathf.LerpAngle(_currentRotation, _targetRotation, rotationSpeed * Time.deltaTime);
             UpdateModelRotation();
 
-            // Обновление анимаций
+            // Yurowm FreeHand: Speed 0 idle / ~0.5 walk / ~1 run
             if (animator != null)
             {
                 float moveSpeed = Mathf.Abs(moveDirection.x);
-                animator.SetFloat("MoveSpeed", moveSpeed);
-                animator.SetBool("IsGrounded", isGrounded);
+                float speedParam = moveSpeed > 0.1f ? 1f : 0f;
+                animator.SetFloat(SpeedHash, speedParam);
             }
         }
 
         private void UpdateModelRotation()
         {
-            modelTransform.rotation = Quaternion.Euler(0f, _currentRotation, 0f);
+            if (modelTransform != null)
+                modelTransform.rotation = Quaternion.Euler(0f, _currentRotation, 0f);
         }
     }
 }
