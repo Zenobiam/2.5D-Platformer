@@ -8,7 +8,7 @@
 
 1. [`../INTENT.md`](../INTENT.md) — зачем проект, цели и не-цели  
 2. Этот README  
-3. [`agent-playbook.md`](agent-playbook.md) — **обязательно для workers**: роли, kickoff, порядок работы, временный код, коммит  
+3. [`agent-playbook.md`](agent-playbook.md) — **обязательно для workers**: проектная часть регламента (worker, чужой WIP, курс); общий регламент — `D:\Unity\Knowledge\process\agent-workflow.md`  
 4. [`project-context.md`](project-context.md) — стек, пути к курсу, текущее состояние, активный handoff (прошлые — [`handoff-archive.md`](handoff-archive.md), читать только по нужде)  
 5. [`preferences.md`](preferences.md) — куда класть deliverables, курс 2021 vs Unity 6  
 6. Для задачи по уроку — [`../Ai.Architecture/course-map.md`](../Ai.Architecture/course-map.md) и [`../Ai.Architecture/course-deviations.md`](../Ai.Architecture/course-deviations.md)  
