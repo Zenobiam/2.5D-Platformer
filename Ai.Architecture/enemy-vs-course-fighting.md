@@ -77,7 +77,7 @@
 | EnemyDeath (part 2) | смерть, отключение AI, анимация Die | нет |
 | BaseEnemy / Construct (part 2) | сборка врага / Init | нет |
 
-`EnemyAnimator` у нас уже имеет **заготовки** `PlayLeft/Right/SplashAttack`, `PlayDamage`, `PlayDeath`, но **нет вызывающего геймплей-кода** (Attack/Health).
+`EnemyAnimator` у нас имеет заготовки `PlayLeft/Right/SplashAttack`, `PlayHit` (бывший `PlayDamage`), `PlayDeath`. Урон врагу (`EnemyHealth` с `IHealth`) уже вызывает `PlayHit`.
 
 ### У нас есть «лишнее» относительно курса (не баг)
 

@@ -91,11 +91,12 @@ GameBootstrapper → GameMain → GameStateMachine
   BootstrapState → LoadProgressState → LoadLevelState → GameLoopState
 ```
 
-- **DI:** свой `ServiceLocator.Container` + `IService` / `RegisterSingle` / `Single` — без чужих DI-фреймворков.
+- **DI:** свой `ServiceLocator.Container` + `IService` / `RegisterSingle` / `Single` — без чужих DI-фреймворков. Эволюция стека (не предлагать Zenject/VContainer до конца курса): [`preferences.md`](preferences.md) § Architecture evolution.
 - **Фабрики / ассеты:** `GameFactory` + `IAssetsProvider` + `AssetPath` (`Prefabs/Player/Player`, `Prefabs/Player/HUD`).
 - **Прогресс:** `IPersistentProgressService` / `ISaveLoadService` / `ISaveProgress` + `SaveTrigger`.
 - **Ввод:** `IInputService` / `InputService` / `InputReceiver` (не отдельный `PlayerInputController` как основной слой).
-- **Игрок:** `PlayerMovementController` + `PlayerVisual` (движение/визуал); **не** иерархия `Assets/Game/Scripts/State/` — игровой SM живёт в `StateMachine/`.
+- **Игрок:** `PlayerMovementController` (движение), `PlayerFacing` (поворот модели), `PlayerAnimator` (Animator: `Speed`, `Damage`, `Death`, `Attack`, `IsAttacking`), `PlayerHealth` (HP, `IHealth`), `PlayerDeath` (смерть), `PlayerAttack` (кнопка атаки и событие `OnAttack`); **не** иерархия `Assets/Game/Scripts/State/` — игровой SM живёт в `StateMachine/`.
+- **Бой:** `EnemyHealth` реализует `IHealth` (интерфейс в `Game.Scripts.Enemy`); `EnemyAnimator.PlayHit()` вызывает триггер `Damage` у Skeleton. Слой `Hittable` для целей удара игрока.
 - **Анимация / враги (блок Enemy):** `EnemyAnimator` + `IAnimationStateReader` + `AnimatorStateReporter` / `AnimatorState`.
 - **Сцена:** `Assets/Game/Scenes/SampleScene.unity`; демо-геометрия — Tools → Build Demo Level (`Assets/Game/Editor/…`).
 - **Namespaces:** `Game.Scripts.<Area>`; код в `Assets/Game/Scripts`.
@@ -105,8 +106,11 @@ GameBootstrapper → GameMain → GameStateMachine
 Корень:  
 `G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\`
 
-Актуальный блок **05 Enemy**:  
-`...\05 Enemy\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase`
+Пройдено: 05 Enemy, 06–07 Fighting (бой игрока и врага, 2026-10-24). Следующий урок — **08 Enemy Spawner**:  
+`...\08 Enemy Spawner\knowledge-is-power-master(1)\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase`
+
+Законченный код предыдущих уроков (на начало урока 09, после Enemy Spawner):  
+`...\09 Static data\knowledge-is-power-5dd184c4c83da215669aff0ac78825a83a3bcb0f\src\KnowledgeIsPower\Assets\CodeBase`
 
 Перед классом из урока — прочитать файл в CodeBase курса; адаптировать namespace под `Game.Scripts.*`; не улучшать без просьбы.
 
@@ -134,10 +138,12 @@ _Обновлять в конце значимых сессий._
 
 ### В работе / дальше по курсу
 
-1. Продолжить **Enemy** по CodeBase урока 05 (аггро, атаки, здоровье, спавн через factory — как в курсе).
-2. Довести префабы/аниматор врага и связь с `EnemyAnimator`.
+1. **Бой игрока** (см. `Ai.Tasks/2026-10-24-player-combat.md`, «Open (актуально)»): удар и смерть врага работают; осталось проверить экранную кнопку в Simulator и смерть игрока во время удара, настроить полоску HP Skeleton (`blank`), заменить заглушки анимаций Skeleton, закоммитить.
+2. Продолжить **Enemy** по CodeBase урока 05–06 (аггро, атаки, здоровье, спавн через factory — как в курсе).
 3. По необходимости: NavMesh, камера (`CameraController` TODO), полировка демо-уровня.
-4. Запушить в git то, что ещё только локально (rules/handoff/WIP Enemy), когда пользователь готов.
+4. Запушить в git то, что ещё только локально, по задачам отдельными коммитами, когда пользователь готов.
+
+**Курс мобильный.** Экранные кнопки и производительность (без аллокаций в кадре) — обязательны.
 
 ### Не трогать без просьбы
 
@@ -170,6 +176,39 @@ _Обновлять в конце значимых сессий._
 ### Активный handoff
 
 ```text
+### 2026-10-24 (вечер) — координатор (Opus, local) — бой игрока доведён
+Сделано:
+- Удар с ПК работает и бьёт Skeleton; враг умирает (падает, стоит, исчезает через 3 с). Проверено пользователем в Play Mode.
+- Мобильный HUD: группа `Mobile` (`MobileOnly`), кнопка атаки `OnScreenButton` → `<Gamepad>/buttonWest` → `Attack`.
+- `Tools → Setup → Player Attack`: событие Attack в `PlayerInput`, состояние `Hit` в `FreeHandController`.
+- Фиксы: маска Hittable, высота точки удара (уровень на y≈2), смерть игрока/врага не срывается триггерами из Any State, `EnemyDeath` останавливает врага и удаляет через 3 с.
+Осталось:
+- Проверить кнопку в Simulator и смерть игрока во время удара; полоска HP Skeleton (`blank`, `HpBar.ImageCurrent`, `HpCamera`).
+- Заглушки анимаций Skeleton (`death_test`, `Damage`) заменить настоящими клипами.
+- Коммиты по задачам — по просьбе пользователя.
+Файлы: `Ai.Tasks/2026-10-24-player-combat.md` (Итог), `Ai.Issues/bugs/2026-10-24-player-attack-not-firing.md`, `Ai.Architecture/course-deviations.md`.
+Риски / не трогать:
+- WIP Enemy/Aggro (`Aggro`, `Follow`, `AgentMoveToPlayer` и др.) не менялся — только выключается из `EnemyDeath`.
+- Unity CLI — через свою связанную сессию-worker; чужой worker (сессии «Main old») не использовать.
+
+### 2026-10-24 — координатор (Haiku) — бой игрока, handoff
+Сделано:
+- Урон игроку работает (слой `Player` на префабе, триггер `Damage`). Полоска HUD (`PlayerHudBuilder`, спрайт `UISprite`, 300×40, отступ 30/−40).
+- `PlayerVisual` разбит на `PlayerFacing` и `PlayerAnimator`, старый класс удалён, ссылки в префабе назначены.
+- Смерть: Rigidbody kinematic при смерти (падение устранено).
+- Ввод: действие `Attack` (мышь для редактора), `InputReceiver.OnAttack`, `IInputService.AttackButtonUp()`.
+- `PlayerAttack` и событие `OnAttack` на кадре 5 клипа `Hit` (`Hit.FBX.meta`).
+- `IHealth` — интерфейс пользователя (`Game.Scripts.Enemy`); мой дубликат удалён.
+- Пакет `com.unity.pipeline` 0.8.0-exp.1 (реестр); старая копия в `D:\Unity\Backups`.
+Осталось:
+- Коллайдер тела у `Skeleton` (слой `Hittable`), маска `Hittable` в `PlayerAttack`.
+- Состояние `Hit` с переходом по триггеру `Attack` в `FreeHandController` (сейчас `Attack` → `Fire`).
+- Мобильная экранная кнопка атаки, урон по врагам (TODO), `using UnityEditor;` в `EnemyAttack.cs`.
+- Коммиты: разобрать `git status` (сгенерированные файлы), закоммитить по задачам.
+Файлы: `Ai.Tasks/2026-10-24-player-combat.md`, `Ai.Issues/bugs/2026-10-24-*`, `Ai.Issues/features/2026-10-24-player-attack-input.md`.
+Риски / не трогать:
+- Не трогать WIP Enemy/Aggro другого агента. Не коммитить без просьбы.
+
 ### 2026-09-19 — worker — Ai.* docs structure
 Сделано:
 - Канон перенесён в Ai.Context/; Issues в Ai.Issues/; обзор в Ai.Architecture/.
