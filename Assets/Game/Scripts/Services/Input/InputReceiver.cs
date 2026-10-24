@@ -18,6 +18,15 @@ namespace Game.Scripts.Services.Input
         private static bool _isJumpPressed;
         private static bool _isRunPressed;
         private static bool _isCrouchPressed;
+        private static bool _attackButtonUp;
+
+        // true только в кадр отпускания кнопки атаки, как в курсе
+        public static bool AttackButtonUp()
+        {
+            bool up = _attackButtonUp;
+            _attackButtonUp = false;
+            return up;
+        }
 
         public void OnMove(InputAction.CallbackContext context)
         {
@@ -37,6 +46,12 @@ namespace Game.Scripts.Services.Input
         public void OnCrouch(InputAction.CallbackContext context)
         {
             _isCrouchPressed = context.ReadValueAsButton();
+        }
+
+        public void OnAttack(InputAction.CallbackContext context)
+        {
+            if (context.canceled)
+                _attackButtonUp = true;
         }
     }
 }

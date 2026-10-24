@@ -11,7 +11,7 @@ namespace Game.Scripts.Factories.Interfaces
         GameObject CreatePlayer(GameObject InitialPoint);
         GameObject PlayerGameObject { get; }
         event Action PlayerCreated;
-        void CreateHud();
+        GameObject CreateHud();
         List<ISaveProgressReader> ProgressReaders { get; }
         List<ISaveProgress> ProgressWriters { get; }
         void CleanUp();

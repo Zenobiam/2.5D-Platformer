@@ -12,9 +12,10 @@ namespace Game.Scripts.Player
 {
     public class PlayerMovementController : MonoBehaviour, ISaveProgress
     {
-        private PlayerVisual _playerVisual;
+        private PlayerFacing _facing;
+        private PlayerAnimator _animator;
         private CharacterController _characterController;
-        public float MovementSpeed; // TODO get from axis
+        public float MovementSpeed;
 
         private IInputService _inputService;
 
@@ -22,7 +23,8 @@ namespace Game.Scripts.Player
         {
             _inputService = ServiceLocator.Container.Single<IInputService>();
 
-            _playerVisual = GetComponentInChildren<PlayerVisual>();
+            _facing = GetComponent<PlayerFacing>();
+            _animator = GetComponentInChildren<PlayerAnimator>();
             _characterController = GetComponent<CharacterController>();
         }
 
@@ -39,7 +41,8 @@ namespace Game.Scripts.Player
 
             _characterController.Move(MovementSpeed * _movementVector * Time.deltaTime);
 
-            _playerVisual.UpdateVisuals(_movementVector, _characterController.isGrounded);
+            _facing.Face(_movementVector);
+            _animator.SetMoveDirection(_movementVector.x);
         }
 
         public void UpdateProgress(PlayerProgress progress)

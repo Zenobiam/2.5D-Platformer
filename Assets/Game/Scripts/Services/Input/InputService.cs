@@ -9,5 +9,6 @@ namespace Game.Scripts.Services.Input
         public bool IsJumpPressed => InputReceiver.IsJumpPressed;
         public bool IsRunPressed => InputReceiver.IsRunPressed;
         public bool IsCrouchPressed => InputReceiver.IsCrouchPressed;
+        public bool AttackButtonUp() => InputReceiver.AttackButtonUp();
     }
 } 

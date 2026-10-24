@@ -43,9 +43,18 @@ namespace Game.Scripts.Enemy
 
         public void PlaySplashAttack() => _animator.SetTrigger(SplashAttackHash);
 
-        public void PlayDamage() => _animator.SetTrigger(DamageHash);
+        // Триггер Damage в контроллере Skeleton (клип Damage.anim)
+        public void PlayHit() => _animator.SetTrigger(DamageHash);
 
-        public void PlayDeath() => _animator.SetTrigger(DeathHash);
+        // Атаки и Damage в контроллере Skeleton идут из Any State: сбрасываем их, чтобы не увести из Death.
+        public void PlayDeath()
+        {
+            _animator.ResetTrigger(LeftAttackHash);
+            _animator.ResetTrigger(RightAttackHash);
+            _animator.ResetTrigger(SplashAttackHash);
+            _animator.ResetTrigger(DamageHash);
+            _animator.SetTrigger(DeathHash);
+        }
 
         public void EnteredState(int stateHash)
         {

@@ -9,5 +9,6 @@ namespace Game.Scripts.Services.Input.Interfaces
         bool IsJumpPressed { get; }
         bool IsRunPressed { get; }
         bool IsCrouchPressed { get; }
+        bool AttackButtonUp();
     }
 }

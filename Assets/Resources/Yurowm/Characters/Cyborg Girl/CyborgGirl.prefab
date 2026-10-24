@@ -1734,8 +1734,6 @@ GameObject:
   m_Component:
   - component: {fileID: 400098}
   - component: {fileID: 9500000}
-  - component: {fileID: 11400000}
-  - component: {fileID: 11400002}
   m_Layer: 0
   m_Name: CyborgGirl
   m_TagString: Untagged
@@ -1783,46 +1781,3 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a85c5e349cb17df4b85883ea088c2f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9aa840a3854ebd47b920d1a5c7d693f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rightGunBone: {fileID: 400002}
-  leftGunBone: {fileID: 400004}
-  arsenal:
-  - name: Empty
-    rightGun: {fileID: 0}
-    leftGun: {fileID: 0}
-    controller: {fileID: 9100000, guid: e4d38f097ea35254fb4b833d568bb089, type: 2}
-  - name: YM-3 Pistol
-    rightGun: {fileID: 100000, guid: 84875af4b0b6f1841a259d3019492207, type: 3}
-    leftGun: {fileID: 0}
-    controller: {fileID: 9100000, guid: 8bbca7fa0e7d6cf45b625c38120c55a4, type: 2}
-  - name: Two Pistols
-    rightGun: {fileID: 100000, guid: 84875af4b0b6f1841a259d3019492207, type: 3}
-    leftGun: {fileID: 100000, guid: 84875af4b0b6f1841a259d3019492207, type: 3}
-    controller: {fileID: 9100000, guid: dbad280ee68364a458cdd686ee45b5d5, type: 2}
-  - name: YM-27 Rifle
-    rightGun: {fileID: 100000, guid: 1a83af685a2542943822b7995f3dcef0, type: 3}
-    leftGun: {fileID: 0}
-    controller: {fileID: 9100000, guid: dffbd9326394a8d47a87a1e2aec70a59, type: 2}

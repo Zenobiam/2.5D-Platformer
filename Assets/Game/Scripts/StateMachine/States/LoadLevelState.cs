@@ -1,7 +1,9 @@
 using Game.Scripts.Camera;
 using Game.Scripts.Factories.Interfaces;
+using Game.Scripts.Player;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
+using Game.Scripts.UI;
 using UnityEngine;
 
 namespace Game.Scripts.StateMachine.States
@@ -51,10 +53,18 @@ namespace Game.Scripts.StateMachine.States
             }
         }
 
+        private void InitHud(GameObject player)
+        {
+            GameObject hud = _gameFactory.CreateHud();
+
+            hud.GetComponentInChildren<ActorUI>().Construct(player.GetComponent<PlayerHealth>());
+        }
+
         private void SetupGameEnvironment()
         {
             GameObject player = _gameFactory.CreatePlayer(GameObject.FindWithTag(InitialPointTag));
-            _gameFactory.CreateHud();
+            
+            InitHud(player);
             CameraFollow(player);
         }
 

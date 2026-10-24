@@ -35,7 +35,17 @@ namespace Game.Scripts.StateMachine.States
                 _saveLoadService.LoadProgress() 
                 ?? NewProgress();
 
-        private PlayerProgress NewProgress() => 
-            new(initialLevel: "SampleScene");
+        private PlayerProgress NewProgress()
+        {
+            var progress = new PlayerProgress(initialLevel: "SampleScene");
+            
+            progress.PlayerState.MaxHp = 100;
+            progress.PlayerStats.Damage = 1f;
+            progress.PlayerStats.DamageRadius = 0.5f;
+            
+            progress.PlayerState.ResetHP();
+
+            return progress;
+        }
     }
 }

@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: d0e4b18abf7abe44eaee9d5839bb2eb1
+AssetOrigin:
+  serializedVersion: 1
+  productId: 35921
+  packageName: Sci-Fi Cyborg Girl
+  packageVersion: 1.0
+  assetPath: Assets/Yurowm/Animations/Hit.FBX
+  uploadId: 62116
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -384,7 +391,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.212527
+        functionName: OnAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -558,8 +572,7 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 0
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 44a7cf9af2fa0c1488fc4106b715c6f5,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 44a7cf9af2fa0c1488fc4106b715c6f5, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
@@ -571,10 +584,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 35921
-  packageName: Sci-Fi Cyborg Girl
-  packageVersion: 1.0
-  assetPath: Assets/Yurowm/Animations/Hit.FBX
-  uploadId: 62116

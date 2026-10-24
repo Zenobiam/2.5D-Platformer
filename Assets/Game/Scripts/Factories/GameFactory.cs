@@ -30,7 +30,7 @@ namespace Game.Scripts.Factories
             return PlayerGameObject;
         }
 
-        public void CreateHud() => 
+        public GameObject CreateHud() => 
             InstantiateAndRegister(AssetPath.HudPath);
 
         public void CleanUp()
