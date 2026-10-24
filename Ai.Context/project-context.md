@@ -11,19 +11,7 @@
 
 ## 1. Цель проекта
 
-Это не только «игра», а **учебный/эталонный пример + документация**, чтобы ускорять следующие Unity-проекты (в т.ч. с AI-агентами).
-
-Следствия:
-
-- код и структура **читаемые и повторяемые**, не только «чтобы заработало»;
-- паттерны (bootstrap, state machine, services, factories, animator readers) — **образец для копирования**;
-- при сомнении — ясность и совпадение с курсом/правилами стиля, а не уникальные трюки;
-- документация и `.cursor/rules` должны совпадать с реальным кодом;
-- решения агента должны переноситься в другой проект с минимальной адаптацией.
-
-**Жанр:** 2.5D platformer (бок/слегка объёмный): движение по X, поворот модели, прыжки/земля, враги, save/load progress, сцены через game state machine.
-
-Полный текст: [`.cursor/rules/project-goals.mdc`](../.cursor/rules/project-goals.mdc).
+Зачем проект, цели, не-цели и как выбирать при сомнении — [`../INTENT.md`](../INTENT.md) (источник истины). Кратко: учебный эталон по курсу k-syndicate + документация для переноса в следующие Unity-проекты; жанр 2.5D platformer.
 
 ---
 
@@ -68,9 +56,9 @@
 | `%USERPROFILE%\.cursor\rules\explain-comparisons.mdc` | «Лучше/хуже» только с конкретной причиной |
 | `%USERPROFILE%\.cursor\skills\**` | Глобальные Unity skills (cli, ui, urp, …) — не project-local |
 
-### Чего нет (и не заводить без нужды)
+### Файлы входа агентов
 
-`AGENTS.md`, `.cursorrules`, корневой `CLAUDE.md` — отсутствуют; достаточно этого файла + `.cursor/rules`.
+Решение пользователя 2026-10-24 ([`Ai.Decisions/2026-10-24-agent-entry-files.md`](../Ai.Decisions/2026-10-24-agent-entry-files.md)): в корне есть [`AGENTS.md`](../AGENTS.md) (общее ядро, читает Cursor и другие агенты) и [`CLAUDE.md`](../CLAUDE.md) (импортирует `AGENTS.md`, `INTENT.md`, playbook для Claude Code). Канон по-прежнему здесь, в `Ai.Context/`; файлы входа — только порядок чтения и стоп-правила, без копий канона. Отвергнуто: «не заводить, вставлять стартовый промпт вручную» — промпт приходилось повторять каждую сессию. `.cursorrules` по-прежнему не заводим.
 
 ---
 
@@ -96,7 +84,7 @@ GameBootstrapper → GameMain → GameStateMachine
 - **Прогресс:** `IPersistentProgressService` / `ISaveLoadService` / `ISaveProgress` + `SaveTrigger`.
 - **Ввод:** `IInputService` / `InputService` / `InputReceiver` (не отдельный `PlayerInputController` как основной слой).
 - **Игрок:** `PlayerMovementController` (движение), `PlayerFacing` (поворот модели), `PlayerAnimator` (Animator: `Speed`, `Damage`, `Death`, `Attack`, `IsAttacking`), `PlayerHealth` (HP, `IHealth`), `PlayerDeath` (смерть), `PlayerAttack` (кнопка атаки и событие `OnAttack`); **не** иерархия `Assets/Game/Scripts/State/` — игровой SM живёт в `StateMachine/`.
-- **Бой:** `EnemyHealth` реализует `IHealth` (интерфейс в `Game.Scripts.Enemy`); `EnemyAnimator.PlayHit()` вызывает триггер `Damage` у Skeleton. Слой `Hittable` для целей удара игрока.
+- **Бой:** `EnemyHealth` реализует `IHealth` (интерфейс в `Game.Scripts.BaseLogic.Interfaces`); `EnemyAnimator.PlayHit()` вызывает триггер `Damage` у Skeleton. Слой `Hittable` для целей удара игрока.
 - **Анимация / враги (блок Enemy):** `EnemyAnimator` + `IAnimationStateReader` + `AnimatorStateReporter` / `AnimatorState`.
 - **Сцена:** `Assets/Game/Scenes/SampleScene.unity`; демо-геометрия — Tools → Build Demo Level (`Assets/Game/Editor/…`).
 - **Namespaces:** `Game.Scripts.<Area>`; код в `Assets/Game/Scripts`.
@@ -106,13 +94,13 @@ GameBootstrapper → GameMain → GameStateMachine
 Корень:  
 `G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\`
 
-Пройдено: 05 Enemy, 06–07 Fighting (бой игрока и врага, 2026-10-24). Следующий урок — **08 Enemy Spawner**:  
-`...\08 Enemy Spawner\knowledge-is-power-master(1)\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase`
+Пройдено: 05 Enemy, 06–07 Fighting (бой игрока и врага, 2026-10-24). Следующий урок — **08 Enemy Spawner** (бриф `Ai.Tasks/2026-10-24-enemy-spawner.md`).
 
-Законченный код предыдущих уроков (на начало урока 09, после Enemy Spawner):  
-`...\09 Static data\knowledge-is-power-5dd184c4c83da215669aff0ac78825a83a3bcb0f\src\KnowledgeIsPower\Assets\CodeBase`
+**Папка урока N — код на начало урока; итог урока N — в папке N+1.** Для урока 08:
+- начало: `...\08 Enemy Spawner\knowledge-is-power-master(1)\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase`
+- итог: `...\09 Static data\knowledge-is-power-5dd184c4c83da215669aff0ac78825a83a3bcb0f\src\KnowledgeIsPower\Assets\CodeBase`
 
-Перед классом из урока — прочитать файл в CodeBase курса; адаптировать namespace под `Game.Scripts.*`; не улучшать без просьбы.
+Соответствие имён и папок курса нашим — [`../Ai.Architecture/course-map.md`](../Ai.Architecture/course-map.md). Перед классом из урока — прочитать файл в CodeBase курса; не улучшать без просьбы.
 
 ### Стиль (кратко)
 
@@ -175,6 +163,8 @@ _Обновлять в конце значимых сессий._
 
 ### Активный handoff
 
+Здесь только последняя запись. Предыдущие — [`handoff-archive.md`](handoff-archive.md) (при новой записи старую переносить туда, наверх).
+
 ```text
 ### 2026-10-24 (вечер) — координатор (Opus, local) — бой игрока доведён
 Сделано:
@@ -190,51 +180,6 @@ _Обновлять в конце значимых сессий._
 Риски / не трогать:
 - WIP Enemy/Aggro (`Aggro`, `Follow`, `AgentMoveToPlayer` и др.) не менялся — только выключается из `EnemyDeath`.
 - Unity CLI — через свою связанную сессию-worker; чужой worker (сессии «Main old») не использовать.
-
-### 2026-10-24 — координатор (Haiku) — бой игрока, handoff
-Сделано:
-- Урон игроку работает (слой `Player` на префабе, триггер `Damage`). Полоска HUD (`PlayerHudBuilder`, спрайт `UISprite`, 300×40, отступ 30/−40).
-- `PlayerVisual` разбит на `PlayerFacing` и `PlayerAnimator`, старый класс удалён, ссылки в префабе назначены.
-- Смерть: Rigidbody kinematic при смерти (падение устранено).
-- Ввод: действие `Attack` (мышь для редактора), `InputReceiver.OnAttack`, `IInputService.AttackButtonUp()`.
-- `PlayerAttack` и событие `OnAttack` на кадре 5 клипа `Hit` (`Hit.FBX.meta`).
-- `IHealth` — интерфейс пользователя (`Game.Scripts.Enemy`); мой дубликат удалён.
-- Пакет `com.unity.pipeline` 0.8.0-exp.1 (реестр); старая копия в `D:\Unity\Backups`.
-Осталось:
-- Коллайдер тела у `Skeleton` (слой `Hittable`), маска `Hittable` в `PlayerAttack`.
-- Состояние `Hit` с переходом по триггеру `Attack` в `FreeHandController` (сейчас `Attack` → `Fire`).
-- Мобильная экранная кнопка атаки, урон по врагам (TODO), `using UnityEditor;` в `EnemyAttack.cs`.
-- Коммиты: разобрать `git status` (сгенерированные файлы), закоммитить по задачам.
-Файлы: `Ai.Tasks/2026-10-24-player-combat.md`, `Ai.Issues/bugs/2026-10-24-*`, `Ai.Issues/features/2026-10-24-player-attack-input.md`.
-Риски / не трогать:
-- Не трогать WIP Enemy/Aggro другого агента. Не коммитить без просьбы.
-
-### 2026-09-19 — worker — Ai.* docs structure
-Сделано:
-- Канон перенесён в Ai.Context/; Issues в Ai.Issues/; обзор в Ai.Architecture/.
-- README + Docs/project-context.md указывают на Ai.Context.
-- Прошлые задачи задокументированы как отдельные issue MD.
-Осталось:
-- Продолжать Enemy/Aggro по курсу 05 (параллельный агент — не конфликтовать).
-- Закоммитить/запушить Ai.* когда координатор/пользователь готов.
-Файлы:
-- Ai.Context/**, Ai.Issues/**, Ai.Architecture/**
-- README.md, Docs/project-context.md
-Риски / не трогать:
-- Не править Enemy/Aggro WIP чужого агента.
-- Не плодить второй канон вне Ai.Context.
-
-### 2026-09-16 — local (unity-pc) — канон project-context из локальных правил
-Сделано:
-- Заменён cloud-scaffold docs/project-context.md на канон с целями, правилами (пути), стеком из кода, протоколом handoff.
-- Указатель в README сохранён/обновлён.
-- Учтены локальные .cursor/rules, Docs/AgentHandoff, глобальные user rules, блок Enemy.
-Осталось:
-- Продолжать Enemy по курсу 05; синхронизировать незапушенные rules/WIP с remote по готовности.
-Файлы:
-- (исторически) docs/project-context.md → теперь Ai.Context/project-context.md
-Риски / не трогать:
-- Не дублировать полные тексты правил сюда; не переустанавливать AgentHandoff в этом репо.
 ```
 
 ### Только на local / self-hosted
