@@ -2,7 +2,7 @@
 
 Unity 6 проект 2.5D Platformer — учебный эталон по курсу k-syndicate. Здесь только порядок чтения и стоп-правила. Канон — в `Ai.Context/`, при расхождении побеждает он.
 
-**`<Knowledge>`** — общая база правил вне репо (git-репозиторий Knowledge). Путь у каждого свой: он задан в `~/.claude/CLAUDE.md` (строка `@…/process/agent-workflow.md`), у автора — `D:\Unity\Knowledge`. Нет базы — настройка по `<Knowledge>\starter-kit\README.md`.
+**`<Knowledge>`** — общая база правил вне репо (`https://github.com/Zenobiam/unity-knowledge`). Путь у каждого свой: он задан в `~/.claude/CLAUDE.md` (строка `@…/process/agent-workflow.md`), у автора — `D:\Unity\Knowledge`. Нет базы — настройка по `<Knowledge>\starter-kit\README.md`.
 
 ## Перед работой прочитать
 
