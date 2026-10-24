@@ -1,6 +1,6 @@
 # Handoff: контекст для нового проекта / нового чата
 
-> **Устарело (2026-10-24).** Новый проект настраивается через `D:\Unity\Knowledge\starter-kit\README.md` (`install-global.ps1` + `new-project.ps1`). Этот файл и `rules-templates/` оставлены для истории.
+> **Устарело (2026-10-24).** Новый проект настраивается через `<Knowledge>\starter-kit\README.md` (`install-global.ps1` + `new-project.ps1`). Этот файл оставлен для истории; `rules-templates/` удалены (замена — `<Knowledge>\starter-kit\project\` и `global\cursor-rules\`).
 
 Скопируй эту папку в новый Unity-проект (или вставь этот файл в первый сообщение агенту через `@`).
 
@@ -22,7 +22,7 @@
 .cursor/mcp.json                    ← поправь --project-path на новый путь
 ```
 
-Шаблоны правил — рядом в `rules-templates/`.
+Шаблоны правил — `<Knowledge>\starter-kit\project\` (раньше лежали рядом в `rules-templates/`).
 
 ## Unity CLI + Editor (один раз на машине)
 

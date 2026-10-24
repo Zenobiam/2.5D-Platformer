@@ -8,14 +8,16 @@
 
 1. [`../INTENT.md`](../INTENT.md) — зачем проект, цели и не-цели  
 2. Этот README  
-3. [`agent-playbook.md`](agent-playbook.md) — **обязательно для workers**: проектная часть регламента (worker, чужой WIP, курс); общий регламент — `D:\Unity\Knowledge\process\agent-workflow.md`  
+3. [`agent-playbook.md`](agent-playbook.md) — **обязательно для workers**: проектная часть регламента (worker, чужой WIP, курс); общий регламент — `<Knowledge>\process\agent-workflow.md`  
 4. [`project-context.md`](project-context.md) — стек, пути к курсу, текущее состояние, активный handoff (прошлые — [`handoff-archive.md`](handoff-archive.md), читать только по нужде)  
 5. [`preferences.md`](preferences.md) — куда класть deliverables, курс 2021 vs Unity 6  
 6. Для задачи по уроку — [`../Ai.Architecture/course-map.md`](../Ai.Architecture/course-map.md) и [`../Ai.Architecture/course-deviations.md`](../Ai.Architecture/course-deviations.md)  
 7. При необходимости — [`../Ai.Issues/`](../Ai.Issues/) (только записи по теме задачи)  
-8. **Общая база (вне репо):** `D:\Unity\Knowledge\README.md` — правила Unity (компоненты, скрипты, DI, префабы, анимация, редакторные инструменты, SOLID, git), описания механик, правила ревью (`process/self-review.md`) и реестр классов дефектов (`process/review-insights.md`). Читать перед написанием кода и перед ревью.
+8. **Общая база (вне репо):** `<Knowledge>\README.md` — правила Unity (компоненты, скрипты, DI, префабы, анимация, редакторные инструменты, SOLID, git), описания механик, правила ревью (`process/self-review.md`) и реестр классов дефектов (`process/review-insights.md`). Читать перед написанием кода и перед ревью.
 
 Большие файлы (журналы, обзоры) читать по заголовкам, нужной секцией, а не целиком.
+
+`<Knowledge>` — путь к общей базе на этой машине, см. определение в [`../AGENTS.md`](../AGENTS.md).
 
 ## Что обновить
 
@@ -27,8 +29,8 @@
 | отступили от кода курса (API Unity 6, мобилка) | `Ai.Architecture/course-deviations.md` |
 | закончили урок или его часть | `course-map.md` § «Пройденные уроки», `project-context.md` § 5–6, `Ai.Tasks/<бриф>` § «Итог» |
 | новый пункт `Tools → …`, сервис, состояние, путь в `AssetPath` | `project-context.md` § 4 |
-| изменили механику (здоровье, бой, спавн) | `D:\Unity\Knowledge\mechanics/<механика>.md` |
-| нашли класс дефекта или ложную тревогу | `D:\Unity\Knowledge\process\review-insights.md` |
+| изменили механику (здоровье, бой, спавн) | `<Knowledge>\mechanics/<механика>.md` |
+| нашли класс дефекта или ложную тревогу | `<Knowledge>\process\review-insights.md` |
 | починили баг / сделали фичу | `Ai.Issues/bugs|features/YYYY-MM-DD-*.md` |
 | решение пользователя (правило, процесс, архитектура) | `Ai.Decisions/YYYY-MM-DD-*.md` (с отвергнутой альтернативой) + сам файл правила |
 
@@ -47,7 +49,7 @@
 ## Связанные пути
 
 - Правила стиля/целей: [`.cursor/rules/`](../.cursor/rules/)  
-- Handoff-kit для **нового** репо: [`Docs/AgentHandoff/HANDOFF.md`](../Docs/AgentHandoff/HANDOFF.md)  
+- Setup **нового** репо: `<Knowledge>\starter-kit\README.md` (старый [`Docs/AgentHandoff/HANDOFF.md`](../Docs/AgentHandoff/HANDOFF.md) устарел)  
 - Старый указатель: [`Docs/project-context.md`](../Docs/project-context.md) → редирект сюда  
 
 ## Схема имён Issues

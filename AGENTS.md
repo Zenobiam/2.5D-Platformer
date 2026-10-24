@@ -2,14 +2,16 @@
 
 Unity 6 проект 2.5D Platformer — учебный эталон по курсу k-syndicate. Здесь только порядок чтения и стоп-правила. Канон — в `Ai.Context/`, при расхождении побеждает он.
 
+**`<Knowledge>`** — общая база правил вне репо (git-репозиторий Knowledge). Путь у каждого свой: он задан в `~/.claude/CLAUDE.md` (строка `@…/process/agent-workflow.md`), у автора — `D:\Unity\Knowledge`. Нет базы — настройка по `<Knowledge>\starter-kit\README.md`.
+
 ## Перед работой прочитать
 
 1. [`INTENT.md`](INTENT.md) — зачем проект, цели, не-цели, как выбирать при сомнении.
 2. [`Ai.Context/README.md`](Ai.Context/README.md) — порядок чтения канона и таблица «что обновить».
-3. `D:\Unity\Knowledge\process\agent-workflow.md` (вне репо) — общий регламент: порядок работы, Unity Editor, сессии, временный код, git, отчёт. Затем [`Ai.Context/agent-playbook.md`](Ai.Context/agent-playbook.md) — проектная часть (worker, чужой WIP, курс); она побеждает при противоречии.
+3. `<Knowledge>\process\agent-workflow.md` (вне репо) — общий регламент: порядок работы, Unity Editor, сессии, временный код, git, отчёт. Затем [`Ai.Context/agent-playbook.md`](Ai.Context/agent-playbook.md) — проектная часть (worker, чужой WIP, курс); она побеждает при противоречии.
 4. [`Ai.Context/project-context.md`](Ai.Context/project-context.md) §§ 4–6 — стек, пути к курсу, текущее состояние, активный handoff.
 5. Бриф задачи в [`Ai.Tasks/`](Ai.Tasks/), если есть. Для урока — [`Ai.Architecture/course-map.md`](Ai.Architecture/course-map.md) и [`course-deviations.md`](Ai.Architecture/course-deviations.md).
-6. `D:\Unity\Knowledge\README.md` (вне репо) — перед кодом и ревью: `conventions/`, нужный файл `mechanics/`, `process/review-insights.md`.
+6. `<Knowledge>\README.md` (вне репо) — перед кодом и ревью: `conventions/`, нужный файл `mechanics/`, `process/review-insights.md`.
 
 ## Первая фраза ответа
 

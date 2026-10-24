@@ -6,4 +6,4 @@
 @INTENT.md
 @Ai.Context/agent-playbook.md
 
-Остальное (`Ai.Context/project-context.md`, `Ai.Architecture/*`, `Ai.Tasks/*`, `D:\Unity\Knowledge\*`) читать по ссылкам из этих файлов, нужной секцией.
+Остальное (`Ai.Context/project-context.md`, `Ai.Architecture/*`, `Ai.Tasks/*`, `<Knowledge>\*`) читать по ссылкам из этих файлов, нужной секцией.

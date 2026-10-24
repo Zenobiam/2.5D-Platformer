@@ -25,7 +25,7 @@
    - §6 **Handoff cloud↔local** (что подхватить другому агенту).
 4. **Оригиналы правил не удалять и не копировать сюда целиком** — только резюме + точный путь (§3).
 5. Project Agent Store (`notes.md`, `internal/`) — координация Project; **источник истины по коду и решениям** — `Ai.Context/` (+ `Ai.Issues/` для прошлых фиксов) в репозитории.
-6. **Новый Unity-репозиторий:** копировать шаблоны из [`Docs/AgentHandoff/HANDOFF.md`](../Docs/AgentHandoff/HANDOFF.md). **Этот репозиторий уже настроен** — правила стоят в `.cursor/rules`; handoff-kit не переустанавливать «с нуля».
+6. **Новый Unity-репозиторий:** `<Knowledge>\starter-kit\README.md` (`new-project.ps1`). **Этот репозиторий уже настроен** — starter-kit сюда не запускать.
 7. Deliverables для пользователя — под `Ai.*` (см. [`preferences.md`](preferences.md)).
 
 ---
@@ -42,7 +42,7 @@
 | [`.cursor/rules/csharp-style.mdc`](../.cursor/rules/csharp-style.mdc) | Стиль под `Assets/Game/Scripts`: `_camelCase`, `Game.Scripts.*`, GetComponent/ServiceLocator в `Awake`, без SerializeField-everywhere; стек Bootstrapper → GameMain → GSM |
 | [`.cursor/rules/course-reference.mdc`](../.cursor/rules/course-reference.mdc) | Сверяться с CodeBase курса k-syndicate; текущий блок Enemy; не «улучшать» без просьбы |
 | [`.cursor/mcp.json`](../.cursor/mcp.json) | MCP `unity` → локальный `unity.exe mcp --project-path …` (пути машинно-зависимы) |
-| [`Docs/AgentHandoff/HANDOFF.md`](../Docs/AgentHandoff/HANDOFF.md) | Kit для **нового** репо: что копировать, Unity CLI/pipeline, промпт; шаблоны в `Docs/AgentHandoff/rules-templates/` |
+| [`Docs/AgentHandoff/HANDOFF.md`](../Docs/AgentHandoff/HANDOFF.md) | Устарело: новый репо настраивается через `<Knowledge>\starter-kit\` (`install-global.ps1`, `new-project.ps1`) |
 | [`README.md`](../README.md) | Точка входа → `Ai.Context/` |
 | [`Docs/project-context.md`](../Docs/project-context.md) | Редирект на этот канон (старый путь) |
 
@@ -193,4 +193,4 @@ _Обновлять в конце значимых сессий._
 
 ## Указатель для новых репозиториев
 
-Копирование шаблонов и первичный setup: **[`Docs/AgentHandoff/HANDOFF.md`](../Docs/AgentHandoff/HANDOFF.md)** — только для **нового** проекта. Здесь правила уже в `.cursor/rules`.
+Первичный setup нового проекта: **`<Knowledge>\starter-kit\README.md`** — только для **нового** проекта. Здесь всё уже настроено.
