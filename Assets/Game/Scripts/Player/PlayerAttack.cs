@@ -19,12 +19,15 @@ namespace Game.Scripts.Player
         public PlayerAnimator Animator;
         public CharacterController CharacterController;
         private Stats _playerStats;
+        private PlayerFacing _facing;
 
 
         private void Awake()
         {
             _input = ServiceLocator.Container.Single<IInputService>();
-            
+            // PlayerFacing на корне Player, а этот компонент — на модели (CyborgGirl).
+            _facing = GetComponentInParent<PlayerFacing>();
+
             _hittableMask = 1 << LayerMask.NameToLayer("Hittable");
         }
 
@@ -37,7 +40,7 @@ namespace Game.Scripts.Player
         // Вызывается событием клипа Hit (0:05).
         public void OnAttack()
         {
-            PhysicsDebug.DrawDebug(StartPoint() + transform.forward, _playerStats.DamageRadius, 1f);
+            PhysicsDebug.DrawDebug(StartPoint() + _facing.Forward, _playerStats.DamageRadius, 1f);
 
             for (int i = 0; i < Hit(); i++)
             {
@@ -51,7 +54,7 @@ namespace Game.Scripts.Player
         }
 
         private int Hit() =>
-            Physics.OverlapSphereNonAlloc(StartPoint() + transform.forward, _playerStats.DamageRadius, _hits, _hittableMask);
+            Physics.OverlapSphereNonAlloc(StartPoint() + _facing.Forward, _playerStats.DamageRadius, _hits, _hittableMask);
 
         // В курсе y = center.y / 2 (пол на y = 0); у нас уровень выше, поэтому от позиции игрока.
         private Vector3 StartPoint() =>

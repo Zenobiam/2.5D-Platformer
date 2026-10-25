@@ -1,3 +1,4 @@
+using Game.Scripts.Player;
 using UnityEngine;
 
 namespace Game.Scripts.Camera
@@ -9,19 +10,24 @@ namespace Game.Scripts.Camera
         [SerializeField] private float _cameraSpeed;
         private float _lookAhead;
 
-        private float _facing;
+        private PlayerFacing _playerFacing;
 
         private void LateUpdate()
         {
             if (!_followTarget) return;
-        
+
             transform.position = new Vector3(_followTarget.position.x + _lookAhead, transform.position.y, transform.position.z);
 
-            _facing = _followTarget.rotation.eulerAngles.y > 90 ? -1 : 1;
+            // Корень игрока не поворачивается (поворачивается модель), поэтому направление берём из PlayerFacing.
+            int facing = _playerFacing != null ? _playerFacing.Direction : 1;
 
-            _lookAhead = Mathf.Lerp(_lookAhead, (_aheadDistance * _facing), Time.deltaTime * _cameraSpeed);
+            _lookAhead = Mathf.Lerp(_lookAhead, (_aheadDistance * facing), Time.deltaTime * _cameraSpeed);
         }
 
-        public void Follow(GameObject follow) => _followTarget = follow.transform;
+        public void Follow(GameObject follow)
+        {
+            _followTarget = follow.transform;
+            _playerFacing = follow.GetComponent<PlayerFacing>();
+        }
     }
 }
