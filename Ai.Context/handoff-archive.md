@@ -3,6 +3,21 @@
 Предыдущие записи из `project-context.md` § 6, новые сверху. Исторические записи не переписываются: имена и пути в них — на момент записи.
 
 ```text
+### 2026-10-25 — пользователь + координатор (Opus, local) — урок 08 Enemy Spawner
+Сделано:
+- Урок 08 перенесён пользователем (коммит `b01d2a7`, ветка `feature/enemy-spawner`): `EnemySpawner` (`ISaveProgress`, `KillData.ClearedSpawners`), `UniqueId` + `UniqueIdEditor`, гизмо `EnemySpawnerEditor`, `MonsterTypeId` (`Skeleton = 0`), `GameFactory.Register` публичный и в `IGameFactory`, `InitSpawners()` в `LoadSceneState` (переименован из `LoadLevelState`).
+- Редактор: тег `EnemySpawner`, префаб `Resources/Enemies/EnemySpawner.prefab` (Id пустой), один спавнер в `SampleScene` (`SampleScene_<guid>`), `SaveTrigger` придвинут (x 3.79). Проверено по файлам; сборка успешна по `Editor.log`.
+- Документы: правило «Редактор — часть задачи», `Ai.Architecture/editor-setup.md`, карта курса и отступления обновлены.
+Осталось:
+- `Spawn()` пустой, `isEmpty` никто не ставит — урок 09 (Static data) и 11 (Spawner rework).
+- Скелет пока стоит на сцене руками; хак `ActorUI.Start` остаётся до спавна через фабрику.
+- `UniqueIdEditor` использует устаревший `FindObjectsOfType` (`CS0618`) — заменить по решению пользователя.
+- Хвосты боя: кнопка атаки в Simulator, смерть игрока во время удара (Play Mode).
+Файлы: `Ai.Architecture/editor-setup.md`, `Ai.Architecture/course-map.md`, бриф `Ai.Tasks/2026-10-24-enemy-spawner.md` (локально, не в git).
+Риски / не трогать:
+- `Tools → Build Demo Level Geometry` не запускать — удаляет `NavMeshSurface`.
+- WIP Enemy/Aggro не трогать; уроки делает пользователь, агент помогает по просьбе.
+
 ### 2026-10-24 (вечер) — координатор (Opus, local) — бой игрока доведён
 Сделано:
 - Удар с ПК работает и бьёт Skeleton; враг умирает (падает, стоит, исчезает через 3 с). Проверено пользователем в Play Mode.

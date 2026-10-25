@@ -22,6 +22,10 @@
 | `LoadLevelState` | `LoadSceneState` (переименован в уроке 08, 2026-10-25) |
 | `LoadLevelState.InitGameWorld` | `LoadSceneState.SetupGameEnvironment` |
 | `EnemySpawner.Slain` | `EnemySpawner.isEmpty` |
+| `Monster*` (урок 09): `MonsterStaticData`, `MonsterTypeId` (`Lich`, `Golem = 10`), `IGameFactory.CreateMonster`, `IStaticDataService.LoadMonsters` / `ForMonster` | `Enemy*`: `EnemyStaticData`, `EnemyTypeId` (`Skeleton = 0`, `Golem = 10`), `CreateEnemy`, `LoadEnemies` / `ForEnemy` |
+| `Resources/Static Data/Monsters` | `Resources/StaticData/Enemies` |
+| `RotateToHero` | `RotateToPlayer` |
+| `Attack` (враг): `Damage`, `Cleavage`, `EffectiveDistance` | `EnemyAttack`: те же поля (опечатка `EffecticveDistance` исправлена в уроке 09) |
 | `IAssetProvider` / `AssetProvider` | `IAssetsProvider` / `AssetsProvider` |
 | `AllServices.Container` | `ServiceLocator.Container` (API тот же: `RegisterSingle`, `Single`) |
 | `DataExtensions.AsVectorData` / `AsUnityVector` / `ToDeserialized` | `AsVector3Data` / `AsVector3` / `ToDeserializes` |
@@ -56,8 +60,11 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | `Logic/AnimatorState`, `AnimatorStateReporter`, `IAnimationStateReader` | `Animation/` (+ `Animation/Interfaces/`) |
 | `Logic/IHealth.cs` | `BaseLogic/Interfaces/IHealth.cs` (`Game.Scripts.BaseLogic.Interfaces`) |
 | `Logic/SaveTrigger.cs` | `Triggers/SaveTrigger.cs` |
-| `Logic/EnemySpawner.cs`, `Logic/UniqueId.cs` | `BaseLogic/Enemy/` (`Game.Scripts.BaseLogic.Enemy`); в уроке 11 курс переносит спавнер в `Logic/EnemySpawners/` |
-| `StaticData/` | `StaticData/` (`Game.Scripts.StaticData`) |
+| `Logic/EnemySpawner.cs`, `Logic/UniqueId.cs` | `BaseLogic/EnemySpawner/` (namespace остался `Game.Scripts.BaseLogic.Enemy` — путь ≠ namespace); в уроке 11 курс переносит спавнер в `Logic/EnemySpawners/` |
+| `StaticData/MonsterStaticData.cs` | `StaticData/EnemyStaticData.cs` (`Game.Scripts.StaticData`) |
+| `Services/StaticData/IStaticDataService.cs`, `StaticDataService.cs` | `Services/StaticData/Interfaces/IStaticDataService.cs`, `Services/StaticData/StaticDataService.cs` |
+| `Resources/Enemies/Golem/` (пак) + `Golem.prefab` (Variant от `BaseEnemy`) | `Resources/Enemies/Golem/` (пак без курсовых `Golem.prefab` и `OverrideController`) + `Resources/Enemies/Golem.prefab` (Variant от `Enemy`, `Tools → Setup → Enemy Variant: Golem`) |
+| `StaticData/` | `StaticData/` (`Game.Scripts.StaticData`): `EnemyStaticData`, `EnemyTypeId` |
 | `UI/` | `UI/` (+ наш `MobileOnly`) |
 
 ## Пройденные уроки
@@ -68,3 +75,4 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | 05 Enemy | перенесено (WIP Aggro другого агента) | `Ai.Issues/features/2026-09-19-aggro-wiring.md` |
 | 06–07 Fighting | перенесено | `Ai.Tasks/2026-10-24-player-combat.md` |
 | 08 Enemy Spawner | перенесено (2026-10-25, `b01d2a7`) | `Ai.Tasks/2026-10-24-enemy-spawner.md` (локально) |
+| 09 Static data | перенесено (2026-10-25) + новый враг Golem | `Ai.Tasks/2026-10-25-static-data.md` (локально) |

@@ -28,6 +28,8 @@
 
 - Эталон — курс k-syndicate. Код урока — `diff` папок курса N и N+1; соответствие имён и папок — [`../Ai.Architecture/course-map.md`](../Ai.Architecture/course-map.md); отступления — [`../Ai.Architecture/course-deviations.md`](../Ai.Architecture/course-deviations.md).
 - Курс мобильный: экранная кнопка для каждого действия, без аллокаций в `Update`.
+- **Новый враг** — сначала `<Knowledge>\mechanics
+ew-enemy.md`: компоненты из `Enemy.prefab`, что настраивает фабрика, дочерние зоны, правила дистанций и событий атаки; сборка — `Tools → Setup → Enemy Variant: …`.
 - Маркер временного кода по курсу: `// COURSE-TEMP: <что>, убрать в уроке <N>`. Известное исключение: `ActorUI.Start` помечен `// TEMP:` — хак курса; при ближайшей правке файла перевести в `COURSE-TEMP`.
 - Документы после задачи — по таблице в [`README.md`](README.md) § «Что обновить».
 

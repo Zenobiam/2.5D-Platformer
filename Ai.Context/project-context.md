@@ -94,7 +94,7 @@ GameBootstrapper → GameMain → GameStateMachine
 Корень:  
 `G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\`
 
-Пройдено: 05 Enemy, 06–07 Fighting (2026-10-24), 08 Enemy Spawner (2026-10-25). Следующий урок — **09 Static data**: начало — `...\09 Static data\knowledge-is-power-5dd184c4c83da215669aff0ac78825a83a3bcb0f\…\CodeBase`, итог — `...\10 Loot\knowledge-is-power-master\…\CodeBase`. Уроки делает пользователь сам, агент помогает по просьбе.
+Пройдено: 05 Enemy, 06–07 Fighting (2026-10-24), 08 Enemy Spawner, 09 Static data + враг Golem (2026-10-25). Следующий урок — **10 Loot**: начало — `...\10 Loot\knowledge-is-power-master\…\CodeBase`, итог — `...\11 Spawner rework\knowledge-is-power-master\…\CodeBase` (есть и распакованная папка, и zip). Уроки делает пользователь сам, агент помогает по просьбе.
 
 **Папка урока N — код на начало урока; итог урока N — в папке N+1** (в уроках 11–16 код лежит только в `.zip`).
 
@@ -164,20 +164,19 @@ _Обновлять в конце значимых сессий._
 Здесь только последняя запись. Предыдущие — [`handoff-archive.md`](handoff-archive.md) (при новой записи старую переносить туда, наверх).
 
 ```text
-### 2026-10-25 — пользователь + координатор (Opus, local) — урок 08 Enemy Spawner
+### 2026-10-25 (вечер) — пользователь + координатор (Opus, local) — урок 09 Static data + враг Golem
 Сделано:
-- Урок 08 перенесён пользователем (коммит `b01d2a7`, ветка `feature/enemy-spawner`): `EnemySpawner` (`ISaveProgress`, `KillData.ClearedSpawners`), `UniqueId` + `UniqueIdEditor`, гизмо `EnemySpawnerEditor`, `MonsterTypeId` (`Skeleton = 0`), `GameFactory.Register` публичный и в `IGameFactory`, `InitSpawners()` в `LoadSceneState` (переименован из `LoadLevelState`).
-- Редактор: тег `EnemySpawner`, префаб `Resources/Enemies/EnemySpawner.prefab` (Id пустой), один спавнер в `SampleScene` (`SampleScene_<guid>`), `SaveTrigger` придвинут (x 3.79). Проверено по файлам; сборка успешна по `Editor.log`.
-- Документы: правило «Редактор — часть задачи», `Ai.Architecture/editor-setup.md`, карта курса и отступления обновлены.
+- Урок 09 (код пользователя, рефакторинг компонентов врага — агент): `EnemyStaticData` (ScriptableObject), `EnemyTypeId` (`Skeleton = 0`, `Golem = 10`), `IStaticDataService`/`StaticDataService` (`LoadAll` из `Resources/StaticData/Enemies`, регистрация в `BootstrapState` **до** `GameFactory`), `GameFactory.CreateEnemy`; `AgentMoveToPlayer`, `EnemyAttack`, `RotateToPlayer` — `Construct` вместо `PlayerCreated`; `PlayerGameObject`/`PlayerCreated` убраны из фабрики.
+- Враг Golem: пак из курса в `Resources/Enemies/Golem` (PNG пересжаты без потерь 97 → 21 МБ), Git LFS для бинарников, `Tools → Setup → Enemy Variant: Golem` (override на базе `Skeleton.controller`, Variant от `Enemy`, Exit Time атак = 1). Урон и остановка проверены пользователем в Play Mode.
+- Фикс направления игрока (`PlayerFacing.Direction`), решения: `Ai.Decisions/2026-10-25-*`; документы: правило «Редактор — часть задачи», `editor-setup.md`, `project-structure-review.md`, Knowledge `mechanics/new-enemy.md`.
 Осталось:
-- `Spawn()` пустой, `isEmpty` никто не ставит — урок 09 (Static data) и 11 (Spawner rework).
-- Скелет пока стоит на сцене руками; хак `ActorUI.Start` остаётся до спавна через фабрику.
-- `UniqueIdEditor` использует устаревший `FindObjectsOfType` (`CS0618`) — заменить по решению пользователя.
-- Хвосты боя: кнопка атаки в Simulator, смерть игрока во время удара (Play Mode).
-Файлы: `Ai.Architecture/editor-setup.md`, `Ai.Architecture/course-map.md`, бриф `Ai.Tasks/2026-10-24-enemy-spawner.md` (локально, не в git).
+- Урок 10 Loot: начало — `... Loot\knowledge-is-power-master\…\CodeBase`, итог — `…	 Spawner rework\knowledge-is-power-master\…\CodeBase` (есть и zip).
+- `EnemySpawner`/`UniqueId` в папке `BaseLogic/EnemySpawner/`, а namespace `Game.Scripts.BaseLogic.Enemy` — путь ≠ namespace (решение пользователя).
+- `UniqueIdEditor`: устаревший `FindObjectsOfType` (`CS0618`). Игрок может зайти в любого врага (нет коллайдера тела).
+- Хвосты боя: кнопка атаки в Simulator, смерть игрока во время удара; `Tools → Build Demo Level Geometry` не запускать.
+Файлы: `Ai.Tasks/2026-10-25-static-data.md` (локально), `Ai.Architecture/course-map.md`, `editor-setup.md`, `course-deviations.md`.
 Риски / не трогать:
-- `Tools → Build Demo Level Geometry` не запускать — удаляет `NavMeshSurface`.
-- WIP Enemy/Aggro не трогать; уроки делает пользователь, агент помогает по просьбе.
+- Коллегам перед клоном — установить Git LFS. Уроки делает пользователь, агент помогает по просьбе.
 ```
 
 ### Только на local / self-hosted

@@ -25,3 +25,11 @@ agent worker start --name "unity-pc" --worker-dir . --computer-use
 - CLI: `%LOCALAPPDATA%\cursor-agent` (часто не в PATH)
 - Ошибка better-sqlite3 (NODE 127 vs 137): заменить `.node` на prebuild `node-v137-win32-x64` из релизов WiseLibs
 - Computer-use на win32 GUI не даёт (X11); терминал/файлы проекта работают
+
+## Сбои запуска (по расшифровке Cursor, 2026-09-20 … 2026-10-11)
+
+- `403 — Cursor is not supported in your region` от `api2.cursor.sh` → `agent login` падает за 2–3 с. Нужен VPN/другая сеть; без доступа к API воркер не поднять, повторять бессмысленно.
+- `agent login` падает за ~3 с при доступном API → вход не подтверждён в браузере: открыть ссылку из вывода `agent login` и подтвердить.
+- Сессия битая (403 после обрыва сети) → `agent logout`, затем `agent login`.
+- Lock при старте: сначала проверить, не работает ли уже демон (`agent worker debug` → `unity-pc` в Visibility) — если работает, второй старт не нужен; если процесса нет — lock устаревший, удалить `worker.lock` и запустить снова.
+- Уведомления о старых упавших попытках логина после успешного входа — игнорировать, проверять текущий статус.
