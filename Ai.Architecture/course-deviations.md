@@ -19,6 +19,6 @@
 | Тема | Курс | Unity 6 | Статус |
 |---|---|---|---|
 | Ввод через сгенерированный класс | — | `PlayerControls` (Generate C# Class) в `InputService` вместо `PlayerInput` + `InputReceiver` | предложено, ждёт задачи |
-| Поиск объектов | `FindObjectOfType` | `FindFirstObjectByType` / `FindAnyObjectByType` | в коде не используется (2026-10-24) |
+| Поиск объектов | `FindObjectOfType` / `FindObjectsOfType` | `FindFirstObjectByType` / `FindObjectsByType(FindObjectsSortMode.None)` | `UniqueIdEditor` (урок 08) оставлен как в курсе — `FindObjectsOfType`, предупреждение `CS0618`; заменить по решению пользователя |
 | Скорость Rigidbody | `Rigidbody.velocity` | `Rigidbody.linearVelocity` | в коде не используется (`NavMeshAgent.velocity` не затронут) |
 | Текст UI | `UnityEngine.UI.Text` | TextMeshPro | когда дойдём до текста в UI |

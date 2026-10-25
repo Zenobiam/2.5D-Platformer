@@ -76,12 +76,12 @@
 
 ```
 GameBootstrapper → GameMain → GameStateMachine
-  BootstrapState → LoadProgressState → LoadLevelState → GameLoopState
+  BootstrapState → LoadProgressState → LoadSceneState → GameLoopState
 ```
 
 - **DI:** свой `ServiceLocator.Container` + `IService` / `RegisterSingle` / `Single` — без чужих DI-фреймворков. Эволюция стека (не предлагать Zenject/VContainer до конца курса): [`preferences.md`](preferences.md) § Architecture evolution.
 - **Фабрики / ассеты:** `GameFactory` + `IAssetsProvider` + `AssetPath` (`Prefabs/Player/Player`, `Prefabs/Player/HUD`).
-- **Прогресс:** `IPersistentProgressService` / `ISaveLoadService` / `ISaveProgress` + `SaveTrigger`.
+- **Прогресс:** `IPersistentProgressService` / `ISaveLoadService` / `ISaveProgress` + `SaveTrigger`; `KillData.ClearedSpawners` — очищенные спавнеры (`EnemySpawner` + `UniqueId`, тег `EnemySpawner`).
 - **Ввод:** `IInputService` / `InputService` / `InputReceiver` (не отдельный `PlayerInputController` как основной слой).
 - **Игрок:** `PlayerMovementController` (движение), `PlayerFacing` (поворот модели), `PlayerAnimator` (Animator: `Speed`, `Damage`, `Death`, `Attack`, `IsAttacking`), `PlayerHealth` (HP, `IHealth`), `PlayerDeath` (смерть), `PlayerAttack` (кнопка атаки и событие `OnAttack`); **не** иерархия `Assets/Game/Scripts/State/` — игровой SM живёт в `StateMachine/`.
 - **Бой:** `EnemyHealth` реализует `IHealth` (интерфейс в `Game.Scripts.BaseLogic.Interfaces`); `EnemyAnimator.PlayHit()` вызывает триггер `Damage` у Skeleton. Слой `Hittable` для целей удара игрока.
@@ -94,11 +94,9 @@ GameBootstrapper → GameMain → GameStateMachine
 Корень:  
 `G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\`
 
-Пройдено: 05 Enemy, 06–07 Fighting (бой игрока и врага, 2026-10-24). Следующий урок — **08 Enemy Spawner** (бриф `Ai.Tasks/2026-10-24-enemy-spawner.md`).
+Пройдено: 05 Enemy, 06–07 Fighting (2026-10-24), 08 Enemy Spawner (2026-10-25). Следующий урок — **09 Static data**: начало — `...\09 Static data\knowledge-is-power-5dd184c4c83da215669aff0ac78825a83a3bcb0f\…\CodeBase`, итог — `...\10 Loot\knowledge-is-power-master\…\CodeBase`. Уроки делает пользователь сам, агент помогает по просьбе.
 
-**Папка урока N — код на начало урока; итог урока N — в папке N+1.** Для урока 08:
-- начало: `...\08 Enemy Spawner\knowledge-is-power-master(1)\knowledge-is-power-master\src\KnowledgeIsPower\Assets\CodeBase`
-- итог: `...\09 Static data\knowledge-is-power-5dd184c4c83da215669aff0ac78825a83a3bcb0f\src\KnowledgeIsPower\Assets\CodeBase`
+**Папка урока N — код на начало урока; итог урока N — в папке N+1** (в уроках 11–16 код лежит только в `.zip`).
 
 Соответствие имён и папок курса нашим — [`../Ai.Architecture/course-map.md`](../Ai.Architecture/course-map.md). Перед классом из урока — прочитать файл в CodeBase курса; не улучшать без просьбы.
 
@@ -166,20 +164,20 @@ _Обновлять в конце значимых сессий._
 Здесь только последняя запись. Предыдущие — [`handoff-archive.md`](handoff-archive.md) (при новой записи старую переносить туда, наверх).
 
 ```text
-### 2026-10-24 (вечер) — координатор (Opus, local) — бой игрока доведён
+### 2026-10-25 — пользователь + координатор (Opus, local) — урок 08 Enemy Spawner
 Сделано:
-- Удар с ПК работает и бьёт Skeleton; враг умирает (падает, стоит, исчезает через 3 с). Проверено пользователем в Play Mode.
-- Мобильный HUD: группа `Mobile` (`MobileOnly`), кнопка атаки `OnScreenButton` → `<Gamepad>/buttonWest` → `Attack`.
-- `Tools → Setup → Player Attack`: событие Attack в `PlayerInput`, состояние `Hit` в `FreeHandController`.
-- Фиксы: маска Hittable, высота точки удара (уровень на y≈2), смерть игрока/врага не срывается триггерами из Any State, `EnemyDeath` останавливает врага и удаляет через 3 с.
+- Урок 08 перенесён пользователем (коммит `b01d2a7`, ветка `feature/enemy-spawner`): `EnemySpawner` (`ISaveProgress`, `KillData.ClearedSpawners`), `UniqueId` + `UniqueIdEditor`, гизмо `EnemySpawnerEditor`, `MonsterTypeId` (`Skeleton = 0`), `GameFactory.Register` публичный и в `IGameFactory`, `InitSpawners()` в `LoadSceneState` (переименован из `LoadLevelState`).
+- Редактор: тег `EnemySpawner`, префаб `Resources/Enemies/EnemySpawner.prefab` (Id пустой), один спавнер в `SampleScene` (`SampleScene_<guid>`), `SaveTrigger` придвинут (x 3.79). Проверено по файлам; сборка успешна по `Editor.log`.
+- Документы: правило «Редактор — часть задачи», `Ai.Architecture/editor-setup.md`, карта курса и отступления обновлены.
 Осталось:
-- Проверить кнопку в Simulator и смерть игрока во время удара; полоска HP Skeleton (`blank`, `HpBar.ImageCurrent`, `HpCamera`).
-- Заглушки анимаций Skeleton (`death_test`, `Damage`) заменить настоящими клипами.
-- Коммиты по задачам — по просьбе пользователя.
-Файлы: `Ai.Tasks/2026-10-24-player-combat.md` (Итог), `Ai.Issues/bugs/2026-10-24-player-attack-not-firing.md`, `Ai.Architecture/course-deviations.md`.
+- `Spawn()` пустой, `isEmpty` никто не ставит — урок 09 (Static data) и 11 (Spawner rework).
+- Скелет пока стоит на сцене руками; хак `ActorUI.Start` остаётся до спавна через фабрику.
+- `UniqueIdEditor` использует устаревший `FindObjectsOfType` (`CS0618`) — заменить по решению пользователя.
+- Хвосты боя: кнопка атаки в Simulator, смерть игрока во время удара (Play Mode).
+Файлы: `Ai.Architecture/editor-setup.md`, `Ai.Architecture/course-map.md`, бриф `Ai.Tasks/2026-10-24-enemy-spawner.md` (локально, не в git).
 Риски / не трогать:
-- WIP Enemy/Aggro (`Aggro`, `Follow`, `AgentMoveToPlayer` и др.) не менялся — только выключается из `EnemyDeath`.
-- Unity CLI — через свою связанную сессию-worker; чужой worker (сессии «Main old») не использовать.
+- `Tools → Build Demo Level Geometry` не запускать — удаляет `NavMeshSurface`.
+- WIP Enemy/Aggro не трогать; уроки делает пользователь, агент помогает по просьбе.
 ```
 
 ### Только на local / self-hosted

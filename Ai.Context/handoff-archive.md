@@ -3,6 +3,21 @@
 Предыдущие записи из `project-context.md` § 6, новые сверху. Исторические записи не переписываются: имена и пути в них — на момент записи.
 
 ```text
+### 2026-10-24 (вечер) — координатор (Opus, local) — бой игрока доведён
+Сделано:
+- Удар с ПК работает и бьёт Skeleton; враг умирает (падает, стоит, исчезает через 3 с). Проверено пользователем в Play Mode.
+- Мобильный HUD: группа `Mobile` (`MobileOnly`), кнопка атаки `OnScreenButton` → `<Gamepad>/buttonWest` → `Attack`.
+- `Tools → Setup → Player Attack`: событие Attack в `PlayerInput`, состояние `Hit` в `FreeHandController`.
+- Фиксы: маска Hittable, высота точки удара (уровень на y≈2), смерть игрока/врага не срывается триггерами из Any State, `EnemyDeath` останавливает врага и удаляет через 3 с.
+Осталось:
+- Проверить кнопку в Simulator и смерть игрока во время удара; полоска HP Skeleton (`blank`, `HpBar.ImageCurrent`, `HpCamera`).
+- Заглушки анимаций Skeleton (`death_test`, `Damage`) заменить настоящими клипами.
+- Коммиты по задачам — по просьбе пользователя.
+Файлы: `Ai.Tasks/2026-10-24-player-combat.md` (Итог), `Ai.Issues/bugs/2026-10-24-player-attack-not-firing.md`, `Ai.Architecture/course-deviations.md`.
+Риски / не трогать:
+- WIP Enemy/Aggro (`Aggro`, `Follow`, `AgentMoveToPlayer` и др.) не менялся — только выключается из `EnemyDeath`.
+- Unity CLI — через свою связанную сессию-worker; чужой worker (сессии «Main old») не использовать.
+
 ### 2026-10-24 — координатор (Haiku) — бой игрока, handoff
 Сделано:
 - Урон игроку работает (слой `Player` на префабе, триггер `Damage`). Полоска HUD (`PlayerHudBuilder`, спрайт `UISprite`, 300×40, отступ 30/−40).

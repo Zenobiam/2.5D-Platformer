@@ -19,7 +19,9 @@
 | `ISavedProgress`, `ISavedProgressReader` | `ISaveProgress`, `ISaveProgressReader` (оба в одном файле `ISaveProgress.cs`) |
 | `IGameFactory.Cleanup()` | `CleanUp()` |
 | `GameFactory.InstantiateRegistered` | `InstantiateAndRegister` |
-| `LoadLevelState.InitGameWorld` | `SetupGameEnvironment` |
+| `LoadLevelState` | `LoadSceneState` (переименован в уроке 08, 2026-10-25) |
+| `LoadLevelState.InitGameWorld` | `LoadSceneState.SetupGameEnvironment` |
+| `EnemySpawner.Slain` | `EnemySpawner.isEmpty` |
 | `IAssetProvider` / `AssetProvider` | `IAssetsProvider` / `AssetsProvider` |
 | `AllServices.Container` | `ServiceLocator.Container` (API тот же: `RegisterSingle`, `Single`) |
 | `DataExtensions.AsVectorData` / `AsUnityVector` / `ToDeserialized` | `AsVector3Data` / `AsVector3` / `ToDeserializes` |
@@ -54,8 +56,8 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | `Logic/AnimatorState`, `AnimatorStateReporter`, `IAnimationStateReader` | `Animation/` (+ `Animation/Interfaces/`) |
 | `Logic/IHealth.cs` | `BaseLogic/Interfaces/IHealth.cs` (`Game.Scripts.BaseLogic.Interfaces`) |
 | `Logic/SaveTrigger.cs` | `Triggers/SaveTrigger.cs` |
-| `Logic/` (прочее: `EnemySpawner`, `UniqueId`) | `BaseLogic/` — план урока 08 |
-| `StaticData/` | `StaticData/` — план урока 08 |
+| `Logic/EnemySpawner.cs`, `Logic/UniqueId.cs` | `BaseLogic/Enemy/` (`Game.Scripts.BaseLogic.Enemy`); в уроке 11 курс переносит спавнер в `Logic/EnemySpawners/` |
+| `StaticData/` | `StaticData/` (`Game.Scripts.StaticData`) |
 | `UI/` | `UI/` (+ наш `MobileOnly`) |
 
 ## Пройденные уроки
@@ -65,4 +67,4 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | 01–04 | перенесено | — |
 | 05 Enemy | перенесено (WIP Aggro другого агента) | `Ai.Issues/features/2026-09-19-aggro-wiring.md` |
 | 06–07 Fighting | перенесено | `Ai.Tasks/2026-10-24-player-combat.md` |
-| 08 Enemy Spawner | бриф | `Ai.Tasks/2026-10-24-enemy-spawner.md` |
+| 08 Enemy Spawner | перенесено (2026-10-25, `b01d2a7`) | `Ai.Tasks/2026-10-24-enemy-spawner.md` (локально) |

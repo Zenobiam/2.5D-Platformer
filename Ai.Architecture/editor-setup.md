@@ -1,6 +1,6 @@
 # Что настроено в редакторе
 
-Справочник того, что живёт не в коде, а в Unity. Сверено по YAML 2026-10-25 (ветка `feature/enemy-spawner`, `e045cb6`): `ProjectSettings/*.asset`, `.prefab`, `.unity`, `.controller`. Обновлять тем же изменением, что и задачу (`Ai.Context/README.md` § «Что обновить»). Заменяет обзор [`gameobject-architecture-notes.md`](gameobject-architecture-notes.md) (2026-09-20).
+Справочник того, что живёт не в коде, а в Unity. Сверено по YAML 2026-10-25 (ветка `feature/enemy-spawner`, `e045cb6`; урок 08 — `b01d2a7`): `ProjectSettings/*.asset`, `.prefab`, `.unity`, `.controller`. Обновлять тем же изменением, что и задачу (`Ai.Context/README.md` § «Что обновить»). Заменяет обзор [`gameobject-architecture-notes.md`](gameobject-architecture-notes.md) (2026-09-20).
 
 Как читать: «зачем» — что делает код с этой настройкой; «если забыть» — как ломается (часто молча).
 
@@ -10,11 +10,12 @@
 
 | Тег | Где стоит | Кто ищет | Если забыть |
 |---|---|---|---|
-| `InitialPoint` | `SampleScene` → `PlayerHandler` | `LoadLevelState`: `FindWithTag` → точка создания игрока | `NullReferenceException` при загрузке уровня |
+| `InitialPoint` | `SampleScene` → `PlayerHandler` | `LoadSceneState`: `FindWithTag` → точка создания игрока | `NullReferenceException` при загрузке уровня |
+| `EnemySpawner` | префаб `EnemySpawner` и его экземпляры на сцене | `LoadSceneState.InitSpawners()`: `FindGameObjectsWithTag` → `GameFactory.Register` | спавнер молча не регистрируется в прогрессе; если тега нет в проекте — `UnityException: Tag ... is not defined` |
 | `LoadingCurtain` | префаб `Curtain` | — (тег курса, кодом не ищется) | — |
 | `Player` (встроенный) | корень префаба `Player` | — | — |
 | `Player Modell` | нигде (проверено по префабам и сценам) | — | лишний тег |
-| `MainCamera` (встроенный) | `SampleScene`, `InitialScene` → `Main Camera` | `Camera.main` в `LoadLevelState.CameraFollow` | камера не следует за игроком |
+| `MainCamera` (встроенный) | `SampleScene`, `InitialScene` → `Main Camera` | `Camera.main` в `LoadSceneState.CameraFollow` | камера не следует за игроком |
 
 ### Слои и матрица коллизий (`TagManager.asset`, `DynamicsManager.asset`)
 
@@ -48,16 +49,17 @@
 | Объект | Компоненты, тег, слой | Зачем | Как сделано |
 |---|---|---|---|
 | `PlayerHandler` | только Transform, тег `InitialPoint` | точка появления игрока | руками |
-| `Main Camera` | Camera, `CameraController` | `LoadLevelState` вызывает `Follow(player)` | руками |
+| `Main Camera` | Camera, `CameraController` | `LoadSceneState` вызывает `Follow(player)` | руками |
 | `InputHandler` | `PlayerInput` (Invoke Unity Events, карта `Player`), `InputReceiver` | события `Move/Jump/Run/Crouch/Attack` → `InputReceiver.OnMove/OnJump/OnRun/OnCrouch/OnAttack` | руками; `Attack` — `Tools → Setup → Player Attack` |
 | `Level` → `DemoRoute` | `NavMeshSurface`; дети `Ground` (слой `Ground`), `Hazards`, `Decor` — `NavMeshModifier` | геометрия и навигация для врагов | геометрия — `Tools → Build Demo Level Geometry`; NavMesh — руками |
+| `EnemySpawner` (префаб, x ≈ 5.5) | тег `EnemySpawner`, `EnemySpawner` (`MonsterTypeId = Skeleton`), `UniqueId` (`Id = SampleScene_<guid>`) | точка спавна врага и запись «очищен» в прогрессе; с урока 09 создаёт врага | руками (урок 08) |
 | `Skeleton` (префаб `Skeleton.prefab`) | враг | пока стоит на сцене руками; с урока 09 его создаёт спавнер | руками |
-| `SaveTrigger` (префаб) | `BoxCollider` trigger, `SaveTrigger` | сохранение прогресса при входе | руками |
+| `SaveTrigger` (префаб, x = 3.79) | `BoxCollider` trigger, `SaveTrigger` | сохранение прогресса при входе; придвинут к старту в уроке 08 | руками |
 | `GameRunner` (префаб) | `GameRunner` | старт из `SampleScene` без `InitialScene` | руками |
 | `Global Volume`, `Directional Light`, `EventSystem` (`InputSystemUIInputModule`) | стандарт URP / Input System | — | — |
 | `-------Managers-----------`, `--------Core----------`, `-----------------------` | пустые | разделители в иерархии | — |
 
-Игрок и HUD на сцене **не лежат**: их создаёт `GameFactory` из `Resources` в `LoadLevelState`.
+Игрок и HUD на сцене **не лежат**: их создаёт `GameFactory` из `Resources` в `LoadSceneState`.
 
 ## 3. Префабы
 
@@ -67,6 +69,7 @@
 | `Prefabs/Player/HUD` | Canvas, `ActorUI`; `HpBar` (`Background`, `Fill`); группа `Mobile` (`MobileOnly`): `JoyStickArea`, `AttackButton` (`OnScreenButton` → `<Gamepad>/buttonWest`) | собирается `Tools → UI → Build Player HUD`; корень должен быть **активен**, иначе `GetComponentInChildren<ActorUI>()` = null |
 | `Enemies/Enemy` | **логика врага без модели**: `Animator` (без Avatar), `EnemyAnimator`, `NavMeshAgent`, `AgentMoveToPlayer` (выключен, включает `Aggro`), `AnimateAlongAgent`, `Aggro`, `EnemyAttack`, `CheckAttackRange`, `EnemyHealth`, `EnemyDeath`, `ActorUI`; дети: `AggroZone` и `AttackZone` (`SphereCollider` trigger + `TriggerObserver`), `HitBox` (слой `Hittable`), `Canvas` (`HpCamera`) → `HealthBar` (`HpBar`: `Current`, `Back`) | база для всех врагов, как `BaseEnemy` в курсе |
 | `Enemies/Skeleton` | **Prefab Variant** от `Enemy`: добавлены кости и меш (`Geometry/geo/Skeleton`), Avatar и `Skeleton.controller` | новый враг = новый Variant от `Enemy` |
+| `Enemies/EnemySpawner` | пустой объект: тег `EnemySpawner`, `EnemySpawner`, `UniqueId` с **пустым** `Id` | в Scene view — красная сфера 0.5 (`EnemySpawnerEditor`, `[DrawGizmo]`), в Game view не виден; `Id` генерирует `UniqueIdEditor` при выделении экземпляра на сцене (`<сцена>_<guid>`), ассет префаба пропускает. Не дублировать в Prefab Mode |
 | `Prefabs/Triggers/SaveTrigger` | `BoxCollider` trigger, `SaveTrigger` | зелёный куб-гизмо в Scene view (`OnDrawGizmos`) |
 | `Prefabs/UI/Curtain` | Canvas, `CanvasGroup`, `LoadingCurtain`, тег `LoadingCurtain` | шторка загрузки |
 | `Prefabs/Infrastructure/GameBootstrapper`, `GameRunner` | один компонент | точка входа |
