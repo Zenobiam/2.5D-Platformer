@@ -86,7 +86,7 @@ GameBootstrapper → GameMain → GameStateMachine
 - **Игрок:** `PlayerMovementController` (движение), `PlayerFacing` (поворот модели), `PlayerAnimator` (Animator: `Speed`, `Damage`, `Death`, `Attack`, `IsAttacking`), `PlayerHealth` (HP, `IHealth`), `PlayerDeath` (смерть), `PlayerAttack` (кнопка атаки и событие `OnAttack`); **не** иерархия `Assets/Game/Scripts/State/` — игровой SM живёт в `StateMachine/`.
 - **Бой:** `EnemyHealth` реализует `IHealth` (интерфейс в `Game.Scripts.BaseLogic.Interfaces`); `EnemyAnimator.PlayHit()` вызывает триггер `Damage` у Skeleton. Слой `Hittable` для целей удара игрока.
 - **Анимация / враги (блок Enemy):** `EnemyAnimator` + `IAnimationStateReader` + `AnimatorStateReporter` / `AnimatorState`.
-- **Сцена:** `Assets/Game/Scenes/SampleScene.unity`; демо-геометрия — Tools → Build Demo Level (`Assets/Game/Editor/…`).
+- **Сцена:** `Assets/Game/Scenes/SampleScene.unity`; демо-геометрия — `Tools → Build Demo Level Geometry` (`Assets/Game/Editor/BuildDemoLevel.cs`; **не запускать повторно** — удаляет `NavMeshSurface`, см. [`../Ai.Architecture/editor-setup.md`](../Ai.Architecture/editor-setup.md) § 5).
 - **Namespaces:** `Game.Scripts.<Area>`; код в `Assets/Game/Scripts`.
 
 ### Референс курса

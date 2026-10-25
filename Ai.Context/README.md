@@ -29,6 +29,7 @@
 | отступили от кода курса (API Unity 6, мобилка) | `Ai.Architecture/course-deviations.md` |
 | закончили урок или его часть | `course-map.md` § «Пройденные уроки», `project-context.md` § 5–6, `Ai.Tasks/<бриф>` § «Итог» |
 | новый пункт `Tools → …`, сервис, состояние, путь в `AssetPath` | `project-context.md` § 4 |
+| настроили что-то в редакторе: тег, слой, объект сцены, префаб, Animator, `Tools → …` | `Ai.Architecture/editor-setup.md` (проверить по файлу) |
 | изменили механику (здоровье, бой, спавн) | `<Knowledge>\mechanics/<механика>.md` |
 | нашли класс дефекта или ложную тревогу | `<Knowledge>\process\review-insights.md` |
 | починили баг / сделали фичу | `Ai.Issues/bugs|features/YYYY-MM-DD-*.md` |

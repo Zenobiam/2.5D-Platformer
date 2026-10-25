@@ -51,6 +51,7 @@
 1. **Экранная кнопка атаки в Simulator** — кнопка видна; удар кнопкой после `Tools → Setup → Player Attack` не проверен. Play Mode запускать из вкладки Simulator.
 2. **Смерть игрока во время удара** — исправлено (`PlayerAnimator.PlayDeath` сбрасывает `Attack`), в Play Mode не проверено.
 3. **Полоска HP Skeleton** — `blank.png` скопирован в `Assets/Game/Visuals/UI/`; пользователь настраивает Image (Filled) и `HpBar.ImageCurrent` в префабе; `HpCamera` повесить на Canvas полоски. Подтвердить, что полоска убывает без `NullReferenceException`.
+   - **Проверено по файлу 2026-10-25** (`Enemy.prefab`): `Canvas` World Space + `HpCamera`, `HealthBar/HpBar.ImageCurrent` назначен, `Current` — Image Filled (Horizontal). В Play Mode не проверено.
 4. **Анимации Skeleton** — временные клипы `Damage.anim` (наклон 20°) и `Death.anim` (падение 90°) по узлу `DeformationSystem` из `Tools → Setup → Skeleton Animations`; проверено в Play Mode. Состояние `Death` → `Death.anim` (`death_test` не используется). Write Defaults у `Death`/`Damage` выключен. Настоящие клипы под риг Skeleton — отдельная задача на ассеты.
 5. **Commit** — разобрать `git status` по `Knowledge/conventions/git-hygiene.md`, коммиты по задачам, только по просьбе пользователя.
 
