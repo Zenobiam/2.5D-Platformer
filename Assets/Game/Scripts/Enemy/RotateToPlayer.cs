@@ -1,41 +1,22 @@
-﻿using Game.Scripts.Factories.Interfaces;
-using Game.Scripts.Infrastructure;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game.Scripts.Enemy
 {
-    public class RotateToHero : Follow
+    public class RotateToPlayer : Follow
     {
         public float Speed;
 
         private Transform _heroTransform;
-        private IGameFactory _gameFactory;
         private Vector3 _positionToLook;
 
-        private void Start()
-        {
-            _gameFactory = ServiceLocator.Container.Single<IGameFactory>();
-
-            if (IsHeroExist())
-                InitializeHeroTransform();
-            else
-                _gameFactory.PlayerCreated += HeroCreated;
-        }
+        public void Construct(Transform heroTransform) =>
+            _heroTransform = heroTransform;
 
         private void Update()
         {
-            if (IsInitialized())
+            if (_heroTransform)
                 RotateTowardsHero();
         }
-
-        private void OnDestroy()
-        {
-            if(_gameFactory != null)
-                _gameFactory.PlayerCreated -= HeroCreated;
-        }
-
-        private bool IsHeroExist() => 
-            _gameFactory.PlayerGameObject != null;
 
         private void RotateTowardsHero()
         {
@@ -49,7 +30,7 @@ namespace Game.Scripts.Enemy
             Vector3 positionDelta = _heroTransform.position - transform.position;
             _positionToLook = new Vector3(positionDelta.x, transform.position.y, positionDelta.z);
         }
-    
+
         private Quaternion SmoothedRotation(Quaternion rotation, Vector3 positionToLook) =>
             Quaternion.Lerp(rotation, TargetRotation(positionToLook), SpeedFactor());
 
@@ -58,14 +39,5 @@ namespace Game.Scripts.Enemy
 
         private float SpeedFactor() =>
             Speed * Time.deltaTime;
-
-        private bool IsInitialized() => 
-            _heroTransform != null;
-    
-        private void HeroCreated() =>
-            InitializeHeroTransform();
-
-        private void InitializeHeroTransform() =>
-            _heroTransform = _gameFactory.PlayerGameObject.transform;
     }
 }

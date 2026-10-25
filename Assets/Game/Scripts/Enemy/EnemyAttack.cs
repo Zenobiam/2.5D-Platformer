@@ -1,8 +1,5 @@
 ﻿using System.Linq;
 using Game.Scripts.BaseLogic.Interfaces;
-using Game.Scripts.Factories.Interfaces;
-using Game.Scripts.Infrastructure;
-using Game.Scripts.Player;
 using UnityEngine;
 
 namespace Game.Scripts.Enemy
@@ -13,11 +10,11 @@ namespace Game.Scripts.Enemy
         public EnemyAnimator Animator;
 
         public float AttackCooldown = 3f;
+        // Радиус сферы удара и вынос её центра вперёд; задаёт фабрика из EnemyStaticData (там подробнее).
         public float Cleavage = 0.5f;
-        public float EffecticveDistance = 0.5f;
+        public float EffectiveDistance = 0.5f;
         public float Damage = 10f;
 
-        private IGameFactory _gameFactory;
         private Transform _playerTransform;
         private float _attackCooldown;
         private bool _isAttacking;
@@ -25,13 +22,11 @@ namespace Game.Scripts.Enemy
         private Collider[] _hits = new Collider[1];
         private bool _attackIsActive;
 
-        private void Awake()
-        {
-            _gameFactory = ServiceLocator.Container.Single<IGameFactory>();
-            
+        public void Construct(Transform playerTransform) => 
+            _playerTransform = playerTransform;
+
+        private void Awake() =>
             _layerMask = 1 << LayerMask.NameToLayer("Player");
-            _gameFactory.PlayerCreated += OnPlayerCreated;
-        }
 
         private void Update()
         {
@@ -60,7 +55,7 @@ namespace Game.Scripts.Enemy
         }
 
         private Vector3 StartPoint() => 
-            new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z) + transform.forward*EffecticveDistance;
+            new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z) + transform.forward*EffectiveDistance;
 
 
         private void OnAttackEnded()
@@ -89,13 +84,10 @@ namespace Game.Scripts.Enemy
         private bool CoolDownIsUp() => 
             _attackCooldown <= 0;
 
-        private void OnPlayerCreated() => 
-            _playerTransform = _gameFactory.PlayerGameObject.transform;
-
-        public void EnableAttack() => 
+        public void EnableAttack() =>
             _attackIsActive = true;
 
-        public void DisableAttack() => 
+        public void DisableAttack() =>
             _attackIsActive = false;
     }
 }

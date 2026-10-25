@@ -1,4 +1,3 @@
-using Game.Scripts.Core;
 using Game.Scripts.Factories;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Infrastructure;
@@ -10,6 +9,8 @@ using Game.Scripts.Services.PersistentProgress;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.Services.SaveLoad;
 using Game.Scripts.Services.SaveLoad.Interfaces;
+using Game.Scripts.Services.StaticData;
+using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
 
 namespace Game.Scripts.StateMachine.States
@@ -19,13 +20,13 @@ namespace Game.Scripts.StateMachine.States
         private const string InitialScene = "InitialScene";
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
-        private ServiceLocator _service;
+        private readonly ServiceLocator _services;
 
-        public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader, ServiceLocator services)
+        public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader, ServiceLocator serviceses)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
-            _service = services;
+            _services = serviceses;
 
             RegisterServices();
         }
@@ -44,11 +45,20 @@ namespace Game.Scripts.StateMachine.States
 
         private void RegisterServices()
         {
-            _service.RegisterSingle<IInputService>(InputService());
-            _service.RegisterSingle<IAssetsProvider>(new AssetsProvider());
-            _service.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
-            _service.RegisterSingle<IGameFactory>(new GameFactory(_service.Single<IAssetsProvider>()));
-            _service.RegisterSingle<ISaveLoadService>(new SaveLoadService(_service.Single<IPersistentProgressService>(), _service.Single<IGameFactory>()));
+            RegisterStaticData();
+
+            _services.RegisterSingle<IInputService>(InputService());
+            _services.RegisterSingle<IAssetsProvider>(new AssetsProvider());
+            _services.RegisterSingle<IGameFactory>(new GameFactory(_services.Single<IAssetsProvider>(), _services.Single<IStaticDataService>()));
+            _services.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
+            _services.RegisterSingle<ISaveLoadService>(new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
+        }
+
+        private void RegisterStaticData()
+        {
+            IStaticDataService staticData = new StaticDataService();
+            staticData.LoadEnemies();
+            _services.RegisterSingle<IStaticDataService>(staticData);
         }
 
         private static IInputService InputService()
