@@ -19,7 +19,7 @@ namespace Game.Scripts.StateMachine
             _states = new Dictionary<Type, IExitableState>
             {
                 [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, services),
-                [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, loadingCurtain,
+                [typeof(LoadSceneState)] = new LoadSceneState(this, sceneLoader, loadingCurtain,
                     services.Single<IGameFactory>(), 
                     services.Single<IPersistentProgressService>()),
                 [typeof(LoadProgressState)] = new LoadProgressState(this, 

@@ -15,5 +15,6 @@ namespace Game.Scripts.Factories.Interfaces
         List<ISaveProgressReader> ProgressReaders { get; }
         List<ISaveProgress> ProgressWriters { get; }
         void CleanUp();
+        void Register(ISaveProgressReader progressReader);
     }
 }

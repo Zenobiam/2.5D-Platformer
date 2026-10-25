@@ -1,3 +1,4 @@
+using Game.Scripts.BaseLogic.Enemy;
 using Game.Scripts.Camera;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Player;
@@ -8,17 +9,18 @@ using UnityEngine;
 
 namespace Game.Scripts.StateMachine.States
 {
-    public class LoadLevelState : IPayloadedState<string>
+    public class LoadSceneState : IPayloadedState<string>
     {
         private const string InitialPointTag = "InitialPoint";
-        
+        private const string EnemySpawnerTag = "EnemySpawner";
+
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly LoadingCurtain _loadingCurtain;
         private readonly IGameFactory _gameFactory;
         private IPersistentProgressService _progressService;
 
-        public LoadLevelState(GameStateMachine stateMachine, SceneLoader sceneLoader, LoadingCurtain loadingCurtain, IGameFactory gameFactory, IPersistentProgressService progressService)
+        public LoadSceneState(GameStateMachine stateMachine, SceneLoader sceneLoader, LoadingCurtain loadingCurtain, IGameFactory gameFactory, IPersistentProgressService progressService)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
@@ -62,11 +64,25 @@ namespace Game.Scripts.StateMachine.States
 
         private void SetupGameEnvironment()
         {
-            GameObject player = _gameFactory.CreatePlayer(GameObject.FindWithTag(InitialPointTag));
+            InitSpawners();
+            
+            GameObject player = InitPlayer();
             
             InitHud(player);
             CameraFollow(player);
         }
+
+        private void InitSpawners()
+        {
+            foreach (GameObject spawnerObject in GameObject.FindGameObjectsWithTag(EnemySpawnerTag))
+            {
+                var spawner = spawnerObject.GetComponent<EnemySpawner>();
+                _gameFactory.Register(spawner);
+            }
+        }
+
+        private GameObject InitPlayer() => 
+            _gameFactory.CreatePlayer(GameObject.FindWithTag(InitialPointTag));
 
         private static void CameraFollow(GameObject gameObject) =>
             UnityEngine.Camera.main?.GetComponent<CameraController>()?.Follow(gameObject);
