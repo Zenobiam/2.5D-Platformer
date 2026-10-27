@@ -77,3 +77,26 @@ Assets/
 - `Assets/Game/Visuals/Materials/TestMaterial.mat` — сначала проверить ссылки по всему проекту.
 
 Всё остальное — после курса.
+
+## 6. План переноса ассетов (готов, ждёт конца урока 10)
+
+Решение пользователя 2026-10-26: переносить ассеты (без кода) **после закрытия урока 10**, агент напоминает при закрытии урока. Отвергнуто: «всё после курса» — переносить немного, а 194 МБ в `Resources` растут с каждым уроком; «сейчас» — посреди урока 10.
+
+Строкой код грузит только `Prefabs/Player/Player`, `Prefabs/Player/HUD`, `Loot/Loot` (`AssetPath`) и `StaticData/Enemies` (`LoadAll`) — они остаются в `Resources`, runtime-код не меняется. Сверено 2026-10-26.
+
+| Откуда (`Assets/…`) | Куда |
+|---|---|
+| `Resources/Yurowm/` | `ThirdParty/Yurowm/` |
+| `Resources/Effects/JMO Assets/` | `ThirdParty/JMO Assets/` |
+| `Resources/Environment/AssetHunts!/` | `ThirdParty/AssetHunts!/` |
+| `Resources/Enemies/Skeleton/` (пак) | `ThirdParty/Skeleton/` |
+| `Resources/Enemies/Golem/` (пак) | `ThirdParty/Golem/` |
+| `Resources/Loot/Skull/` | `ThirdParty/Graveyard/` |
+| наше внутри паков: `Skeleton/FBX/Skeleton.controller`, `Skeleton/Animations/Damage.anim`, `Death.anim`, `Golem/Golem.overrideController` | `Game/Prefabs/Enemies/Skeleton/`, `Game/Prefabs/Enemies/Golem/` |
+| `Resources/Enemies/{Enemy,Skeleton,Golem,EnemySpawner}.prefab` | `Game/Prefabs/Enemies/` |
+| `Resources/Loot/{PickupPopup.*,LootPickupFX,CFX3_MagicAura_D_Runic}` | `Game/Prefabs/Loot/` |
+| `Resources/Prefabs/Player/CFXR2 Blood Shape Splash.prefab` | `Game/Prefabs/Player/` |
+| `Resources/Prefabs/{Infrastructure,Triggers,UI}/` | `Game/Prefabs/{Infrastructure,Triggers,UI}/` |
+| `Game/Visuals/` | `Game/Art/` |
+
+Способ (рекомендация): Editor-скрипт `Tools → Setup → Restructure Assets` на `AssetDatabase.MoveAsset` (guid сохраняется, каждый шаг в лог, существующая цель — пропуск). Тем же изменением — пути-константы в Editor-скриптах (`EnemyVariantSetup`, `LootMaterialsSetup`, `PlayerAttackSetup`, `PlayerHudBuilder`, `SkeletonAnimationsSetup`, `BuildDemoLevel`, `DemoLevelBuilder`), `editor-setup.md`, `course-map.md`, `course-deviations.md`, путь `Resources/Yurowm` в `agent-playbook.md`. Перед переносом — закоммитить незакоммиченное; перенос — отдельным коммитом. Новые ассеты урока 10, появившиеся до переноса, — добавить в таблицу.

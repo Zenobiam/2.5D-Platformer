@@ -21,3 +21,10 @@
 
 - Если модель всё равно пропадает, проверить `Update When Offscreen` у `SkinnedMeshRenderer` на `CyborgGirl` и `Glass` (сейчас выключено, из-за этого мог пропадать меш при смене позы).
 - Решить, нужен ли Rigidbody вообще: по handoff, он конфликтует с `CharacterController`. Тогда лучше убрать его из префаба.
+
+## Разбор 2026-10-26: нужен ли Rigidbody
+
+- Откуда: добавлен 2026-09-19 в `50c6c78` (вместе с настройкой модели Yurowm), причина не записана. В курсе у `hero.prefab` только `CharacterController`; в нашем первом префабе (`3c0f9bd`) Rigidbody не было.
+- Что на нём держится: только обход в `PlayerDeath` (kinematic при смерти). Движение — `CharacterController.Move` с гравитацией в `PlayerMovementController`; `SaveTrigger`, `TriggerObserver` врага и подбор лута срабатывают от `CharacterController` (в курсе — без Rigidbody); `EnemyAttack` ищет коллайдеры по слою. Других коллайдеров у игрока нет.
+- Как убрать: Remove Component на корне `Player.prefab` (Inspector), удалить обход в `PlayerDeath`, обновить `editor-setup.md`; проверить в Play Mode сохранение, aggro/атаку врага, смерть.
+- Решение пользователя 2026-10-26: **пока оставить**. Не предлагать снова без новой причины (дрожание, сползание, проблемы физики игрока).

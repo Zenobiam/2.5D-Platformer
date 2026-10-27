@@ -3,6 +3,22 @@
 Предыдущие записи из `project-context.md` § 6, новые сверху. Исторические записи не переписываются: имена и пути в них — на момент записи.
 
 ```text
+### 2026-10-25 (вечер) — пользователь + координатор (Opus, local) — урок 09 Static data + враг Golem
+Сделано:
+- Урок 09 (код пользователя, рефакторинг компонентов врага — агент): `EnemyStaticData` (ScriptableObject), `EnemyTypeId` (`Skeleton = 0`, `Golem = 10`), `IStaticDataService`/`StaticDataService` (`LoadAll` из `Resources/StaticData/Enemies`, регистрация в `BootstrapState` **до** `GameFactory`), `GameFactory.CreateEnemy`; `AgentMoveToPlayer`, `EnemyAttack`, `RotateToPlayer` — `Construct` вместо `PlayerCreated`; `PlayerGameObject`/`PlayerCreated` убраны из фабрики.
+- Враг Golem: пак из курса в `Resources/Enemies/Golem` (PNG пересжаты без потерь 97 → 21 МБ), Git LFS для бинарников, `Tools → Setup → Enemy Variant: Golem` (override на базе `Skeleton.controller`, Variant от `Enemy`, Exit Time атак = 1). Урон и остановка проверены пользователем в Play Mode.
+- Фикс направления игрока (`PlayerFacing.Direction`), решения: `Ai.Decisions/2026-10-25-*`; документы: правило «Редактор — часть задачи», `editor-setup.md`, `project-structure-review.md`, Knowledge `mechanics/new-enemy.md`.
+Осталось:
+- Урок 10 Loot: начало — `...\10 Loot\knowledge-is-power-master\…\CodeBase`, итог — `...\11 Spawner rework\knowledge-is-power-master\…\CodeBase` (есть и zip). Ассеты лута из курса уже перенесены (2026-10-25): `Resources/Loot` (префабы с Missing Script до кода урока), `Resources/Effects/JMO Assets/Cartoon FX` (часть legacy), `Tools → Setup → Loot Materials to URP` — запущен, материалы на URP.
+- **НАПОМНИТЬ пользователю после закрытия урока 10:** перенос ассетов из `Resources` в `Game/Prefabs` и `ThirdParty/` — карта и способ в `Ai.Architecture/project-structure-review.md` § 6 (решение пользователя 2026-10-26: «перенос позже, напомни когда завершим урок»).
+- `EnemySpawner`/`UniqueId` в папке `BaseLogic/EnemySpawner/`, а namespace `Game.Scripts.BaseLogic.Enemy` — путь ≠ namespace (решение пользователя).
+- `UniqueIdEditor`: устаревший `FindObjectsOfType` (`CS0618`). Игрок может зайти в любого врага (нет коллайдера тела).
+- Хвосты боя: кнопка атаки в Simulator, смерть игрока во время удара; `Tools → Build Demo Level Geometry` не запускать.
+Файлы: `Ai.Tasks/2026-10-25-static-data.md` (локально), `Ai.Architecture/course-map.md`, `editor-setup.md`, `course-deviations.md`.
+Не закоммичено на конец сессии: исправления ссылки на `new-enemy.md` (`agent-playbook.md`, `editor-setup.md`) и `RotateToHero` → `RotateToPlayer` в списке WIP (`AGENTS.md`, `agent-playbook.md`), эта строка; `ProjectSettings/TagManager.asset` — новый слой `Pickup` (индекс 16, как в курсе) (пользователь, урок 10). Брифы `Ai.Tasks/*` — локально, по решению пользователя.
+Риски / не трогать:
+- Коллегам перед клоном — установить Git LFS. Уроки делает пользователь, агент помогает по просьбе.
+
 ### 2026-10-25 — пользователь + координатор (Opus, local) — урок 08 Enemy Spawner
 Сделано:
 - Урок 08 перенесён пользователем (коммит `b01d2a7`, ветка `feature/enemy-spawner`): `EnemySpawner` (`ISaveProgress`, `KillData.ClearedSpawners`), `UniqueId` + `UniqueIdEditor`, гизмо `EnemySpawnerEditor`, `MonsterTypeId` (`Skeleton = 0`), `GameFactory.Register` публичный и в `IGameFactory`, `InitSpawners()` в `LoadSceneState` (переименован из `LoadLevelState`).

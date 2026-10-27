@@ -61,10 +61,17 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | `Logic/IHealth.cs` | `BaseLogic/Interfaces/IHealth.cs` (`Game.Scripts.BaseLogic.Interfaces`) |
 | `Logic/SaveTrigger.cs` | `Triggers/SaveTrigger.cs` |
 | `Logic/EnemySpawner.cs`, `Logic/UniqueId.cs` | `BaseLogic/EnemySpawner/` (namespace остался `Game.Scripts.BaseLogic.Enemy` — путь ≠ namespace); в уроке 11 курс переносит спавнер в `Logic/EnemySpawners/` |
+| `Services/Randomizer/IRandomService.cs`, `RandomService.cs` (урок 10, в видео не пишется — есть только в итоге) | `Services/Randomizer/Interfaces/IRandomService.cs`, `Services/Randomizer/RandomService.cs` |
+| `Enemy/LootPiece.cs`, `Enemy/LootSpawner.cs` (урок 10) | `BaseLogic/LootLogic/LootPiece.cs`, `EnemyLootSpawner.cs` (`Game.Scripts.BaseLogic.LootLogic`). Папка не `Loot`: namespace `….BaseLogic.Loot` перекрывал класс данных `Data.Loot` — приходилось писать `Data.Loot` (решение пользователя 2026-10-27) |
+| `UI/LootCounter.cs` + `Resources/Hud/Loot.prefab` (вложен в `Hud`), иконка `Hud/CFX3_T_Skull.png` (урок 10) | `UI/LootCounter.cs`; объект `HUD/LootCounter` собирает `Tools → UI → Build Player HUD`; иконка `Resources/Prefabs/Player/CFX3_T_Skull.png` (тот же guid) |
+| `Data/DictionaryData_Base.cs`, `LootPieceData.cs`, `LootPieceDataDictionary.cs`; `LootData.LootPiecesOnScene`; `UniqueId.GenerateId()`; `LoadLevelState.InitLootPieces` (урок 10, задание «10 WireUpTestAndTask») | те же имена в `Data/`; `UniqueId.GenerateId()` (его же вызывает `UniqueIdEditor`); `LoadSceneState.InitLootPieces` |
 | `StaticData/MonsterStaticData.cs` | `StaticData/EnemyStaticData.cs` (`Game.Scripts.StaticData`) |
 | `Services/StaticData/IStaticDataService.cs`, `StaticDataService.cs` | `Services/StaticData/Interfaces/IStaticDataService.cs`, `Services/StaticData/StaticDataService.cs` |
 | `Resources/Enemies/Golem/` (пак) + `Golem.prefab` (Variant от `BaseEnemy`) | `Resources/Enemies/Golem/` (пак без курсовых `Golem.prefab` и `OverrideController`) + `Resources/Enemies/Golem.prefab` (Variant от `Enemy`, `Tools → Setup → Enemy Variant: Golem`) |
 | `StaticData/` | `StaticData/` (`Game.Scripts.StaticData`): `EnemyStaticData`, `EnemyTypeId` |
+| `Resources/Loot/` (урок 10: `Loot`, `PickupPopup`, `LootPickupFX`, `CFX3_MagicAura_D_Runic`) | `Resources/Loot/` — те же файлы и guid (перенесено 2026-10-25, только ассеты) |
+| `Resources/Levels/Graveyard/raw/mobile_models/mobile_skull_03.fbx` + `Materials/cemetery_halloween_atlas.mat` + `textures/cemetery_halloween_atlas.tga` | `Resources/Loot/Skull/` (атлас — `.png`, тот же guid) |
+| `Plugins/JMO Assets/Cartoon FX/` (часть: 4 материала, 4 текстуры, `CFX_Mesh_Circular1.5`, `CFX_AutoDestructShuriken.cs`) | `Resources/Effects/JMO Assets/Cartoon FX/` — та же структура подпапок |
 | `UI/` | `UI/` (+ наш `MobileOnly`) |
 
 ## Пройденные уроки
@@ -76,3 +83,4 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | 06–07 Fighting | перенесено | `Ai.Tasks/2026-10-24-player-combat.md` |
 | 08 Enemy Spawner | перенесено (2026-10-25, `b01d2a7`) | `Ai.Tasks/2026-10-24-enemy-spawner.md` (локально) |
 | 09 Static data | перенесено (2026-10-25) + новый враг Golem | `Ai.Tasks/2026-10-25-static-data.md` (локально) |
+| 10 Loot | перенесено (2026-10-27): лут с врагов, `RandomService`, счётчик на HUD, сохранение лута на сцене; души сохраняются при подборе (отступление) | `Ai.Tasks/2026-10-27-loot-hud.md`, `2026-10-27-loot-save.md` (локально) |

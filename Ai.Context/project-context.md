@@ -164,19 +164,20 @@ _Обновлять в конце значимых сессий._
 Здесь только последняя запись. Предыдущие — [`handoff-archive.md`](handoff-archive.md) (при новой записи старую переносить туда, наверх).
 
 ```text
-### 2026-10-25 (вечер) — пользователь + координатор (Opus, local) — урок 09 Static data + враг Golem
+### 2026-10-27 — пользователь + координатор (Opus, local) — урок 10 Loot
 Сделано:
-- Урок 09 (код пользователя, рефакторинг компонентов врага — агент): `EnemyStaticData` (ScriptableObject), `EnemyTypeId` (`Skeleton = 0`, `Golem = 10`), `IStaticDataService`/`StaticDataService` (`LoadAll` из `Resources/StaticData/Enemies`, регистрация в `BootstrapState` **до** `GameFactory`), `GameFactory.CreateEnemy`; `AgentMoveToPlayer`, `EnemyAttack`, `RotateToPlayer` — `Construct` вместо `PlayerCreated`; `PlayerGameObject`/`PlayerCreated` убраны из фабрики.
-- Враг Golem: пак из курса в `Resources/Enemies/Golem` (PNG пересжаты без потерь 97 → 21 МБ), Git LFS для бинарников, `Tools → Setup → Enemy Variant: Golem` (override на базе `Skeleton.controller`, Variant от `Enemy`, Exit Time атак = 1). Урон и остановка проверены пользователем в Play Mode.
-- Фикс направления игрока (`PlayerFacing.Direction`), решения: `Ai.Decisions/2026-10-25-*`; документы: правило «Редактор — часть задачи», `editor-setup.md`, `project-structure-review.md`, Knowledge `mechanics/new-enemy.md`.
+- Урок 10 (код пользователя + агент по просьбам): `EnemyLootSpawner` и `LootPiece` в `BaseLogic/LootLogic/` (папка не `Loot`: namespace перекрывал класс `Data.Loot`), `Loot`/`LootData`, `IRandomService`/`RandomService` (в видео не пишется), `GameFactory.CreateLoot` и параметры `IRandomService`, `IPersistentProgressService` (регистрация в `BootstrapState` до фабрики), `EnemyDeath.Died` (было `DeathAction`).
+- Счётчик душ на HUD: `UI/LootCounter` (+ отписка в `OnDestroy`), `HUD/LootCounter` через `Tools → UI → Build Player HUD`; `WorldData` создаёт `LootData` (был NRE на новом прогрессе).
+- Сохранение лута на сцене по курсу (`LootPiecesOnScene`, `DictionaryData_Base`, `UniqueId.GenerateId`, `InitLootPieces`); души сохраняются сразу при подборе — отступление, решение пользователя. Ассеты лута из курса, `Tools → Setup → Loot Materials to URP`. Всё проверено пользователем в Play Mode.
+- Документы: `course-map.md`, `course-deviations.md`, `editor-setup.md`, `Ai.Issues/features/2026-10-27-loot-*`; Knowledge: `/// <summary>` для описаний, скиллы плагинов Unity/unity-perf.
 Осталось:
-- Урок 10 Loot: начало — `... Loot\knowledge-is-power-master\…\CodeBase`, итог — `…	 Spawner rework\knowledge-is-power-master\…\CodeBase` (есть и zip).
-- `EnemySpawner`/`UniqueId` в папке `BaseLogic/EnemySpawner/`, а namespace `Game.Scripts.BaseLogic.Enemy` — путь ≠ namespace (решение пользователя).
-- `UniqueIdEditor`: устаревший `FindObjectsOfType` (`CS0618`). Игрок может зайти в любого врага (нет коллайдера тела).
-- Хвосты боя: кнопка атаки в Simulator, смерть игрока во время удара; `Tools → Build Demo Level Geometry` не запускать.
-Файлы: `Ai.Tasks/2026-10-25-static-data.md` (локально), `Ai.Architecture/course-map.md`, `editor-setup.md`, `course-deviations.md`.
+- **НАПОМНИТЬ (урок 10 закрыт):** перенос ассетов из `Resources` в `Game/Prefabs` и `ThirdParty/` — `Ai.Architecture/project-structure-review.md` § 6. Напомнено 2026-10-27; ждёт решения пользователя.
+- Урок 11 Spawner rework: начало — `...\11 Spawner rework\knowledge-is-power-master\…\CodeBase`, итог — `...\12 UI part 1\…` (zip). Курс переносит спавнер в `Logic/EnemySpawners/`.
+- `GolemData`: нет `MinLoot`/`MaxLoot` (0/0 → лут со значением 0); спавнер в `SampleScene` переключён на Skeleton.
+- `EnemySpawner`/`UniqueId` в `BaseLogic/EnemySpawner/` при namespace `….BaseLogic.Enemy`; `UniqueIdEditor` — `FindObjectsOfType` (`CS0618`); `PlayerHudBuilder` — `?? AddComponent` в старом коде; Rigidbody на `Player` — оставлен (решение 2026-10-26).
+Файлы: `Ai.Tasks/2026-10-27-loot-hud.md`, `2026-10-27-loot-save.md` (локально).
 Риски / не трогать:
-- Коллегам перед клоном — установить Git LFS. Уроки делает пользователь, агент помогает по просьбе.
+- Коллегам перед клоном — установить Git LFS. Старые сохранения без `LootPiecesOnScene` — `Tools → Clear Prefs`. Уроки делает пользователь, агент помогает по просьбе.
 ```
 
 ### Только на local / self-hosted
