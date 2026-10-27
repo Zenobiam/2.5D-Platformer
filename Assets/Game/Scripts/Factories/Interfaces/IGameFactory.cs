@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Scripts.BaseLogic.LootLogic;
 using Game.Scripts.Infrastructure;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.StaticData;
@@ -15,5 +16,6 @@ namespace Game.Scripts.Factories.Interfaces
         void CleanUp();
         void Register(ISaveProgressReader progressReader);
         GameObject CreateEnemy(EnemyTypeId typeId, Transform parent);
+        LootPiece CreateLoot();
     }
 }

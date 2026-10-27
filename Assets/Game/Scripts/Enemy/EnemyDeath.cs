@@ -14,7 +14,7 @@ namespace Game.Scripts.Enemy
 
         public GameObject DeathFx;
         
-        public event Action DeathAction;
+        public event Action Died;
 
         private EnemyAttack _attack;
         private Follow[] _follows;
@@ -51,7 +51,7 @@ namespace Game.Scripts.Enemy
             
             StartCoroutine(DestroyCorpseTimer());
 
-            DeathAction?.Invoke();
+            Died?.Invoke();
         }
 
         // Атаки Skeleton идут из Any State, поэтому труп нужно остановить, иначе он уходит из Death.

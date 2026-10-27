@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: SkeletonData
   m_EditorClassIdentifier: 
   EnemyTypeId: 0
-  Hp: 5
+  Hp: 3
   Damage: 1
+  MinLoot: 1
+  MaxLoot: 7
   EffectiveDistance: 0.611
   Cleavage: 0.604
   MoveSpeed: 1

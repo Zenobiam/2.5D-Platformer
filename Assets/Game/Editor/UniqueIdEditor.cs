@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Game.Scripts.BaseLogic.Enemy;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -33,7 +32,7 @@ namespace Game.Editor
 
         private void Generate(UniqueId uniqueId)
         {
-            uniqueId.Id = $"{uniqueId.gameObject.scene.name}_{Guid.NewGuid().ToString()}";
+            uniqueId.GenerateId();
 
             if (!Application.isPlaying)
             {

@@ -7,6 +7,8 @@ using Game.Scripts.Services.Input;
 using Game.Scripts.Services.Input.Interfaces;
 using Game.Scripts.Services.PersistentProgress;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
+using Game.Scripts.Services.Randomizer;
+using Game.Scripts.Services.Randomizer.Interfaces;
 using Game.Scripts.Services.SaveLoad;
 using Game.Scripts.Services.SaveLoad.Interfaces;
 using Game.Scripts.Services.StaticData;
@@ -49,8 +51,13 @@ namespace Game.Scripts.StateMachine.States
 
             _services.RegisterSingle<IInputService>(InputService());
             _services.RegisterSingle<IAssetsProvider>(new AssetsProvider());
-            _services.RegisterSingle<IGameFactory>(new GameFactory(_services.Single<IAssetsProvider>(), _services.Single<IStaticDataService>()));
+            _services.RegisterSingle<IRandomService>(new RandomService());
             _services.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
+            _services.RegisterSingle<IGameFactory>(new GameFactory(
+                _services.Single<IAssetsProvider>(),
+                _services.Single<IStaticDataService>(),
+                _services.Single<IRandomService>(),
+                _services.Single<IPersistentProgressService>()));
             _services.RegisterSingle<ISaveLoadService>(new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
         }
 

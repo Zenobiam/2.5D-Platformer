@@ -1,4 +1,5 @@
 using Game.Scripts.UI;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem.OnScreen;
@@ -13,6 +14,8 @@ namespace Game.Editor
         private const string MobileName = "Mobile";
         private const string JoystickAreaName = "JoyStickArea";
         private const string AttackButtonName = "AttackButton";
+        private const string LootCounterName = "LootCounter";
+        private const string LootIconPath = "Assets/Resources/Prefabs/Player/CFX3_T_Skull.png";
         // Та же кнопка, что привязана к действию Attack в PlayerControls (группа Gamepad).
         private const string AttackControlPath = "<Gamepad>/buttonWest";
 
@@ -34,6 +37,7 @@ namespace Game.Editor
                 ActorUI actorUI = root.GetComponent<ActorUI>() ?? root.AddComponent<ActorUI>();
                 actorUI.HpBar = hpBar;
 
+                BuildLootCounter(root.transform);
                 BuildMobileControls(root.transform);
 
                 PrefabUtility.SaveAsPrefabAsset(root, HudPrefabPath);
@@ -73,6 +77,72 @@ namespace Game.Editor
             fill.fillAmount = 1f;
 
             return fill;
+        }
+
+        /// <summary>
+        /// Счётчик лута справа сверху, напротив HpBar: иконка черепа + число (урок 10, как Hud/Loot.prefab курса,
+        /// но дочерним объектом HUD, а не вложенным префабом).
+        /// Раскладка и перенос задаются при каждом запуске; цвет, размер шрифта и текст — только при создании,
+        /// чтобы правки в Inspector не затирались.
+        /// </summary>
+        private static void BuildLootCounter(Transform root)
+        {
+            Transform lootRoot = FindOrCreateChild(root, LootCounterName);
+            var rect = (RectTransform)lootRoot;
+            rect.anchorMin = new Vector2(1f, 1f);
+            rect.anchorMax = new Vector2(1f, 1f);
+            rect.pivot = new Vector2(1f, 1f);
+            rect.anchoredPosition = new Vector2(-30f, -40f);
+            rect.sizeDelta = new Vector2(400f, 100f);
+
+            // Ширину детей задаёт группа по их preferred size: длинное число растёт влево и сдвигает иконку,
+            // а не переносится на вторую строку.
+            if (!lootRoot.TryGetComponent(out HorizontalLayoutGroup layout))
+                layout = lootRoot.gameObject.AddComponent<HorizontalLayoutGroup>();
+            layout.childAlignment = TextAnchor.MiddleRight;
+            layout.spacing = 10f;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+
+            bool iconCreated = lootRoot.Find("Icon") == null;
+            Image icon = FindOrCreateImage(lootRoot, "Icon");
+            icon.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(LootIconPath);
+            icon.preserveAspect = true;
+            if (iconCreated)
+                icon.color = new Color(0.83f, 0.43f, 0.71f, 1f);
+            if (icon.sprite == null)
+                Debug.LogError($"Player HUD: нет спрайта {LootIconPath}");
+
+            if (!icon.TryGetComponent(out LayoutElement iconSize))
+                iconSize = icon.gameObject.AddComponent<LayoutElement>();
+            iconSize.preferredWidth = 100f;
+            iconSize.preferredHeight = 100f;
+
+            Transform counterTransform = FindOrCreateChild(lootRoot, "Counter");
+            bool counterCreated = !counterTransform.TryGetComponent(out TextMeshProUGUI counter);
+            if (counterCreated)
+            {
+                counter = counterTransform.gameObject.AddComponent<TextMeshProUGUI>();
+                counter.fontSize = 76f;
+                counter.color = Color.white;
+                counter.text = "0";
+            }
+
+            if (counter.font == null)
+                counter.font = TMP_Settings.defaultFontAsset;
+            counter.alignment = TextAlignmentOptions.MidlineRight;
+            counter.textWrappingMode = TextWrappingModes.NoWrap;
+            counter.overflowMode = TextOverflowModes.Overflow;
+
+            // Иконка слева от числа: порядок детей задаёт порядок в HorizontalLayoutGroup.
+            icon.transform.SetSiblingIndex(0);
+            counterTransform.SetSiblingIndex(1);
+
+            if (!lootRoot.TryGetComponent(out LootCounter lootCounter))
+                lootCounter = lootRoot.gameObject.AddComponent<LootCounter>();
+            lootCounter.Counter = counter;
         }
 
         // Mobile — только экранное управление; общие элементы (HpBar) остаются на корне HUD.

@@ -37,13 +37,13 @@ namespace Game.Scripts.BaseLogic.Enemy
         {
             GameObject enemy = _factory.CreateEnemy(EnemyTypeId, transform);
             _enemyDeath = enemy.GetComponent<EnemyDeath>();
-            enemy.GetComponent<EnemyDeath>().DeathAction += OnDeath;
+            enemy.GetComponent<EnemyDeath>().Died += OnDeath;
         }
 
         private void OnDeath()
         {
             if (_enemyDeath  != null)
-                _enemyDeath.DeathAction -= OnDeath;
+                _enemyDeath.Died -= OnDeath;
             
             isEmpty = true;
         }

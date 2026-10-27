@@ -7,11 +7,13 @@ using UnityEngine.SceneManagement;
 
 namespace Game.Editor
 {
-    // Новый враг = Prefab Variant от Enemy.prefab (логика) + модель + override-контроллер на базе Skeleton.controller.
-    // Модель раскладывается прямо под корень Variant'а (как у Skeleton): клипы пишут пути от корня модели,
-    // а Animator висит на корне врага — иначе анимации не найдут кости.
-    // Повторный запуск: Exit Time атак в общем контроллере выставляется в 1, override-контроллер пересобирается,
-    // существующий Variant не трогается (удалить вручную, чтобы собрать заново).
+    /// <summary>
+    /// Новый враг = Prefab Variant от Enemy.prefab (логика) + модель + override-контроллер на базе Skeleton.controller.
+    /// Модель раскладывается прямо под корень Variant'а (как у Skeleton): клипы пишут пути от корня модели,
+    /// а Animator висит на корне врага — иначе анимации не найдут кости.
+    /// Повторный запуск: Exit Time атак в общем контроллере выставляется в 1, override-контроллер пересобирается,
+    /// существующий Variant не трогается (удалить вручную, чтобы собрать заново).
+    /// </summary>
     public static class EnemyVariantSetup
     {
         private const string EnemyBasePath = "Assets/Resources/Enemies/Enemy.prefab";
@@ -22,8 +24,10 @@ namespace Game.Editor
         private const string GolemOverridePath = "Assets/Resources/Enemies/Golem/Golem.overrideController";
         private const string GolemVariantPath = "Assets/Resources/Enemies/Golem.prefab";
 
-        // Клип Skeleton.controller → клип голема. RightAttack вызывает EnemyAnimator.PlayRightAttack(),
-        // поэтому на него Attack01: только в нём есть оба события OnAttack и OnAttackEnded (в Attack02 нет OnAttackEnded).
+        /// <summary>
+        /// Клип Skeleton.controller → клип голема. RightAttack вызывает EnemyAnimator.PlayRightAttack(),
+        /// поэтому на него Attack01: только в нём есть оба события OnAttack и OnAttackEnded (в Attack02 нет OnAttackEnded).
+        /// </summary>
         private static readonly Dictionary<string, string> GolemClips = new Dictionary<string, string>
         {
             ["IDLE"] = "Idle",
@@ -36,8 +40,10 @@ namespace Game.Editor
             ["Death"] = "Die",
         };
 
-        // Состояния атак общего контроллера: выход из них — только в конце клипа.
-        // Иначе события позже точки выхода (OnAttackEnded у длинных клипов, например Attack01 голема) не вызываются.
+        /// <summary>
+        /// Состояния атак общего контроллера: выход из них — только в конце клипа.
+        /// Иначе события позже точки выхода (OnAttackEnded у длинных клипов, например Attack01 голема) не вызываются.
+        /// </summary>
         private static readonly string[] AttackStates = { "LeftAttack", "RightAttack", "SplashAttack" };
         private const float AttackExitTime = 1f;
 

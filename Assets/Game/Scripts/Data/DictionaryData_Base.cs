@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace Game.Scripts.Data
+{
+    /// <summary>
+    /// Словарь, который переживает JsonUtility: сам Dictionary не сериализуется,
+    /// поэтому перед сохранением он раскладывается в массивы ключей и значений, а после загрузки собирается обратно.
+    /// </summary>
+    [Serializable]
+    public abstract class DictionaryData_Base<TKey, TValue> : ISerializationCallbackReceiver
+    {
+        public Dictionary<TKey, TValue> Dictionary = new Dictionary<TKey, TValue>();
+
+        [SerializeField] private TKey[] _keys;
+        [SerializeField] private TValue[] _values;
+
+        public void OnBeforeSerialize()
+        {
+            _keys = Dictionary.Keys.ToArray();
+            _values = Dictionary.Values.ToArray();
+        }
+
+        public void OnAfterDeserialize()
+        {
+            for (int i = 0; i < _keys.Length; i++)
+                Dictionary.Add(_keys[i], _values[i]);
+        }
+    }
+}

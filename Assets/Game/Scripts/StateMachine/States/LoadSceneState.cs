@@ -1,4 +1,5 @@
 using Game.Scripts.BaseLogic.Enemy;
+using Game.Scripts.BaseLogic.LootLogic;
 using Game.Scripts.Camera;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Player;
@@ -65,7 +66,8 @@ namespace Game.Scripts.StateMachine.States
         private void SetupGameEnvironment()
         {
             InitSpawners();
-            
+            InitLootPieces();
+
             GameObject player = InitPlayer();
             
             InitHud(player);
@@ -78,6 +80,19 @@ namespace Game.Scripts.StateMachine.States
             {
                 var spawner = spawnerObject.GetComponent<EnemySpawner>();
                 _gameFactory.Register(spawner);
+            }
+        }
+
+        /// <summary>
+        /// Неподобранный лут из сохранения: создаётся с прежним id, значение и позицию берёт в LoadProgress
+        /// (его вызывает InformProgressReaders после SetupGameEnvironment).
+        /// </summary>
+        private void InitLootPieces()
+        {
+            foreach (string key in _progressService.Progress.WorldData.LootData.LootPiecesOnScene.Dictionary.Keys)
+            {
+                LootPiece lootPiece = _gameFactory.CreateLoot();
+                lootPiece.GetComponent<UniqueId>().Id = key;
             }
         }
 

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Game.Scripts.BaseLogic.Interfaces;
+using Game.Scripts.BaseLogic.LootLogic;
 using Game.Scripts.Constants;
 using Game.Scripts.Enemy;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Providers.Interfaces;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
+using Game.Scripts.Services.Randomizer.Interfaces;
 using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StaticData;
 using Game.Scripts.UI;
@@ -18,16 +20,21 @@ namespace Game.Scripts.Factories
     {
         private readonly IAssetsProvider _assetsProvider;
         private readonly IStaticDataService _staticData;
+        private readonly IRandomService _randomService;
+        private readonly IPersistentProgressService _progressService;
 
         public List<ISaveProgressReader> ProgressReaders { get; } = new List<ISaveProgressReader>();
         public List<ISaveProgress> ProgressWriters { get; } = new List<ISaveProgress>();
 
         private GameObject _playerGameObject;
 
-        public GameFactory(IAssetsProvider assetsProvider, IStaticDataService staticData)
+        public GameFactory(IAssetsProvider assetsProvider, IStaticDataService staticData, IRandomService randomService,
+            IPersistentProgressService progressService)
         {
             _assetsProvider = assetsProvider;
             _staticData = staticData;
+            _randomService = randomService;
+            _progressService = progressService;
         }
 
         #region Create
@@ -35,8 +42,15 @@ namespace Game.Scripts.Factories
         public GameObject CreatePlayer(GameObject InitialPoint) =>
             _playerGameObject = InstantiateAndRegister(AssetPath.PlayerPath, InitialPoint.transform.position);
 
-        public GameObject CreateHud() =>
-            InstantiateAndRegister(AssetPath.HudPath);
+        public GameObject CreateHud()
+        {
+            GameObject hud = InstantiateAndRegister(AssetPath.HudPath);
+
+            hud.GetComponentInChildren<LootCounter>()
+                .Construct(_progressService.Progress.WorldData);
+
+            return hud;
+        }
 
         public GameObject CreateEnemy(EnemyTypeId typeId, Transform parent)
         {
@@ -45,12 +59,16 @@ namespace Game.Scripts.Factories
             var health = enemy.GetComponent<IHealth>();
             health.Current = enemyData.Hp;
             health.Max = enemyData.Hp;
-            
+
             enemy.GetComponent<ActorUI>().Construct(health);
             enemy.GetComponent<AgentMoveToPlayer>().Construct(_playerGameObject.transform);
             // RotateToHero есть не у каждого врага (сейчас ни у одного) — как в курсе, через ?.
             enemy.GetComponent<RotateToPlayer>()?.Construct(_playerGameObject.transform);
             enemy.GetComponent<NavMeshAgent>().speed = enemyData.MoveSpeed;
+
+            var lootSpawner = enemy.GetComponentInChildren<EnemyLootSpawner>();
+            lootSpawner.SetLoot(enemyData.MinLoot, enemyData.MaxLoot);
+            lootSpawner.Construct(this, _randomService);
 
             var attack = enemy.GetComponent<EnemyAttack>();
             attack.Construct(_playerGameObject.transform);
@@ -59,6 +77,13 @@ namespace Game.Scripts.Factories
             attack.EffectiveDistance = enemyData.EffectiveDistance;
 
             return enemy;
+        }
+
+        public LootPiece CreateLoot()
+        {
+            var lootPiece = InstantiateAndRegister(AssetPath.Loot).GetComponent<LootPiece>();
+            lootPiece.Construct(_progressService.Progress.WorldData);
+            return lootPiece;
         }
 
         #endregion

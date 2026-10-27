@@ -10,7 +10,9 @@ namespace Game.Scripts.Player
 
         private float _currentRotation;
 
-        // Куда смотрит игрок: +1 вправо (+X), -1 влево (-X). Камера и атака читают это значение, а не поворот модели.
+        /// <summary>
+        /// Куда смотрит игрок: +1 вправо (+X), -1 влево (-X). Камера и атака читают это значение, а не поворот модели.
+        /// </summary>
         public int Direction { get; private set; }
         public Vector3 Forward => new Vector3(Direction, 0f, 0f);
 
@@ -33,7 +35,9 @@ namespace Game.Scripts.Player
             UpdateModelRotation();
         }
 
-        // 2.5D: модель смотрит вдоль ±X (камера с -Z), не в ±Z
+        /// <summary>
+        /// Угол модели по Y: 2.5D — модель смотрит вдоль ±X (камера с -Z), не в ±Z.
+        /// </summary>
         private float TargetRotation() =>
             Direction * 90f;
 

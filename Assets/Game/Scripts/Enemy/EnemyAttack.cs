@@ -10,8 +10,14 @@ namespace Game.Scripts.Enemy
         public EnemyAnimator Animator;
 
         public float AttackCooldown = 3f;
-        // Радиус сферы удара и вынос её центра вперёд; задаёт фабрика из EnemyStaticData (там подробнее).
+        /// <summary>
+        /// Радиус сферы удара. Задаёт фабрика из <see cref="Game.Scripts.StaticData.EnemyStaticData.Cleavage"/> (там подробнее).
+        /// </summary>
         public float Cleavage = 0.5f;
+
+        /// <summary>
+        /// Вынос центра сферы удара вперёд. Задаёт фабрика из <see cref="Game.Scripts.StaticData.EnemyStaticData.EffectiveDistance"/>.
+        /// </summary>
         public float EffectiveDistance = 0.5f;
         public float Damage = 10f;
 

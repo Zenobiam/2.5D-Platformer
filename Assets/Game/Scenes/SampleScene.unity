@@ -5509,7 +5509,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3226055877881529337, guid: a894f361aa8ff9e4ca421cb30644fb0e, type: 3}
       propertyPath: EnemyTypeId
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3824214105557039185, guid: a894f361aa8ff9e4ca421cb30644fb0e, type: 3}
       propertyPath: Id
