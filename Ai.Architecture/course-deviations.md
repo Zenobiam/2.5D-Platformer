@@ -19,6 +19,7 @@
 | 2026-10-27 | Отписка счётчика лута | `LootCounter` подписывается на `LootData.Changed` и не отписывается | `LootCounter.OnDestroy` отписывается (решение пользователя) | `WorldData` живёт в прогрессе дольше HUD: без отписки после перезагрузки сцены событие получает уничтоженный счётчик → `MissingReferenceException`. Так же курс делает в `ActorUI.OnDestroy` |
 | 2026-10-27 | HUD счётчика лута | Отдельный префаб `Hud/Loot.prefab`, вложенный в `Hud` | Дочерний объект `HUD/LootCounter`, собирает `Tools → UI → Build Player HUD` | Наш HUD целиком собирает Editor-скрипт; вложенный префаб пришлось бы собирать и подключать отдельно |
 | 2026-10-27 | Сохранение душ | Прогресс (в том числе `LootData.Collected` и лут на сцене) пишется только на `SaveTrigger` | `LootPiece` при подборе вызывает `SaveProgress()` (сервис — из `ServiceLocator`, как в `SaveTrigger`) | Решение пользователя: души не теряются при выходе. Минус: `SaveProgress` пишет весь прогресс, в том числе позицию игрока — каждый подбор работает как чекпоинт |
+| 2026-10-28 | Сбор спавнеров уровня | `LevelStaticDataEditor` (Collect): `FindObjectsOfType<SpawnMarker>()` | `FindObjectsByType<SpawnMarker>(FindObjectsSortMode.None)` | В Unity 6 `FindObjectsOfType` устарел (`CS0618`); порядок не нужен — сортировка не делается |
 | — | NavMesh | Запекание в окне Navigation | `NavMeshSurface` из пакета AI Navigation | Встроенное запекание в Unity 6 устарело |
 
 ## Кандидаты (не сделано, только по задаче)

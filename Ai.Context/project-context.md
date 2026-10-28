@@ -171,7 +171,7 @@ _Обновлять в конце значимых сессий._
 - Сохранение лута на сцене по курсу (`LootPiecesOnScene`, `DictionaryData_Base`, `UniqueId.GenerateId`, `InitLootPieces`); души сохраняются сразу при подборе — отступление, решение пользователя. Ассеты лута из курса, `Tools → Setup → Loot Materials to URP`. Всё проверено пользователем в Play Mode.
 - Документы: `course-map.md`, `course-deviations.md`, `editor-setup.md`, `Ai.Issues/features/2026-10-27-loot-*`; Knowledge: `/// <summary>` для описаний, скиллы плагинов Unity/unity-perf.
 Осталось:
-- **НАПОМНИТЬ (урок 10 закрыт):** перенос ассетов из `Resources` в `Game/Prefabs` и `ThirdParty/` — `Ai.Architecture/project-structure-review.md` § 6. Напомнено 2026-10-27; ждёт решения пользователя.
+- **НАПОМНИТЬ (урок 10 закрыт):** перенос ассетов из `Resources` в `Game/Prefabs` и `ThirdParty/` — `Ai.Architecture/project-structure-review.md` § 6. Напомнено 2026-10-27, пользователь: «позже» — снова не напоминать без повода; предложить при следующей задаче со структурой или ассетами.
 - Урок 11 Spawner rework: начало — `...\11 Spawner rework\knowledge-is-power-master\…\CodeBase`, итог — `...\12 UI part 1\…` (zip). Курс переносит спавнер в `Logic/EnemySpawners/`.
 - `GolemData`: нет `MinLoot`/`MaxLoot` (0/0 → лут со значением 0); спавнер в `SampleScene` переключён на Skeleton.
 - `EnemySpawner`/`UniqueId` в `BaseLogic/EnemySpawner/` при namespace `….BaseLogic.Enemy`; `UniqueIdEditor` — `FindObjectsOfType` (`CS0618`); `PlayerHudBuilder` — `?? AddComponent` в старом коде; Rigidbody на `Player` — оставлен (решение 2026-10-26).

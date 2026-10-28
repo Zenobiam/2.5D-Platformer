@@ -60,11 +60,15 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | `Logic/AnimatorState`, `AnimatorStateReporter`, `IAnimationStateReader` | `Animation/` (+ `Animation/Interfaces/`) |
 | `Logic/IHealth.cs` | `BaseLogic/Interfaces/IHealth.cs` (`Game.Scripts.BaseLogic.Interfaces`) |
 | `Logic/SaveTrigger.cs` | `Triggers/SaveTrigger.cs` |
-| `Logic/EnemySpawner.cs`, `Logic/UniqueId.cs` | `BaseLogic/EnemySpawner/` (namespace остался `Game.Scripts.BaseLogic.Enemy` — путь ≠ namespace); в уроке 11 курс переносит спавнер в `Logic/EnemySpawners/` |
+| `Logic/EnemySpawner.cs` (до урока 11), `Logic/UniqueId.cs` | `UniqueId` — `BaseLogic/UniqueId.cs` (`Game.Scripts.BaseLogic`, перенесён пользователем в уроке 11; путь = namespace); `EnemySpawner` в уроке 11 переименован курсом в `SpawnPoint` (+ `SpawnMarker` на сцене); у нас — новый `SpawnPoint.cs`, старый удалён |
 | `Services/Randomizer/IRandomService.cs`, `RandomService.cs` (урок 10, в видео не пишется — есть только в итоге) | `Services/Randomizer/Interfaces/IRandomService.cs`, `Services/Randomizer/RandomService.cs` |
 | `Enemy/LootPiece.cs`, `Enemy/LootSpawner.cs` (урок 10) | `BaseLogic/LootLogic/LootPiece.cs`, `EnemyLootSpawner.cs` (`Game.Scripts.BaseLogic.LootLogic`). Папка не `Loot`: namespace `….BaseLogic.Loot` перекрывал класс данных `Data.Loot` — приходилось писать `Data.Loot` (решение пользователя 2026-10-27) |
 | `UI/LootCounter.cs` + `Resources/Hud/Loot.prefab` (вложен в `Hud`), иконка `Hud/CFX3_T_Skull.png` (урок 10) | `UI/LootCounter.cs`; объект `HUD/LootCounter` собирает `Tools → UI → Build Player HUD`; иконка `Resources/Prefabs/Player/CFX3_T_Skull.png` (тот же guid) |
 | `Data/DictionaryData_Base.cs`, `LootPieceData.cs`, `LootPieceDataDictionary.cs`; `LootData.LootPiecesOnScene`; `UniqueId.GenerateId()`; `LoadLevelState.InitLootPieces` (урок 10, задание «10 WireUpTestAndTask») | те же имена в `Data/`; `UniqueId.GenerateId()` (его же вызывает `UniqueIdEditor`); `LoadSceneState.InitLootPieces` |
+| `StaticData/LevelStaticData.cs`, `EnemySpawnerStaticData.cs`; `Logic/EnemySpawners/SpawnMarker.cs`, `SpawnPoint.cs`; `Editor/LevelStaticDataEditor.cs`, `SpawnMarkerEditor.cs` (урок 11) | `StaticData/` те же; `BaseLogic/EnemySpawners/` (`Game.Scripts.BaseLogic.EnemySpawners`); `Game/Editor/` |
+| `Data/SerializableDictionary.cs` (урок 11, было `DictionaryData_Base`) | `Data/SerializableDictionary.cs` |
+| `IStaticDataService.Load()`, `ForLevel`; `Resources/Static Data/Levels` | `Load()`, `ForLevel`; `Resources/StaticData/Levels` |
+| `IGameFactory.CreateSpawner`; `Register` — private (урок 11) | то же |
 | `StaticData/MonsterStaticData.cs` | `StaticData/EnemyStaticData.cs` (`Game.Scripts.StaticData`) |
 | `Services/StaticData/IStaticDataService.cs`, `StaticDataService.cs` | `Services/StaticData/Interfaces/IStaticDataService.cs`, `Services/StaticData/StaticDataService.cs` |
 | `Resources/Enemies/Golem/` (пак) + `Golem.prefab` (Variant от `BaseEnemy`) | `Resources/Enemies/Golem/` (пак без курсовых `Golem.prefab` и `OverrideController`) + `Resources/Enemies/Golem.prefab` (Variant от `Enemy`, `Tools → Setup → Enemy Variant: Golem`) |
