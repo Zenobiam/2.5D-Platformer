@@ -1,33 +1,46 @@
-using Game.Scripts.BaseLogic.Enemy;
+using System.Collections.Generic;
+using Game.Scripts.BaseLogic;
 using Game.Scripts.BaseLogic.LootLogic;
 using Game.Scripts.Camera;
+using Game.Scripts.Data;
+using Game.Scripts.Data.Extensions;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Player;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
+using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
+using Game.Scripts.StaticData;
 using Game.Scripts.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game.Scripts.StateMachine.States
 {
     public class LoadSceneState : IPayloadedState<string>
     {
         private const string InitialPointTag = "InitialPoint";
-        private const string EnemySpawnerTag = "EnemySpawner";
 
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly LoadingCurtain _loadingCurtain;
         private readonly IGameFactory _gameFactory;
         private IPersistentProgressService _progressService;
+        private IStaticDataService _staticData;
 
-        public LoadSceneState(GameStateMachine stateMachine, SceneLoader sceneLoader, LoadingCurtain loadingCurtain, IGameFactory gameFactory, IPersistentProgressService progressService)
+        public LoadSceneState(
+            GameStateMachine stateMachine, 
+            SceneLoader sceneLoader, 
+            LoadingCurtain loadingCurtain, 
+            IGameFactory gameFactory, 
+            IPersistentProgressService progressService,
+            IStaticDataService staticData)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
             _loadingCurtain = loadingCurtain;
             _gameFactory = gameFactory;
             _progressService = progressService;
+            _staticData = staticData;
         }
 
         public void Enter(string sceneName)
@@ -74,25 +87,30 @@ namespace Game.Scripts.StateMachine.States
             CameraFollow(player);
         }
 
+        /// <summary>
+        /// Спавнеры уровня из LevelStaticData (ключ — имя сцены); врагов они создают в LoadProgress,
+        /// если спавнер ещё не очищен.
+        /// </summary>
         private void InitSpawners()
         {
-            foreach (GameObject spawnerObject in GameObject.FindGameObjectsWithTag(EnemySpawnerTag))
-            {
-                var spawner = spawnerObject.GetComponent<EnemySpawner>();
-                _gameFactory.Register(spawner);
-            }
+            string sceneKey = SceneManager.GetActiveScene().name;
+            LevelStaticData levelData = _staticData.ForLevel(sceneKey);
+
+            foreach (EnemySpawnerStaticData spawnerData in levelData.EnemySpawners)
+                _gameFactory.CreateSpawner(spawnerData.Id, spawnerData.Position, spawnerData.EnemyTypeId);
         }
 
         /// <summary>
-        /// Неподобранный лут из сохранения: создаётся с прежним id, значение и позицию берёт в LoadProgress
-        /// (его вызывает InformProgressReaders после SetupGameEnvironment).
+        /// Неподобранный лут из сохранения: создаётся с прежним id, значением и позицией.
         /// </summary>
         private void InitLootPieces()
         {
-            foreach (string key in _progressService.Progress.WorldData.LootData.LootPiecesOnScene.Dictionary.Keys)
+            foreach (KeyValuePair<string, LootPieceData> item in _progressService.Progress.WorldData.LootData.LootPiecesOnScene.Dictionary)
             {
                 LootPiece lootPiece = _gameFactory.CreateLoot();
-                lootPiece.GetComponent<UniqueId>().Id = key;
+                lootPiece.GetComponent<UniqueId>().Id = item.Key;
+                lootPiece.Initialize(item.Value.Loot);
+                lootPiece.transform.position = item.Value.Position.AsVector3();
             }
         }
 

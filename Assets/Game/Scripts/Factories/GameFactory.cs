@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.Scripts.BaseLogic.EnemySpawners;
 using Game.Scripts.BaseLogic.Interfaces;
 using Game.Scripts.BaseLogic.LootLogic;
 using Game.Scripts.Constants;
@@ -86,6 +87,15 @@ namespace Game.Scripts.Factories
             return lootPiece;
         }
 
+        public void CreateSpawner(string spawnerId, Vector3 at, EnemyTypeId enemyTypeId)
+        {
+            SpawnPoint spawner = InstantiateAndRegister(AssetPath.Spawner, at).GetComponent<SpawnPoint>();
+
+            spawner.Construct(this);
+            spawner.EnemyTypeId = enemyTypeId;
+            spawner.Id = spawnerId;
+        }
+
         #endregion
 
         #region Instantiate
@@ -114,7 +124,7 @@ namespace Game.Scripts.Factories
                 Register(progressReader);
         }
 
-        public void Register(ISaveProgressReader progressReader)
+        private void Register(ISaveProgressReader progressReader)
         {
             if (progressReader is ISaveProgress progressWriter)
                 ProgressWriters.Add(progressWriter);

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Game.Scripts.BaseLogic.Enemy;
 using Game.Scripts.Data;
 using Game.Scripts.Data.Extensions;
 using Game.Scripts.Infrastructure;
@@ -23,7 +22,6 @@ namespace Game.Scripts.BaseLogic.LootLogic
         private ISaveLoadService _saveLoadService;
 
         private string _id;
-        private bool _loadedFromProgress;
 
         public void Construct(WorldData worldData)
         {
@@ -41,24 +39,15 @@ namespace Game.Scripts.BaseLogic.LootLogic
         private void Awake() =>
             _saveLoadService = ServiceLocator.Container.Single<ISaveLoadService>();
 
-        private void Start()
-        {
-            if (!_loadedFromProgress)
-                _id = GetComponent<UniqueId>().Id;
-        }
+        private void Start() =>
+            _id = GetComponent<UniqueId>().Id;
 
         /// <summary>
-        /// Лут, восстановленный из сохранения: id уже выставил LoadSceneState.InitLootPieces, значение и позиция — из словаря.
+        /// Пусто, как в курсе (урок 11): лут из сохранения восстанавливает LoadSceneState.InitLootPieces —
+        /// id, значение и позицию он выставляет сразу после CreateLoot.
         /// </summary>
         public void LoadProgress(PlayerProgress progress)
         {
-            _id = GetComponent<UniqueId>().Id;
-
-            LootPieceData data = progress.WorldData.LootData.LootPiecesOnScene.Dictionary[_id];
-            Initialize(data.Loot);
-            transform.position = data.Position.AsVector3();
-
-            _loadedFromProgress = true;
         }
 
         /// <summary>

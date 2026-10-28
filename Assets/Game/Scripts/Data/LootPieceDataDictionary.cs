@@ -6,7 +6,7 @@ namespace Game.Scripts.Data
     /// Неподобранный лут сцены по UniqueId.Id.
     /// </summary>
     [Serializable]
-    public class LootPieceDataDictionary : DictionaryData_Base<string, LootPieceData>
+    public class LootPieceDataDictionary : SerializableDictionary<string, LootPieceData>
     {
     }
 }

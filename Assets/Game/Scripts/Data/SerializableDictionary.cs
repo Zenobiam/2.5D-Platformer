@@ -10,7 +10,7 @@ namespace Game.Scripts.Data
     /// поэтому перед сохранением он раскладывается в массивы ключей и значений, а после загрузки собирается обратно.
     /// </summary>
     [Serializable]
-    public abstract class DictionaryData_Base<TKey, TValue> : ISerializationCallbackReceiver
+    public abstract class SerializableDictionary<TKey, TValue> : ISerializationCallbackReceiver
     {
         public Dictionary<TKey, TValue> Dictionary = new Dictionary<TKey, TValue>();
 

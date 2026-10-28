@@ -1,5 +1,4 @@
-﻿using Game.Scripts.BaseLogic.Enemy;
-using Game.Scripts.Data;
+﻿using Game.Scripts.Data;
 using Game.Scripts.Enemy;
 using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Services.Randomizer.Interfaces;

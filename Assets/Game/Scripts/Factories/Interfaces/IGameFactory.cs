@@ -14,8 +14,8 @@ namespace Game.Scripts.Factories.Interfaces
         List<ISaveProgressReader> ProgressReaders { get; }
         List<ISaveProgress> ProgressWriters { get; }
         void CleanUp();
-        void Register(ISaveProgressReader progressReader);
         GameObject CreateEnemy(EnemyTypeId typeId, Transform parent);
         LootPiece CreateLoot();
+        void CreateSpawner(string spawnerId, Vector3 at, EnemyTypeId enemyTypeId);
     }
 }

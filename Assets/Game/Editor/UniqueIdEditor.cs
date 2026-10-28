@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Game.Scripts.BaseLogic.Enemy;
+using Game.Scripts.BaseLogic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;

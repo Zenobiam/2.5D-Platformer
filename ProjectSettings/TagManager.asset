@@ -7,7 +7,6 @@ TagManager:
   - Player Modell
   - InitialPoint
   - LoadingCurtain
-  - EnemySpawner
   layers:
   - Default
   - TransparentFX

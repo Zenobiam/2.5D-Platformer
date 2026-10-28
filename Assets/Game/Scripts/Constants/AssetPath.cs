@@ -4,6 +4,7 @@
     {
         public const string PlayerPath = "Prefabs/Player/Player";
         public const string HudPath = "Prefabs/Player/HUD";
-        public const string Loot = "Loot/Loot"; 
+        public const string Loot = "Loot/Loot";
+        public const string Spawner = "Enemies/SpawnPoint";
     }
 }

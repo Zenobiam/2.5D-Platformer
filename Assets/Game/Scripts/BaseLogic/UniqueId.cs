@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Game.Scripts.BaseLogic.Enemy
+namespace Game.Scripts.BaseLogic
 {
     public class UniqueId : MonoBehaviour
     {

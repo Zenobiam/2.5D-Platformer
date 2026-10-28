@@ -64,7 +64,7 @@ namespace Game.Scripts.StateMachine.States
         private void RegisterStaticData()
         {
             IStaticDataService staticData = new StaticDataService();
-            staticData.LoadEnemies();
+            staticData.Load();
             _services.RegisterSingle<IStaticDataService>(staticData);
         }
 
