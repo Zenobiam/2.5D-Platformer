@@ -1,8 +1,7 @@
 ﻿using Game.Scripts.BaseLogic.Interfaces;
-using Game.Scripts.Enemy;
 using UnityEngine;
 
-namespace Game.Scripts.UI
+namespace Game.Scripts.UI.Elements
 {
     public class ActorUI : MonoBehaviour
     {
@@ -15,8 +14,8 @@ namespace Game.Scripts.UI
             _health.HealthChanged += UpdateHpBar;
         }
 
-        // TEMP: старт для врагов, которых пока бросаем на сцену без фабрики.
-        // Удалить в девятом уроке, когда враги будут создаваться через фабрику.
+        // COURSE-TEMP: старт для врагов, брошенных на сцену без фабрики; курс оставляет его и после урока 13
+        // (враги с урока 09 создаются фабрикой, которая сама зовёт Construct) — убрать, когда уберёт курс.
         private void Start()
         {
             IHealth health = GetComponent<IHealth>();

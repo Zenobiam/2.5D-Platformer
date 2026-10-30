@@ -2,7 +2,7 @@ using Game.Scripts.Data;
 using TMPro;
 using UnityEngine;
 
-namespace Game.Scripts.UI
+namespace Game.Scripts.UI.Elements
 {
     /// <summary>
     /// Счётчик собранного лута на HUD. Данные — WorldData из прогресса, их передаёт GameFactory.CreateHud.

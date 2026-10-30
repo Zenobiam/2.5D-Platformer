@@ -10,7 +10,8 @@ using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.Services.Randomizer.Interfaces;
 using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StaticData;
-using Game.Scripts.UI;
+using Game.Scripts.UI.Elements;
+using Game.Scripts.UI.Services.Windows.Interfaces;
 using UnityEngine;
 using UnityEngine.AI;
 using Object = UnityEngine.Object;
@@ -23,6 +24,7 @@ namespace Game.Scripts.Factories
         private readonly IStaticDataService _staticData;
         private readonly IRandomService _randomService;
         private readonly IPersistentProgressService _progressService;
+        private readonly IWindowService _windowService;
 
         public List<ISaveProgressReader> ProgressReaders { get; } = new List<ISaveProgressReader>();
         public List<ISaveProgress> ProgressWriters { get; } = new List<ISaveProgress>();
@@ -30,12 +32,13 @@ namespace Game.Scripts.Factories
         private GameObject _playerGameObject;
 
         public GameFactory(IAssetsProvider assetsProvider, IStaticDataService staticData, IRandomService randomService,
-            IPersistentProgressService progressService)
+            IPersistentProgressService progressService, IWindowService windowService)
         {
             _assetsProvider = assetsProvider;
             _staticData = staticData;
             _randomService = randomService;
             _progressService = progressService;
+            _windowService = windowService;
         }
 
         #region Create
@@ -49,6 +52,9 @@ namespace Game.Scripts.Factories
 
             hud.GetComponentInChildren<LootCounter>()
                 .Construct(_progressService.Progress.WorldData);
+
+            foreach (OpenWindowButton openWindowButton in hud.GetComponentsInChildren<OpenWindowButton>())
+                openWindowButton.Init(_windowService);
 
             return hud;
         }

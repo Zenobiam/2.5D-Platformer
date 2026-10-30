@@ -1,4 +1,4 @@
-using Game.Scripts.UI;
+using Game.Scripts.UI.Elements;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -16,6 +16,8 @@ namespace Game.Editor
         private const string AttackButtonName = "AttackButton";
         private const string LootCounterName = "LootCounter";
         private const string LootIconPath = "Assets/Resources/Prefabs/Player/CFX3_T_Skull.png";
+        private const string ShopButtonName = "Shop_button";
+        private const string ShopButtonSprite = "Assets/ThirdParty/Simple Fantasy GUI/PNG/Login Panel/LoginButton_Hover.png";
         // Та же кнопка, что привязана к действию Attack в PlayerControls (группа Gamepad).
         private const string AttackControlPath = "<Gamepad>/buttonWest";
 
@@ -38,6 +40,7 @@ namespace Game.Editor
                 actorUI.HpBar = hpBar;
 
                 BuildLootCounter(root.transform);
+                BuildShopButton(root.transform);
                 BuildMobileControls(root.transform);
 
                 PrefabUtility.SaveAsPrefabAsset(root, HudPrefabPath);
@@ -143,6 +146,53 @@ namespace Game.Editor
             if (!lootRoot.TryGetComponent(out LootCounter lootCounter))
                 lootCounter = lootRoot.gameObject.AddComponent<LootCounter>();
             lootCounter.Counter = counter;
+        }
+
+        /// <summary>
+        /// Кнопка Shop (урок 13): Button + OpenWindowButton (WindowId.Shop), правый низ над кнопкой атаки.
+        /// Вне группы Mobile — нужна и на ПК. WindowService ей передаёт GameFactory.CreateHud (OpenWindowButton.Init).
+        /// Спрайт и текст — только при создании.
+        /// </summary>
+        private static void BuildShopButton(Transform root)
+        {
+            bool created = root.Find(ShopButtonName) == null;
+            Transform shop = FindOrCreateChild(root, ShopButtonName);
+            var rect = (RectTransform)shop;
+            rect.anchorMin = new Vector2(1f, 0f);
+            rect.anchorMax = new Vector2(1f, 0f);
+            rect.anchoredPosition = new Vector2(-187f, 369f);
+            rect.sizeDelta = new Vector2(160f, 78f);
+
+            if (!shop.TryGetComponent(out Image image))
+                image = shop.gameObject.AddComponent<Image>();
+            if (created)
+                image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(ShopButtonSprite);
+            image.raycastTarget = true;
+
+            if (!shop.TryGetComponent(out Button button))
+                button = shop.gameObject.AddComponent<Button>();
+            button.targetGraphic = image;
+
+            if (!shop.TryGetComponent(out OpenWindowButton openWindow))
+                openWindow = shop.gameObject.AddComponent<OpenWindowButton>();
+            openWindow.Button = button;
+            openWindow.WindowId = Game.Scripts.UI.Services.Windows.WindowId.Shop;
+
+            Transform textTransform = FindOrCreateChild(shop, "Text (TMP)");
+            StretchFull((RectTransform)textTransform);
+            bool textCreated = !textTransform.TryGetComponent(out TextMeshProUGUI text);
+            if (textCreated)
+            {
+                text = textTransform.gameObject.AddComponent<TextMeshProUGUI>();
+                text.text = "Shop";
+                text.fontSize = 36f;
+                text.color = Color.white;
+            }
+            if (text.font == null)
+                text.font = TMP_Settings.defaultFontAsset;
+            text.fontStyle = FontStyles.Bold;
+            text.alignment = TextAlignmentOptions.Center;
+            text.raycastTarget = false;
         }
 
         // Mobile — только экранное управление; общие элементы (HpBar) остаются на корне HUD.

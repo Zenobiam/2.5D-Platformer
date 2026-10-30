@@ -14,6 +14,10 @@ using Game.Scripts.Services.SaveLoad.Interfaces;
 using Game.Scripts.Services.StaticData;
 using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
+using Game.Scripts.UI.Services.Factory;
+using Game.Scripts.UI.Services.Factory.Interfaces;
+using Game.Scripts.UI.Services.Windows;
+using Game.Scripts.UI.Services.Windows.Interfaces;
 
 namespace Game.Scripts.StateMachine.States
 {
@@ -53,11 +57,17 @@ namespace Game.Scripts.StateMachine.States
             _services.RegisterSingle<IAssetsProvider>(new AssetsProvider());
             _services.RegisterSingle<IRandomService>(new RandomService());
             _services.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
+            _services.RegisterSingle<IUIFactory>(new UIFactory(
+                _services.Single<IAssetsProvider>(),
+                _services.Single<IStaticDataService>(),
+                _services.Single<IPersistentProgressService>()));
+            _services.RegisterSingle<IWindowService>(new WindowService(_services.Single<IUIFactory>()));
             _services.RegisterSingle<IGameFactory>(new GameFactory(
                 _services.Single<IAssetsProvider>(),
                 _services.Single<IStaticDataService>(),
                 _services.Single<IRandomService>(),
-                _services.Single<IPersistentProgressService>()));
+                _services.Single<IPersistentProgressService>(),
+                _services.Single<IWindowService>()));
             _services.RegisterSingle<ISaveLoadService>(new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
         }
 

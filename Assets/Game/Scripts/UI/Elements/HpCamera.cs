@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Scripts.UI
+namespace Game.Scripts.UI.Elements
 {
     // Поворачивает объект (полоску HP врага) лицом к камере, как в курсе.
     // UnityEngine.Camera полностью: внутри Game.Scripts имя Camera занято namespace Game.Scripts.Camera.

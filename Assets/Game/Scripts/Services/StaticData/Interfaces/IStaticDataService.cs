@@ -1,5 +1,7 @@
 ﻿using Game.Scripts.Infrastructure;
 using Game.Scripts.StaticData;
+using Game.Scripts.StaticData.Windows;
+using Game.Scripts.UI.Services.Windows;
 
 namespace Game.Scripts.Services.StaticData.Interfaces
 {
@@ -8,5 +10,6 @@ namespace Game.Scripts.Services.StaticData.Interfaces
         void Load();
         EnemyStaticData ForEnemy(EnemyTypeId typeId);
         LevelStaticData ForLevel(string sceneKey);
+        WindowConfig ForWindow(WindowId windowId);
     }
 }

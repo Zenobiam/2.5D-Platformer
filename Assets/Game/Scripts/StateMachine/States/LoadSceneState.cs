@@ -10,7 +10,8 @@ using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
 using Game.Scripts.StaticData;
-using Game.Scripts.UI;
+using Game.Scripts.UI.Elements;
+using Game.Scripts.UI.Services.Factory.Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,6 +27,7 @@ namespace Game.Scripts.StateMachine.States
         private readonly IGameFactory _gameFactory;
         private IPersistentProgressService _progressService;
         private IStaticDataService _staticData;
+        private readonly IUIFactory _uiFactory;
 
         public LoadSceneState(
             GameStateMachine stateMachine, 
@@ -33,7 +35,8 @@ namespace Game.Scripts.StateMachine.States
             LoadingCurtain loadingCurtain, 
             IGameFactory gameFactory, 
             IPersistentProgressService progressService,
-            IStaticDataService staticData)
+            IStaticDataService staticData,
+            IUIFactory uiFactory)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
@@ -41,6 +44,7 @@ namespace Game.Scripts.StateMachine.States
             _gameFactory = gameFactory;
             _progressService = progressService;
             _staticData = staticData;
+            _uiFactory = uiFactory;
         }
 
         public void Enter(string sceneName)
@@ -55,11 +59,18 @@ namespace Game.Scripts.StateMachine.States
 
         private void OnLoaded()
         {
+            InitUIRoot();
             SetupGameEnvironment();
             InformProgressReaders();
 
             _stateMachine.Enter<GameLoopState>();
         }
+
+        /// <summary>
+        /// UIRoot — первым: окна (магазин) создаются под ним, кнопки HUD могут открыть окно сразу.
+        /// </summary>
+        private void InitUIRoot() =>
+            _uiFactory.CreateUIRoot();
 
         private void InformProgressReaders()
         {

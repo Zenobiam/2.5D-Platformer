@@ -7,6 +7,7 @@ using Game.Scripts.Services.SaveLoad.Interfaces;
 using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StateMachine.Interfaces;
 using Game.Scripts.StateMachine.States;
+using Game.Scripts.UI.Services.Factory.Interfaces;
 
 namespace Game.Scripts.StateMachine
 {
@@ -23,7 +24,8 @@ namespace Game.Scripts.StateMachine
                 [typeof(LoadSceneState)] = new LoadSceneState(this, sceneLoader, loadingCurtain,
                     services.Single<IGameFactory>(),
                     services.Single<IPersistentProgressService>(),
-                    services.Single<IStaticDataService>()),
+                    services.Single<IStaticDataService>(),
+                    services.Single<IUIFactory>()),
                 [typeof(LoadProgressState)] = new LoadProgressState(this, 
                     services.Single<IPersistentProgressService>(),
                     services.Single<ISaveLoadService>()),

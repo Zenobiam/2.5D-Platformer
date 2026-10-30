@@ -1,4 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
+using Game.Scripts.StaticData.Windows;
+using Game.Scripts.UI.Services.Windows;
+using Game.Scripts.UI.Windows;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -21,6 +25,10 @@ namespace Game.Editor
         private const string WindowPath = UiFolder + "/Window.prefab";
         private const string ShopItemPath = UiFolder + "/ShopItem.prefab";
         private const string ShopPath = UiFolder + "/Shop.prefab";
+        private const string UIRootPath = UiFolder + "/UIRoot.prefab";
+
+        private const string WindowDataFolder = "Assets/Resources/StaticData/UI";
+        private const string WindowDataPath = WindowDataFolder + "/WindowStaticData.asset";
 
         private const string Fantasy = "Assets/ThirdParty/Simple Fantasy GUI/PNG/";
         private const string InventoryBox = Fantasy + "Inventory/Inventory_Box.png";
@@ -32,6 +40,7 @@ namespace Game.Editor
         private const string RedRibbon = Fantasy + "Character Panel/Red_Ribbon.png";
         private const string PlayerFrame = Fantasy + "Character Bar/Player_Frame.png";
         private const string LoginButtonHover = Fantasy + "Login Panel/LoginButton_Hover.png";
+        private const string MoneyBar = Fantasy + "Inventory/Money_Bar.png";
 
         private const string Icons = "Assets/ThirdParty/RPG icons/512X512/";
         private const string AdsIcon = Icons + "Elixir_1.png";
@@ -76,9 +85,11 @@ namespace Game.Editor
             EditPrefab(WindowPath, BuildWindow);
             EditPrefab(ShopItemPath, BuildShopItem);
             EditPrefab(ShopPath, BuildShop);
+            EditPrefab(UIRootPath, BuildUIRoot);
+            BuildWindowStaticData();
 
             AssetDatabase.SaveAssets();
-            Debug.Log($"Shop window built: {WindowPath}, {ShopItemPath}, {ShopPath}");
+            Debug.Log($"Shop window built: {WindowPath}, {ShopItemPath}, {ShopPath}, {UIRootPath}, {WindowDataPath}");
         }
 
         #region Import
@@ -92,7 +103,7 @@ namespace Game.Editor
             string[] uiSprites =
             {
                 InventoryBox, TitleBox, CloseIcon, InventorySlot, ButtonShadow, ButtonSprite, RedRibbon, PlayerFrame,
-                LoginButtonHover, AdsIcon, CasualSheet, SkullIcon, BlankSprite,
+                LoginButtonHover, MoneyBar, AdsIcon, CasualSheet, SkullIcon, BlankSprite,
             };
 
             foreach (string path in uiSprites.Concat(ShopItemIcons))
@@ -227,6 +238,9 @@ namespace Game.Editor
 
             BuildAdsItem(content);
             BuildInApps(content);
+            TextMeshProUGUI skullText = BuildMoneyBar(content);
+
+            BindShopWindow(root, skullText);
 
             Transform bottom = Child(content, "Bottom_container").Transform;
             SetRect(Rect(bottom), Vector2.zero, new Vector2(1, 0.1f), Vector2.zero, new Vector2(-28, 0));
@@ -242,7 +256,7 @@ namespace Game.Editor
         private static void BuildAdsItem(Transform content)
         {
             Transform container = Child(content, "AdsItem_container").Transform;
-            SetRect(Rect(container), new Vector2(0, 0.1f), new Vector2(0.3f, 1), Vector2.zero, Vector2.zero);
+            SetRect(Rect(container), new Vector2(0, 0.1f), new Vector2(0.3f, 0.9f), Vector2.zero, Vector2.zero);
 
             (Image item, bool itemNew) = ImageChild(container, "Item");
             SetRect(item.rectTransform, Center, Center, new Vector2(0, 50), new Vector2(400, 500));
@@ -296,7 +310,7 @@ namespace Game.Editor
         private static void BuildInApps(Transform content)
         {
             Transform container = Child(content, "InApps_container").Transform;
-            SetRect(Rect(container), new Vector2(0.3f, 0.1f), Vector2.one, Vector2.zero, Vector2.zero);
+            SetRect(Rect(container), new Vector2(0.3f, 0.1f), new Vector2(1, 0.9f), Vector2.zero, Vector2.zero);
             GetOrAdd<Canvas>(container.gameObject);
             GetOrAdd<GraphicRaycaster>(container.gameObject);
 
@@ -350,6 +364,109 @@ namespace Game.Editor
             scrollRect.vertical = false;
             scrollRect.movementType = ScrollRect.MovementType.Elastic;
             scrollRect.scrollSensitivity = WheelScrollSensitivity;
+        }
+
+        /// <summary>
+        /// Урок 13: плашка с числом черепов справа сверху (Money_container — верхние 10% Content, поэтому реклама
+        /// и прокрутка опущены до 0.9). Skulls_container — Money_Bar + HorizontalLayoutGroup: череп и число в ряд,
+        /// ширина числа меняется с суммой. Skull_text — поле ShopWindow.SkullText.
+        /// </summary>
+        private static TextMeshProUGUI BuildMoneyBar(Transform content)
+        {
+            Transform money = Child(content, "Money_container").Transform;
+            SetRect(Rect(money), new Vector2(1, 0.9f), Vector2.one, new Vector2(0, 4), new Vector2(500, -8));
+            Rect(money).pivot = new Vector2(1, 0.5f);
+
+            (Image bar, bool barNew) = ImageChild(money, "Skulls_container");
+            SetRect(bar.rectTransform, new Vector2(1, 0), Vector2.one, new Vector2(-30, 0), new Vector2(500, 0));
+            bar.rectTransform.pivot = new Vector2(1, 0.5f);
+            if (barNew)
+                bar.sprite = LoadSprite(MoneyBar);
+
+            HorizontalLayoutGroup layout = GetOrAdd<HorizontalLayoutGroup>(bar.gameObject);
+            layout.childAlignment = TextAnchor.MiddleRight;
+            layout.spacing = 20;
+            layout.padding = new RectOffset(20, 30, 0, 0);
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+
+            (Image skull, bool skullNew) = ImageChild(bar.transform, "Skull_icon");
+            Icon(skull, SkullIcon, skullNew);
+            LayoutElement skullSize = GetOrAdd<LayoutElement>(skull.gameObject);
+            skullSize.preferredWidth = 60;
+            skullSize.preferredHeight = 60;
+
+            TextMeshProUGUI text = TextChild(bar.transform, "Skull_text", "300", 70);
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            return text;
+        }
+
+        /// <summary>
+        /// ShopWindow на корне Shop: CloseButton — крестик вложенного Window (private SerializeField — через SerializedObject),
+        /// SkullText — число черепов. Без компонента UIFactory не возьмёт префаб как WindowBase.
+        /// </summary>
+        private static void BindShopWindow(GameObject root, TextMeshProUGUI skullText)
+        {
+            ShopWindow shopWindow = GetOrAdd<ShopWindow>(root);
+            shopWindow.SkullText = skullText;
+
+            var closeButton = root.transform.Find("Window/Close_button").GetComponent<UnityEngine.UI.Button>();
+            var serialized = new SerializedObject(shopWindow);
+            serialized.FindProperty("CloseButton").objectReferenceValue = closeButton;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// UIRoot (урок 13): Canvas окон. Overlay, Sort Order 1 — поверх HUD (0), под шторкой (100);
+        /// CanvasScaler 1920×1080 Match 0 — ширина 1920 на любом экране, фиксированные элементы окна не налезают;
+        /// GraphicRaycaster — без него окна не нажимаются.
+        /// </summary>
+        private static void BuildUIRoot(GameObject root)
+        {
+            Canvas canvas = GetOrAdd<Canvas>(root);
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 1;
+
+            CanvasScaler scaler = GetOrAdd<CanvasScaler>(root);
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0;
+
+            GetOrAdd<GraphicRaycaster>(root);
+        }
+
+        /// <summary>
+        /// WindowStaticData (урок 13): Shop → Shop.prefab. Грузит StaticDataService.Load при старте —
+        /// без ассета NRE в BootstrapState.
+        /// </summary>
+        private static void BuildWindowStaticData()
+        {
+            if (!AssetDatabase.IsValidFolder(WindowDataFolder))
+                AssetDatabase.CreateFolder("Assets/Resources/StaticData", "UI");
+
+            var data = AssetDatabase.LoadAssetAtPath<WindowStaticData>(WindowDataPath);
+            if (data == null)
+            {
+                data = ScriptableObject.CreateInstance<WindowStaticData>();
+                AssetDatabase.CreateAsset(data, WindowDataPath);
+            }
+
+            if (data.Configs == null)
+                data.Configs = new List<WindowConfig>();
+
+            var shopTemplate = AssetDatabase.LoadAssetAtPath<GameObject>(ShopPath).GetComponent<ShopWindow>();
+            WindowConfig shop = data.Configs.FirstOrDefault(c => c.WindowId == WindowId.Shop);
+            if (shop == null)
+            {
+                shop = new WindowConfig { WindowId = WindowId.Shop };
+                data.Configs.Add(shop);
+            }
+            shop.Template = shopTemplate;
+
+            EditorUtility.SetDirty(data);
         }
 
         #endregion
