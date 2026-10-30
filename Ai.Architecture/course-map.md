@@ -70,6 +70,9 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | `IStaticDataService.Load()`, `ForLevel`; `Resources/Static Data/Levels` | `Load()`, `ForLevel`; `Resources/StaticData/Levels` |
 | `IGameFactory.CreateSpawner`; `Register` — private (урок 11) | то же |
 | `Resources/UI/{Window,Shop,ShopItem}.prefab`, паки `Plugins/{Simple Fantasy GUI,Free RPG Icons,GUI CARTOON}` (урок 12) | `Resources/UI/` — те же имена и иерархия (собирает `ShopWindowBuilder`); паки — `ThirdParty/{Simple Fantasy GUI,RPG icons,2D Casual UI}` |
+| `UI/Windows/{WindowBase,ShopWindow}.cs`; `UI/Elements/OpenWindowButton.cs`; `UI/Services/Windows/{IWindowService,WindowService,WindowId}`; `UI/Services/Factory/{IUIFactory,UIFactory}`; `StaticData/Windows/{WindowConfig,WindowStaticData}` (урок 13) | те же папки, интерфейсы — в `Interfaces/` (`Game.Scripts.UI.Services.*.Interfaces`); `WindowStaticData` — `Resources/StaticData/UI/WindowStaticData.asset` |
+| `UI/{ActorUI,HpBar,LookAtCamera,LootCounter}` → `UI/Elements/` (урок 13) | `UI/Elements/` (`Game.Scripts.UI.Elements`): `ActorUI`, `HpBar`, `HpCamera`, `LootCounter`, `MobileOnly` |
+| `Resources/UI/UIRoot.prefab`, `Hud/Shop_button.prefab` (урок 13) | `Resources/UI/UIRoot.prefab` (`Tools → UI → Build Shop Window`); `HUD/Shop_button` — ребёнок HUD (`Tools → UI → Build Player HUD`) |
 | `StaticData/MonsterStaticData.cs` | `StaticData/EnemyStaticData.cs` (`Game.Scripts.StaticData`) |
 | `Services/StaticData/IStaticDataService.cs`, `StaticDataService.cs` | `Services/StaticData/Interfaces/IStaticDataService.cs`, `Services/StaticData/StaticDataService.cs` |
 | `Resources/Enemies/Golem/` (пак) + `Golem.prefab` (Variant от `BaseEnemy`) | `Resources/Enemies/Golem/` (пак без курсовых `Golem.prefab` и `OverrideController`) + `Resources/Enemies/Golem.prefab` (Variant от `Enemy`, `Tools → Setup → Enemy Variant: Golem`) |
@@ -91,3 +94,4 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | 10 Loot | перенесено (2026-10-27): лут с врагов, `RandomService`, счётчик на HUD, сохранение лута на сцене; души сохраняются при подборе (отступление) | `Ai.Tasks/2026-10-27-loot-hud.md`, `2026-10-27-loot-save.md` (локально) |
 | 11 Spawner rework | код перенесён (2026-10-28, `e066983`), **Play Mode не проверен** | `Ai.Tasks/2026-10-28-spawner-rework.md` (локально) |
 | 12 UI part 1 | перенесено (2026-10-30): окно магазина `Resources/UI/{Window,ShopItem,Shop}` — `Tools → UI → Build Shop Window`; паки UI в `ThirdParty/` | `Ai.Tasks/2026-10-30-ui-shop-layout.md` (локально) |
+| 13 UI part 2 | перенесено (2026-10-30): окна в игре — `UIRoot`, `WindowBase`/`ShopWindow`, `WindowService`, `UIFactory`, `WindowStaticData`, кнопка Shop; баг подписки `ShopWindow` исправлен (отступление) | `Ai.Tasks/2026-10-30-ui-windows.md` (локально) |

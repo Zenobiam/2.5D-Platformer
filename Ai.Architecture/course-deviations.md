@@ -22,6 +22,7 @@
 | 2026-10-28 | Сбор спавнеров уровня | `LevelStaticDataEditor` (Collect): `FindObjectsOfType<SpawnMarker>()` | `FindObjectsByType<SpawnMarker>(FindObjectsSortMode.None)` | В Unity 6 `FindObjectsOfType` устарел (`CS0618`); порядок не нужен — сортировка не делается |
 | 2026-10-30 | Прокрутка колесом в магазине | `ScrollRect.scrollSensitivity` = 1 (мобилка — листают пальцем) | 50 (`ShopWindowBuilder.WheelScrollSensitivity`) | Пока основная платформа ПК (`Ai.Decisions/2026-10-30-pc-first.md`): `InputSystemUIInputModule` даёт 6 единиц на щелчок колеса — с 1 это ~130 щелчков на ленту |
 | 2026-10-30 | Вёрстка окна магазина | `Content` прокрутки растянут на `Viewport`; Play — картинка `GUI CARTOON`; иконки `Free RPG Icons` | `Content` прижат влево (anchors x 0, pivot x 0); Play — круг + треугольник `2D Casual UI`; иконки `RPG icons/512X512`; `Generate Physics Shape` выкл у всех UI-спрайтов | `ContentSizeFitter` по ширине с растянутыми якорями считает ширину неверно; паков `GUI CARTOON` и `Free RPG Icons` у нас нет |
+| 2026-10-30 | Подписка окна магазина | `ShopWindow.SubscribeUpdates`: `LootData.Changed += SubscribeUpdates` (подписывает сам себя: текст не обновляется, каждое изменение добавляет подписку) | `Changed += RefreshSkullText`, в `Cleanup` — `-= RefreshSkullText` | Баг курса; решение пользователя — исправить |
 | — | NavMesh | Запекание в окне Navigation | `NavMeshSurface` из пакета AI Navigation | Встроенное запекание в Unity 6 устарело |
 
 ## Кандидаты (не сделано, только по задаче)
