@@ -69,6 +69,7 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | `Data/SerializableDictionary.cs` (урок 11, было `DictionaryData_Base`) | `Data/SerializableDictionary.cs` |
 | `IStaticDataService.Load()`, `ForLevel`; `Resources/Static Data/Levels` | `Load()`, `ForLevel`; `Resources/StaticData/Levels` |
 | `IGameFactory.CreateSpawner`; `Register` — private (урок 11) | то же |
+| `Resources/UI/{Window,Shop,ShopItem}.prefab`, паки `Plugins/{Simple Fantasy GUI,Free RPG Icons,GUI CARTOON}` (урок 12) | `Resources/UI/` — те же имена и иерархия (собирает `ShopWindowBuilder`); паки — `ThirdParty/{Simple Fantasy GUI,RPG icons,2D Casual UI}` |
 | `StaticData/MonsterStaticData.cs` | `StaticData/EnemyStaticData.cs` (`Game.Scripts.StaticData`) |
 | `Services/StaticData/IStaticDataService.cs`, `StaticDataService.cs` | `Services/StaticData/Interfaces/IStaticDataService.cs`, `Services/StaticData/StaticDataService.cs` |
 | `Resources/Enemies/Golem/` (пак) + `Golem.prefab` (Variant от `BaseEnemy`) | `Resources/Enemies/Golem/` (пак без курсовых `Golem.prefab` и `OverrideController`) + `Resources/Enemies/Golem.prefab` (Variant от `Enemy`, `Tools → Setup → Enemy Variant: Golem`) |
@@ -88,3 +89,5 @@ Namespace = `Game.Scripts.<путь от Assets/Game/Scripts>`; интерфей
 | 08 Enemy Spawner | перенесено (2026-10-25, `b01d2a7`) | `Ai.Tasks/2026-10-24-enemy-spawner.md` (локально) |
 | 09 Static data | перенесено (2026-10-25) + новый враг Golem | `Ai.Tasks/2026-10-25-static-data.md` (локально) |
 | 10 Loot | перенесено (2026-10-27): лут с врагов, `RandomService`, счётчик на HUD, сохранение лута на сцене; души сохраняются при подборе (отступление) | `Ai.Tasks/2026-10-27-loot-hud.md`, `2026-10-27-loot-save.md` (локально) |
+| 11 Spawner rework | код перенесён (2026-10-28, `e066983`), **Play Mode не проверен** | `Ai.Tasks/2026-10-28-spawner-rework.md` (локально) |
+| 12 UI part 1 | перенесено (2026-10-30): окно магазина `Resources/UI/{Window,ShopItem,Shop}` — `Tools → UI → Build Shop Window`; паки UI в `ThirdParty/` | `Ai.Tasks/2026-10-30-ui-shop-layout.md` (локально) |

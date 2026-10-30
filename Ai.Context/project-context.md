@@ -171,7 +171,7 @@ _Обновлять в конце значимых сессий._
 - Правило «что и зачем по каждому компоненту» — в `<Knowledge>\process\agent-workflow.md` § 2 п. 11. Knowledge: выводы урока 11 (prototyping, DI Construct/ServiceLocator, данные уровня), `mechanics/loot.md`, `conventions/unity-input.md`, частицы/рендер, AssetRipper и инструменты декомпиляции.
 Осталось:
 - Урок 11: на `SampleScene` старый `EnemySpawner` (префаб удалён); `Id` в ассете `SpawnMarker.prefab` не пустой → очистить, выделить маркер, Collect; `GolemData` `MinLoot`/`MaxLoot`; Play Mode; затем `editor-setup.md` и закрыть бриф `2026-10-28-spawner-rework.md`.
-- Урок 12: 9-slice и `Generate Physics Shape` в импорте спрайтов (значения курса) + сборка `Window`/`Shop`/`ShopItem`; на сцене временный Canvas пользователя (не закоммичен).
+- Урок 12 **закрыт** (2026-10-30): окно магазина — `Tools → UI → Build Shop Window`, `<Knowledge>\conventions\unity-ui.md`; на сцене временный `Canvas` с `Shop` — убрать перед коммитом сцены. Дальше — урок 13 UI part 2 (WindowBase, WindowService, UIFactory, UIRoot с Match 0, кнопка Shop на HUD); итог — zip `14 Rewarded ads`.
 - **Мобилка:** в `HUD/Mobile/JoyStickArea` нет `OnScreenStick` — на телефоне нечем ходить; нет кнопок прыжка/бега/приседа. Решение пользователя.
 - Перенос ассетов из `Resources` — «позже» (решение 2026-10-26), `project-structure-review.md` § 6.
 Риски / не трогать:
