@@ -15,5 +15,14 @@ namespace Game.Scripts.Data
             Collected += loot.Value;
             Changed?.Invoke();
         }
+
+        /// <summary>
+        /// Начислить черепа не из лута (награда за рекламу, урок 14).
+        /// </summary>
+        public void Add(int lootValue)
+        {
+            Collected += lootValue;
+            Changed?.Invoke();
+        }
     }
 }

@@ -1,10 +1,11 @@
 using Game.Scripts.Providers.Interfaces;
+using Game.Scripts.Services.Ads.Interfaces;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.Services.StaticData.Interfaces;
 using Game.Scripts.StaticData.Windows;
 using Game.Scripts.UI.Services.Factory.Interfaces;
 using Game.Scripts.UI.Services.Windows;
-using Game.Scripts.UI.Windows;
+using Game.Scripts.UI.Windows.Shop;
 using UnityEngine;
 
 namespace Game.Scripts.UI.Services.Factory
@@ -20,14 +21,17 @@ namespace Game.Scripts.UI.Services.Factory
         private readonly IAssetsProvider _assets;
         private readonly IStaticDataService _staticData;
         private readonly IPersistentProgressService _progressService;
+        private readonly IAdsService _adsService;
 
         private Transform _uiRoot;
 
-        public UIFactory(IAssetsProvider assets, IStaticDataService staticData, IPersistentProgressService progressService)
+        public UIFactory(IAssetsProvider assets, IStaticDataService staticData, IPersistentProgressService progressService,
+            IAdsService adsService)
         {
             _assets = assets;
             _staticData = staticData;
             _progressService = progressService;
+            _adsService = adsService;
         }
 
         public void CreateUIRoot() =>
@@ -36,8 +40,9 @@ namespace Game.Scripts.UI.Services.Factory
         public void CreateShop()
         {
             WindowConfig config = _staticData.ForWindow(WindowId.Shop);
-            WindowBase window = Object.Instantiate(config.Template, _uiRoot);
-            window.Construct(_progressService);
+            // Урок 14: окну магазина нужна реклама — общий WindowBase.Construct не хватает, фабрика знает конкретный тип.
+            var window = (ShopWindow)Object.Instantiate(config.Template, _uiRoot);
+            window.Construct(_adsService, _progressService);
         }
     }
 }

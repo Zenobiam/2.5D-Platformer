@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Scripts.StaticData.Windows;
 using Game.Scripts.UI.Services.Windows;
-using Game.Scripts.UI.Windows;
+using Game.Scripts.UI.Windows.Shop;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -236,11 +236,11 @@ namespace Game.Editor
             Transform content = Child(root.transform, "Content").Transform;
             SetRect(Rect(content), Vector2.zero, Vector2.one, new Vector2(2, -48), new Vector2(-116, -216));
 
-            BuildAdsItem(content);
+            RewardedAdItem adItem = BuildAdsItem(content);
             BuildInApps(content);
             TextMeshProUGUI skullText = BuildMoneyBar(content);
 
-            BindShopWindow(root, skullText);
+            BindShopWindow(root, skullText, adItem);
 
             Transform bottom = Child(content, "Bottom_container").Transform;
             SetRect(Rect(bottom), Vector2.zero, new Vector2(1, 0.1f), Vector2.zero, new Vector2(-28, 0));
@@ -253,7 +253,7 @@ namespace Game.Editor
         /// Кнопка без своего Image, как в курсе: нажатие ловит лента (Raycast Target) и поднимается к Button на родителе.
         /// Play — белый треугольник 2D Casual UI на зелёном круге (в курсе — готовая кнопка GUI CARTOON, у нас её нет).
         /// </summary>
-        private static void BuildAdsItem(Transform content)
+        private static RewardedAdItem BuildAdsItem(Transform content)
         {
             Transform container = Child(content, "AdsItem_container").Transform;
             SetRect(Rect(container), new Vector2(0, 0.1f), new Vector2(0.3f, 0.9f), Vector2.zero, Vector2.zero);
@@ -299,6 +299,25 @@ namespace Game.Editor
                 frame.sprite = LoadSprite(PlayerFrame);
 
             MakeButton(watch.gameObject, ribbon);
+
+            TextMeshProUGUI notAvailable = TextChild(item.transform, "AdNotAvailable_text", "Ad not available", 40);
+            SetRect(notAvailable.rectTransform, new Vector2(0, 0.5f), new Vector2(1, 0.5f), Vector2.zero, new Vector2(-80, 200));
+
+            return BuildRewardedAdItem(container.gameObject, watch.gameObject, icon.gameObject, notAvailable.gameObject);
+        }
+
+        /// <summary>
+        /// Урок 14: RewardedAdItem на AdsItem_container — кнопка показа рекламы (WatchAd_button), что видно, когда
+        /// реклама готова (кнопка и иконка товара), и когда нет («Ad not available»). Видимость переключает код
+        /// по IAdsService.IsRewardedVideoReady.
+        /// </summary>
+        private static RewardedAdItem BuildRewardedAdItem(GameObject container, GameObject watchButton, GameObject icon, GameObject notAvailable)
+        {
+            RewardedAdItem adItem = GetOrAdd<RewardedAdItem>(container);
+            adItem.ShowAdButton = watchButton.GetComponent<UnityEngine.UI.Button>();
+            adItem.AdActiveObjects = new[] { watchButton, icon };
+            adItem.AdInactiveObjects = new[] { notAvailable };
+            return adItem;
         }
 
         /// <summary>
@@ -407,10 +426,11 @@ namespace Game.Editor
         /// ShopWindow на корне Shop: CloseButton — крестик вложенного Window (private SerializeField — через SerializedObject),
         /// SkullText — число черепов. Без компонента UIFactory не возьмёт префаб как WindowBase.
         /// </summary>
-        private static void BindShopWindow(GameObject root, TextMeshProUGUI skullText)
+        private static void BindShopWindow(GameObject root, TextMeshProUGUI skullText, RewardedAdItem adItem)
         {
             ShopWindow shopWindow = GetOrAdd<ShopWindow>(root);
             shopWindow.SkullText = skullText;
+            shopWindow.AdItem = adItem;
 
             var closeButton = root.transform.Find("Window/Close_button").GetComponent<UnityEngine.UI.Button>();
             var serialized = new SerializedObject(shopWindow);

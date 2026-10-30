@@ -3,6 +3,8 @@ using Game.Scripts.Factories.Interfaces;
 using Game.Scripts.Infrastructure;
 using Game.Scripts.Providers;
 using Game.Scripts.Providers.Interfaces;
+using Game.Scripts.Services.Ads;
+using Game.Scripts.Services.Ads.Interfaces;
 using Game.Scripts.Services.Input;
 using Game.Scripts.Services.Input.Interfaces;
 using Game.Scripts.Services.PersistentProgress;
@@ -52,6 +54,7 @@ namespace Game.Scripts.StateMachine.States
         private void RegisterServices()
         {
             RegisterStaticData();
+            RegisterAdsService();
 
             _services.RegisterSingle<IInputService>(InputService());
             _services.RegisterSingle<IAssetsProvider>(new AssetsProvider());
@@ -60,7 +63,8 @@ namespace Game.Scripts.StateMachine.States
             _services.RegisterSingle<IUIFactory>(new UIFactory(
                 _services.Single<IAssetsProvider>(),
                 _services.Single<IStaticDataService>(),
-                _services.Single<IPersistentProgressService>()));
+                _services.Single<IPersistentProgressService>(),
+                _services.Single<IAdsService>()));
             _services.RegisterSingle<IWindowService>(new WindowService(_services.Single<IUIFactory>()));
             _services.RegisterSingle<IGameFactory>(new GameFactory(
                 _services.Single<IAssetsProvider>(),
@@ -69,6 +73,17 @@ namespace Game.Scripts.StateMachine.States
                 _services.Single<IPersistentProgressService>(),
                 _services.Single<IWindowService>()));
             _services.RegisterSingle<ISaveLoadService>(new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
+        }
+
+        /// <summary>
+        /// Реклама (урок 14) — до UIFactory, которая передаёт её окну магазина. Сейчас заглушка для ПК;
+        /// реальный SDK (LevelPlay) — другой класс с тем же IAdsService, меняется только эта строка.
+        /// </summary>
+        private void RegisterAdsService()
+        {
+            IAdsService adsService = new StubAdsService();
+            adsService.Initialize();
+            _services.RegisterSingle<IAdsService>(adsService);
         }
 
         private void RegisterStaticData()

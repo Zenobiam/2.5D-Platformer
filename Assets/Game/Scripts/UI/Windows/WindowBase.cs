@@ -7,7 +7,7 @@ namespace Game.Scripts.UI.Windows
 {
     /// <summary>
     /// База окна (урок 13): закрытие крестиком, доступ к прогрессу, хуки жизненного цикла.
-    /// Новое окно — наследник: переопределяет Init (заполнить), SubscribeUpdates (подписаться), Cleanup (отписаться).
+    /// Новое окно — наследник: переопределяет Initialize (заполнить), SubscribeUpdates (подписаться), Cleanup (отписаться).
     /// Зависимость передаёт UIFactory через Construct до Start.
     /// </summary>
     public abstract class WindowBase : MonoBehaviour
@@ -28,7 +28,7 @@ namespace Game.Scripts.UI.Windows
 
         private void Start()
         {
-            Init();
+            Initialize();
             SubscribeUpdates();
         }
 
@@ -38,7 +38,7 @@ namespace Game.Scripts.UI.Windows
         protected virtual void OnAwake() =>
             CloseButton.onClick.AddListener(() => Destroy(gameObject));
 
-        protected virtual void Init() { }
+        protected virtual void Initialize() { }
 
         protected virtual void SubscribeUpdates() { }
 
