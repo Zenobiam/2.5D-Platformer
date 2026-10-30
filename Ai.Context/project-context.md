@@ -171,7 +171,7 @@ _Обновлять в конце значимых сессий._
 - Правило «что и зачем по каждому компоненту» — в `<Knowledge>\process\agent-workflow.md` § 2 п. 11. Knowledge: выводы урока 11 (prototyping, DI Construct/ServiceLocator, данные уровня), `mechanics/loot.md`, `conventions/unity-input.md`, частицы/рендер, AssetRipper и инструменты декомпиляции.
 Осталось:
 - Урок 11: проверен пользователем в Play Mode (2026-10-30, со слов); `GolemData` `MinLoot/MaxLoot` 10/20, `Id` в `SpawnMarker.prefab` очищен (не закоммичено). **Известный риск (пользователь: «забей», 2026-10-30):** первый `SpawnMarker` на сцене брал id из префаба — теперь пустой; игра пока берёт старый id из `BasicLevel`, но следующий Collect запишет пустой id. Исправление: выделить маркер (id сгенерируется), сохранить сцену, Collect, Clear Prefs.
-- Уроки 12–13 **закрыты** (2026-10-30): окно магазина (`Tools → UI → Build Shop Window`), окна в игре (`UIRoot`, `UIFactory`, `WindowService`, кнопка Shop — `Build Player HUD`). Знания — `<Knowledge>\conventions\unity-ui.md`. Дальше — урок 14 Rewarded ads: начало — zip `14 Rewarded ads`, итог — zip `15 Addressables`.
+- Уроки 12–14 **закрыты** (2026-10-30): окно магазина, окна в игре, реклама за вознаграждение на заглушке `StubAdsService` (ветка `feature/rewarded-ads`). Дальше — урок 15 Addressables: начало — zip `15 Addressables`, итог — zip `16 InApps`. Урок 16 (покупки): на ПК возможны через магазин платформы — выбрать вариант по `Ai.Decisions/2026-10-30-pc-first.md` § «Монетизация на ПК».
 - **Мобилка:** в `HUD/Mobile/JoyStickArea` нет `OnScreenStick` — на телефоне нечем ходить; нет кнопок прыжка/бега/приседа. Решение пользователя.
 - Перенос ассетов из `Resources` — «позже» (решение 2026-10-26), `project-structure-review.md` § 6.
 Риски / не трогать:
