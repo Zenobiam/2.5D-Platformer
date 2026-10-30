@@ -100,3 +100,7 @@ Assets/
 | `Game/Visuals/` | `Game/Art/` |
 
 Способ (рекомендация): Editor-скрипт `Tools → Setup → Restructure Assets` на `AssetDatabase.MoveAsset` (guid сохраняется, каждый шаг в лог, существующая цель — пропуск). Тем же изменением — пути-константы в Editor-скриптах (`EnemyVariantSetup`, `LootMaterialsSetup`, `PlayerAttackSetup`, `PlayerHudBuilder`, `SkeletonAnimationsSetup`, `BuildDemoLevel`, `DemoLevelBuilder`), `editor-setup.md`, `course-map.md`, `course-deviations.md`, путь `Resources/Yurowm` в `agent-playbook.md`. Перед переносом — закоммитить незакоммиченное; перенос — отдельным коммитом. Новые ассеты урока 10, появившиеся до переноса, — добавить в таблицу.
+
+## 7. Уже в `ThirdParty/`
+
+- 2026-10-30: паки UI для уроков 12–13 — `ThirdParty/2D Casual UI`, `ThirdParty/RPG icons`, `ThirdParty/Simple Fantasy GUI` (импорт пользователем сразу перед уроком; перенесены в окне Project до первых ссылок, guid проверены по файлам). `Simple Fantasy GUI` совпадает по guid со спрайтами курса (`Plugins/Simple Fantasy GUI`), `RPG icons` и `2D Casual UI` — другие паки, чем `Free RPG Icons` и `GUI CARTOON` курса. Новые сторонние ассеты класть сразу сюда.

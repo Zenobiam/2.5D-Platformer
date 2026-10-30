@@ -164,20 +164,18 @@ _Обновлять в конце значимых сессий._
 Здесь только последняя запись. Предыдущие — [`handoff-archive.md`](handoff-archive.md) (при новой записи старую переносить туда, наверх).
 
 ```text
-### 2026-10-27 — пользователь + координатор (Opus, local) — урок 10 Loot
+### 2026-10-30 — пользователь + координатор (Opus, local) — урок 11 Spawner rework, старт урока 12 UI
 Сделано:
-- Урок 10 (код пользователя + агент по просьбам): `EnemyLootSpawner` и `LootPiece` в `BaseLogic/LootLogic/` (папка не `Loot`: namespace перекрывал класс `Data.Loot`), `Loot`/`LootData`, `IRandomService`/`RandomService` (в видео не пишется), `GameFactory.CreateLoot` и параметры `IRandomService`, `IPersistentProgressService` (регистрация в `BootstrapState` до фабрики), `EnemyDeath.Died` (было `DeathAction`).
-- Счётчик душ на HUD: `UI/LootCounter` (+ отписка в `OnDestroy`), `HUD/LootCounter` через `Tools → UI → Build Player HUD`; `WorldData` создаёт `LootData` (был NRE на новом прогрессе).
-- Сохранение лута на сцене по курсу (`LootPiecesOnScene`, `DictionaryData_Base`, `UniqueId.GenerateId`, `InitLootPieces`); души сохраняются сразу при подборе — отступление, решение пользователя. Ассеты лута из курса, `Tools → Setup → Loot Materials to URP`. Всё проверено пользователем в Play Mode.
-- Документы: `course-map.md`, `course-deviations.md`, `editor-setup.md`, `Ai.Issues/features/2026-10-27-loot-*`; Knowledge: `/// <summary>` для описаний, скиллы плагинов Unity/unity-perf.
+- Урок 11 (код — агент по просьбе, редактор — пользователь), ветка `feature/spawner-rework` (`e066983`, `5591207`, запушено): `LevelStaticData` + Collect, `SpawnMarker`/`SpawnPoint`, `CreateSpawner`, `Register` private, `SerializableDictionary`, `UniqueId` → `BaseLogic/`; старый `EnemySpawner` удалён. **В Play Mode не проверен.**
+- Урок 12: ветка `feature/ui`; паки UI в `Assets/ThirdParty/` (`Simple Fantasy GUI` совпадает с курсом по guid); пакет `com.unity.2d.sprite` (Sprite Editor); бриф `Ai.Tasks/2026-10-30-ui-shop-layout.md` (иерархия, якоря, спрайты, «Компоненты: что и зачем»), макет показан; сборка UI — Editor-скриптом агента (ждёт «да»).
+- Правило «что и зачем по каждому компоненту» — в `<Knowledge>\process\agent-workflow.md` § 2 п. 11. Knowledge: выводы урока 11 (prototyping, DI Construct/ServiceLocator, данные уровня), `mechanics/loot.md`, `conventions/unity-input.md`, частицы/рендер, AssetRipper и инструменты декомпиляции.
 Осталось:
-- **НАПОМНИТЬ (урок 10 закрыт):** перенос ассетов из `Resources` в `Game/Prefabs` и `ThirdParty/` — `Ai.Architecture/project-structure-review.md` § 6. Напомнено 2026-10-27, пользователь: «позже» — снова не напоминать без повода; предложить при следующей задаче со структурой или ассетами.
-- Урок 11 Spawner rework: начало — `...\11 Spawner rework\knowledge-is-power-master\…\CodeBase`, итог — `...\12 UI part 1\…` (zip). Курс переносит спавнер в `Logic/EnemySpawners/`.
-- `GolemData`: нет `MinLoot`/`MaxLoot` (0/0 → лут со значением 0); спавнер в `SampleScene` переключён на Skeleton.
-- `EnemySpawner`/`UniqueId` в `BaseLogic/EnemySpawner/` при namespace `….BaseLogic.Enemy`; `UniqueIdEditor` — `FindObjectsOfType` (`CS0618`); `PlayerHudBuilder` — `?? AddComponent` в старом коде; Rigidbody на `Player` — оставлен (решение 2026-10-26).
-Файлы: `Ai.Tasks/2026-10-27-loot-hud.md`, `2026-10-27-loot-save.md` (локально).
+- Урок 11: на `SampleScene` старый `EnemySpawner` (префаб удалён); `Id` в ассете `SpawnMarker.prefab` не пустой → очистить, выделить маркер, Collect; `GolemData` `MinLoot`/`MaxLoot`; Play Mode; затем `editor-setup.md` и закрыть бриф `2026-10-28-spawner-rework.md`.
+- Урок 12: 9-slice и `Generate Physics Shape` в импорте спрайтов (значения курса) + сборка `Window`/`Shop`/`ShopItem`; на сцене временный Canvas пользователя (не закоммичен).
+- **Мобилка:** в `HUD/Mobile/JoyStickArea` нет `OnScreenStick` — на телефоне нечем ходить; нет кнопок прыжка/бега/приседа. Решение пользователя.
+- Перенос ассетов из `Resources` — «позже» (решение 2026-10-26), `project-structure-review.md` § 6.
 Риски / не трогать:
-- Коллегам перед клоном — установить Git LFS. Старые сохранения без `LootPiecesOnScene` — `Tools → Clear Prefs`. Уроки делает пользователь, агент помогает по просьбе.
+- Коллегам перед клоном — Git LFS. Старые сохранения — `Tools → Clear Prefs`.
 ```
 
 ### Только на local / self-hosted
