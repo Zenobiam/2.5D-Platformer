@@ -3,6 +3,19 @@
 Предыдущие записи из `project-context.md` § 6, новые сверху. Исторические записи не переписываются: имена и пути в них — на момент записи.
 
 ```text
+### 2026-10-30 — пользователь + координатор (Opus, local) — урок 11 Spawner rework, старт урока 12 UI
+Сделано:
+- Урок 11 (код — агент по просьбе, редактор — пользователь), ветка `feature/spawner-rework` (`e066983`, `5591207`, запушено): `LevelStaticData` + Collect, `SpawnMarker`/`SpawnPoint`, `CreateSpawner`, `Register` private, `SerializableDictionary`, `UniqueId` → `BaseLogic/`; старый `EnemySpawner` удалён. **В Play Mode не проверен.**
+- Урок 12: ветка `feature/ui`; паки UI в `Assets/ThirdParty/` (`Simple Fantasy GUI` совпадает с курсом по guid); пакет `com.unity.2d.sprite` (Sprite Editor); бриф `Ai.Tasks/2026-10-30-ui-shop-layout.md` (иерархия, якоря, спрайты, «Компоненты: что и зачем»), макет показан; сборка UI — Editor-скриптом агента (ждёт «да»).
+- Правило «что и зачем по каждому компоненту» — в `<Knowledge>\process\agent-workflow.md` § 2 п. 11. Knowledge: выводы урока 11 (prototyping, DI Construct/ServiceLocator, данные уровня), `mechanics/loot.md`, `conventions/unity-input.md`, частицы/рендер, AssetRipper и инструменты декомпиляции.
+Осталось:
+- Урок 11: проверен пользователем в Play Mode (2026-10-30, со слов); `GolemData` `MinLoot/MaxLoot` 10/20, `Id` в `SpawnMarker.prefab` очищен (не закоммичено). **Известный риск (пользователь: «забей», 2026-10-30):** первый `SpawnMarker` на сцене брал id из префаба — теперь пустой; игра пока берёт старый id из `BasicLevel`, но следующий Collect запишет пустой id. Исправление: выделить маркер (id сгенерируется), сохранить сцену, Collect, Clear Prefs.
+- Уроки 12–14 **закрыты** (2026-10-30): окно магазина, окна в игре, реклама за вознаграждение на заглушке `StubAdsService` (ветка `feature/rewarded-ads`). Дальше — урок 15 Addressables: начало — zip `15 Addressables`, итог — zip `16 InApps`. Урок 16 (покупки): на ПК возможны через магазин платформы — выбрать вариант по `Ai.Decisions/2026-10-30-pc-first.md` § «Монетизация на ПК».
+- **Мобилка:** в `HUD/Mobile/JoyStickArea` нет `OnScreenStick` — на телефоне нечем ходить; нет кнопок прыжка/бега/приседа. Решение пользователя.
+- Перенос ассетов из `Resources` — «позже» (решение 2026-10-26), `project-structure-review.md` § 6.
+Риски / не трогать:
+- Коллегам перед клоном — Git LFS. Старые сохранения — `Tools → Clear Prefs`.
+
 ### 2026-10-27 — пользователь + координатор (Opus, local) — урок 10 Loot
 Сделано:
 - Урок 10 (код пользователя + агент по просьбам): `EnemyLootSpawner` и `LootPiece` в `BaseLogic/LootLogic/` (папка не `Loot`: namespace перекрывал класс `Data.Loot`), `Loot`/`LootData`, `IRandomService`/`RandomService` (в видео не пишется), `GameFactory.CreateLoot` и параметры `IRandomService`, `IPersistentProgressService` (регистрация в `BootstrapState` до фабрики), `EnemyDeath.Died` (было `DeathAction`).
