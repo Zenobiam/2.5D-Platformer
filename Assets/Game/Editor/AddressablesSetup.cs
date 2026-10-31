@@ -19,7 +19,7 @@ namespace Game.Editor
     /// 1. Move Addressable Prefabs — префабы урока из Resources в Game/Prefabs (AssetDatabase.MoveAsset: guid тот же,
     ///    ссылки сцен и StaticData целы). Addressables не держит адресуемые ассеты в Resources (иначе — Resources_moved).
     ///    Пути — из плана переноса project-structure-review.md § 6.
-    /// 2. Addressables — префаб LevelTransferTrigger, адреса AssetAddress в Default Local Group,
+    /// 2. Addressables — префаб LevelTransferTrigger, адреса AssetAddress в группах Core / Level / Enemies,
     ///    PrefabReference у EnemyStaticData. Нужны настройки Addressables (окно Groups → Create Addressables Settings).
     /// 3. Second Level — копия SampleScene (новые UniqueId), сцена в Build Settings, LevelStaticData с переходами A ↔ B.
     /// Повторный запуск безопасен: перенесённое, созданное и уже заполненное пропускается.
@@ -54,18 +54,29 @@ namespace Game.Editor
         };
 
         /// <summary>
-        /// Адрес → префаб. UIRoot — адрес из UIFactory.UIRootPath.
+        /// Группы — по времени жизни (в курсе всё в Default Local Group, course-deviations.md).
+        /// Группа с Pack Together = один бандл, а бандл держится в памяти, пока не отпущены все его ассеты:
+        /// вместе лежит то, что живёт вместе. Core — нужно на каждом уровне, Level — объекты уровня (WarmUp),
+        /// Enemies — враги (дальше можно резать по уровням или грузить с сервера).
         /// </summary>
-        private static readonly (string Address, string Path)[] Entries =
+        private const string CoreGroup = "Core";
+        private const string LevelGroup = "Level";
+        private const string EnemiesGroup = "Enemies";
+
+        /// <summary>
+        /// Адрес → префаб → группа. UIRoot — адрес из UIFactory.UIRootPath.
+        /// Группу задаёт только этот скрипт: перетащенный руками ассет повторный запуск вернёт в группу из таблицы.
+        /// </summary>
+        private static readonly (string Address, string Path, string Group)[] Entries =
         {
-            (AssetAddress.PlayerPath, PlayerPath),
-            (AssetAddress.HudPath, HudPath),
-            ("UIRoot", UIRootPath),
-            (AssetAddress.Loot, LootPath),
-            (AssetAddress.Spawner, SpawnPointPath),
-            (AssetAddress.LevelTransferTrigger, LevelTransferTriggerPath),
-            ("Skeleton", SkeletonPath),
-            ("Golem", GolemPath),
+            (AssetAddress.PlayerPath, PlayerPath, CoreGroup),
+            (AssetAddress.HudPath, HudPath, CoreGroup),
+            ("UIRoot", UIRootPath, CoreGroup),
+            (AssetAddress.Loot, LootPath, LevelGroup),
+            (AssetAddress.Spawner, SpawnPointPath, LevelGroup),
+            (AssetAddress.LevelTransferTrigger, LevelTransferTriggerPath, LevelGroup),
+            ("Skeleton", SkeletonPath, EnemiesGroup),
+            ("Golem", GolemPath, EnemiesGroup),
         };
 
         private static readonly Dictionary<EnemyTypeId, string> EnemyPrefabs = new Dictionary<EnemyTypeId, string>
@@ -128,8 +139,8 @@ namespace Game.Editor
 
             BuildLevelTransferTrigger();
 
-            foreach ((string address, string path) in Entries)
-                MarkAddressable(settings, address, path);
+            foreach ((string address, string path, string group) in Entries)
+                MarkAddressable(settings, address, path, Group(settings, group));
 
             foreach (EnemyStaticData enemyData in LoadAll<EnemyStaticData>(EnemiesDataFolder))
                 SetPrefabReference(enemyData);
@@ -218,7 +229,22 @@ namespace Game.Editor
             }
         }
 
-        private static void MarkAddressable(AddressableAssetSettings settings, string address, string path)
+        /// <summary>
+        /// Новая группа копирует схемы Default Local Group: локальные Build/Load Path, сжатие, Pack Together.
+        /// Default Local Group остаётся группой по умолчанию (пустой): туда попадают ассеты, помеченные галочкой в Inspector.
+        /// </summary>
+        private static AddressableAssetGroup Group(AddressableAssetSettings settings, string name)
+        {
+            AddressableAssetGroup group = settings.FindGroup(name);
+            if (group != null)
+                return group;
+
+            group = settings.CreateGroup(name, false, false, true, settings.DefaultGroup.Schemas);
+            Debug.Log($"Addressables setup: создана группа {name}");
+            return group;
+        }
+
+        private static void MarkAddressable(AddressableAssetSettings settings, string address, string path, AddressableAssetGroup group)
         {
             string guid = AssetDatabase.AssetPathToGUID(path);
             if (string.IsNullOrEmpty(guid))
@@ -227,10 +253,10 @@ namespace Game.Editor
                 return;
             }
 
-            AddressableAssetEntry entry = settings.CreateOrMoveEntry(guid, settings.DefaultGroup);
+            AddressableAssetEntry entry = settings.CreateOrMoveEntry(guid, group);
             entry.address = address;
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
-            Debug.Log($"Addressables setup: {path} → адрес «{address}» в {settings.DefaultGroup.Name}");
+            Debug.Log($"Addressables setup: {path} → адрес «{address}» в {group.Name}");
         }
 
         private static void SetPrefabReference(EnemyStaticData enemyData)
