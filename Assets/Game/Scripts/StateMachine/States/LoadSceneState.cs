@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Game.Scripts.BaseLogic;
 using Game.Scripts.BaseLogic.LootLogic;
 using Game.Scripts.Camera;
@@ -19,8 +20,6 @@ namespace Game.Scripts.StateMachine.States
 {
     public class LoadSceneState : IPayloadedState<string>
     {
-        private const string InitialPointTag = "InitialPoint";
-
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly LoadingCurtain _loadingCurtain;
@@ -51,16 +50,18 @@ namespace Game.Scripts.StateMachine.States
         {
             _loadingCurtain.Show();
             _gameFactory.CleanUp();
+            // Как в курсе — без await: прогрев идёт, пока грузится сцена.
+            _gameFactory.WarmUp();
             _sceneLoader.Load(sceneName, OnLoaded);
         }
 
         public void Exit() =>
             _loadingCurtain.Hide();
 
-        private void OnLoaded()
+        private async void OnLoaded()
         {
-            InitUIRoot();
-            SetupGameEnvironment();
+            await InitUIRoot();
+            await SetupGameEnvironment();
             InformProgressReaders();
 
             _stateMachine.Enter<GameLoopState>();
@@ -69,8 +70,8 @@ namespace Game.Scripts.StateMachine.States
         /// <summary>
         /// UIRoot — первым: окна (магазин) создаются под ним, кнопки HUD могут открыть окно сразу.
         /// </summary>
-        private void InitUIRoot() =>
-            _uiFactory.CreateUIRoot();
+        private async Task InitUIRoot() =>
+            await _uiFactory.CreateUIRoot();
 
         private void InformProgressReaders()
         {
@@ -80,21 +81,24 @@ namespace Game.Scripts.StateMachine.States
             }
         }
 
-        private void InitHud(GameObject player)
+        private async Task InitHud(GameObject player)
         {
-            GameObject hud = _gameFactory.CreateHud();
+            GameObject hud = await _gameFactory.CreateHud();
 
             hud.GetComponentInChildren<ActorUI>().Construct(player.GetComponent<PlayerHealth>());
         }
 
-        private void SetupGameEnvironment()
+        private async Task SetupGameEnvironment()
         {
-            InitSpawners();
-            InitLootPieces();
+            LevelStaticData levelData = LevelStaticData();
 
-            GameObject player = InitPlayer();
-            
-            InitHud(player);
+            await InitSpawners(levelData);
+            await InitLootPieces();
+
+            GameObject player = await InitPlayer(levelData);
+
+            await InitLevelTransfer(levelData);
+            await InitHud(player);
             CameraFollow(player);
         }
 
@@ -102,31 +106,38 @@ namespace Game.Scripts.StateMachine.States
         /// Спавнеры уровня из LevelStaticData (ключ — имя сцены); врагов они создают в LoadProgress,
         /// если спавнер ещё не очищен.
         /// </summary>
-        private void InitSpawners()
+        private async Task InitSpawners(LevelStaticData levelData)
         {
-            string sceneKey = SceneManager.GetActiveScene().name;
-            LevelStaticData levelData = _staticData.ForLevel(sceneKey);
-
             foreach (EnemySpawnerStaticData spawnerData in levelData.EnemySpawners)
-                _gameFactory.CreateSpawner(spawnerData.Id, spawnerData.Position, spawnerData.EnemyTypeId);
+                await _gameFactory.CreateSpawner(spawnerData.Id, spawnerData.Position, spawnerData.EnemyTypeId);
         }
 
         /// <summary>
         /// Неподобранный лут из сохранения: создаётся с прежним id, значением и позицией.
         /// </summary>
-        private void InitLootPieces()
+        private async Task InitLootPieces()
         {
             foreach (KeyValuePair<string, LootPieceData> item in _progressService.Progress.WorldData.LootData.LootPiecesOnScene.Dictionary)
             {
-                LootPiece lootPiece = _gameFactory.CreateLoot();
+                LootPiece lootPiece = await _gameFactory.CreateLoot();
                 lootPiece.GetComponent<UniqueId>().Id = item.Key;
                 lootPiece.Initialize(item.Value.Loot);
                 lootPiece.transform.position = item.Value.Position.AsVector3();
             }
         }
 
-        private GameObject InitPlayer() => 
-            _gameFactory.CreatePlayer(GameObject.FindWithTag(InitialPointTag));
+        /// <summary>
+        /// Урок 15: позиция игрока — из LevelStaticData (Collect по тегу InitialPoint), а не FindWithTag в рантайме.
+        /// Сохранённую позицию ставит сам игрок в LoadProgress, если сохранение с этого уровня.
+        /// </summary>
+        private async Task<GameObject> InitPlayer(LevelStaticData levelData) =>
+            await _gameFactory.CreatePlayer(levelData.InitialPlayerPosition);
+
+        private async Task InitLevelTransfer(LevelStaticData levelData) =>
+            await _gameFactory.CreateLevelTransfer(levelData.LevelTransfer.Position, levelData.LevelTransfer.TransferTo);
+
+        private LevelStaticData LevelStaticData() =>
+            _staticData.ForLevel(SceneManager.GetActiveScene().name);
 
         private static void CameraFollow(GameObject gameObject) =>
             UnityEngine.Camera.main?.GetComponent<CameraController>()?.Follow(gameObject);

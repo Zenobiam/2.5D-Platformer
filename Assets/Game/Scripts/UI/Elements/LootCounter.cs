@@ -16,10 +16,10 @@ namespace Game.Scripts.UI.Elements
         {
             _worldData = worldData;
             _worldData.LootData.Changed += UpdateCounter;
-        }
 
-        private void Start() =>
+            // Урок 15: HUD создаётся InstantiateAsync — Start может пройти раньше Construct, поэтому обновление здесь.
             UpdateCounter();
+        }
 
         /// <summary>
         /// Прогресс живёт дольше HUD: без отписки после перезагрузки сцены событие получит уничтоженный счётчик.

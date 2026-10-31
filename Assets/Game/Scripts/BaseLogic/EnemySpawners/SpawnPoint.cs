@@ -47,9 +47,9 @@ namespace Game.Scripts.BaseLogic.EnemySpawners
                 slainSpawners.Add(Id);
         }
 
-        private void Spawn()
+        private async void Spawn()
         {
-            GameObject enemy = _factory.CreateEnemy(EnemyTypeId, transform);
+            GameObject enemy = await _factory.CreateEnemy(EnemyTypeId, transform);
             _enemyDeath = enemy.GetComponent<EnemyDeath>();
             _enemyDeath.Died += Slay;
         }

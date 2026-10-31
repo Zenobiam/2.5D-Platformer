@@ -9,7 +9,7 @@ namespace Game.Editor
 {
     public static class PlayerHudBuilder
     {
-        private const string HudPrefabPath = "Assets/Resources/Prefabs/Player/HUD.prefab";
+        private const string HudPrefabPath = "Assets/Game/Prefabs/Player/HUD.prefab";
         private const string HpBarName = "HpBar";
         private const string MobileName = "Mobile";
         private const string JoystickAreaName = "JoyStickArea";

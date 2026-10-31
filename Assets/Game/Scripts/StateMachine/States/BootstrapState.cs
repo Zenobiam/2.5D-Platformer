@@ -56,8 +56,9 @@ namespace Game.Scripts.StateMachine.States
             RegisterStaticData();
             RegisterAdsService();
 
+            _services.RegisterSingle<IGameStateMachine>(_stateMachine);
+            RegisterAssetsProvider();
             _services.RegisterSingle<IInputService>(InputService());
-            _services.RegisterSingle<IAssetsProvider>(new AssetsProvider());
             _services.RegisterSingle<IRandomService>(new RandomService());
             _services.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
             _services.RegisterSingle<IUIFactory>(new UIFactory(
@@ -71,8 +72,20 @@ namespace Game.Scripts.StateMachine.States
                 _services.Single<IStaticDataService>(),
                 _services.Single<IRandomService>(),
                 _services.Single<IPersistentProgressService>(),
-                _services.Single<IWindowService>()));
+                _services.Single<IWindowService>(),
+                _services.Single<IGameStateMachine>()));
             _services.RegisterSingle<ISaveLoadService>(new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
+        }
+
+        /// <summary>
+        /// Провайдер ассетов (урок 15) на Addressables: Initialize запускает загрузку каталога заранее,
+        /// первый Load/Instantiate дождётся её сам.
+        /// </summary>
+        private void RegisterAssetsProvider()
+        {
+            AssetsProvider assetsProvider = new AssetsProvider();
+            _services.RegisterSingle<IAssetsProvider>(assetsProvider);
+            assetsProvider.Initialize();
         }
 
         /// <summary>

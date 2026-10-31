@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a1ddb6a780f4e8dbd559cd804bc1293, type: 3}
+  m_Name: SecondLevel
+  m_EditorClassIdentifier: 
+  LevelKey: SecondLevel
+  EnemySpawners:
+  - Id: SecondLevel_dbcb4cb6-f94f-47d3-b24b-4e196eafdb59
+    EnemyTypeId: 0
+    Position: {x: 7.44, y: 3.77, z: -0.58}
+  - Id: SecondLevel_3f54d3da-2777-4fa5-9804-30797d7aea96
+    EnemyTypeId: 10
+    Position: {x: 23.02, y: 4.62, z: -0.58}
+  InitialPlayerPosition: {x: -6, y: 2, z: 0}
+  LevelTransfer:
+    TransferTo: SampleScene
+    Position: {x: -20.16, y: 2.69, z: -1.2}

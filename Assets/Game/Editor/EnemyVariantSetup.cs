@@ -16,13 +16,13 @@ namespace Game.Editor
     /// </summary>
     public static class EnemyVariantSetup
     {
-        private const string EnemyBasePath = "Assets/Resources/Enemies/Enemy.prefab";
+        private const string EnemyBasePath = "Assets/Game/Prefabs/Enemies/Enemy.prefab";
         private const string BaseControllerPath = "Assets/Resources/Enemies/Skeleton/FBX/Skeleton.controller";
 
         private const string GolemModelPath = "Assets/Resources/Enemies/Golem/Prefabs/PBR_Golem.prefab";
         private const string GolemClipsFolder = "Assets/Resources/Enemies/Golem/Animations";
         private const string GolemOverridePath = "Assets/Resources/Enemies/Golem/Golem.overrideController";
-        private const string GolemVariantPath = "Assets/Resources/Enemies/Golem.prefab";
+        private const string GolemVariantPath = "Assets/Game/Prefabs/Enemies/Golem.prefab";
 
         /// <summary>
         /// Клип Skeleton.controller → клип голема. RightAttack вызывает EnemyAnimator.PlayRightAttack(),

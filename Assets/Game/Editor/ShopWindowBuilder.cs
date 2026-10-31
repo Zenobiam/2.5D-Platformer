@@ -25,7 +25,7 @@ namespace Game.Editor
         private const string WindowPath = UiFolder + "/Window.prefab";
         private const string ShopItemPath = UiFolder + "/ShopItem.prefab";
         private const string ShopPath = UiFolder + "/Shop.prefab";
-        private const string UIRootPath = UiFolder + "/UIRoot.prefab";
+        private const string UIRootPath = "Assets/Game/Prefabs/UI/UIRoot.prefab";
 
         private const string WindowDataFolder = "Assets/Resources/StaticData/UI";
         private const string WindowDataPath = WindowDataFolder + "/WindowStaticData.asset";

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Game.Scripts.Providers.Interfaces;
 using Game.Scripts.Services.Ads.Interfaces;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
@@ -16,7 +17,10 @@ namespace Game.Scripts.UI.Services.Factory
     /// </summary>
     public class UIFactory : IUIFactory
     {
-        private const string UIRootPath = "UI/UIRoot";
+        /// <summary>
+        /// Адрес Addressables (урок 15; раньше — путь Resources "UI/UIRoot"). Ставит Tools → Setup → Addressables.
+        /// </summary>
+        private const string UIRootPath = "UIRoot";
 
         private readonly IAssetsProvider _assets;
         private readonly IStaticDataService _staticData;
@@ -34,8 +38,11 @@ namespace Game.Scripts.UI.Services.Factory
             _adsService = adsService;
         }
 
-        public void CreateUIRoot() =>
-            _uiRoot = _assets.Instantiate(UIRootPath).transform;
+        public async Task CreateUIRoot()
+        {
+            GameObject root = await _assets.Instantiate(UIRootPath);
+            _uiRoot = root.transform;
+        }
 
         public void CreateShop()
         {

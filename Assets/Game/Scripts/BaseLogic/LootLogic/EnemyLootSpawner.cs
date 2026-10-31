@@ -25,9 +25,9 @@ namespace Game.Scripts.BaseLogic.LootLogic
             EnemyDeath.Died += OnDeathSpawnLoot;
         }
 
-        private void OnDeathSpawnLoot()
+        private async void OnDeathSpawnLoot()
         {
-            LootPiece loot = _factory.CreateLoot();
+            LootPiece loot = await _factory.CreateLoot();
             loot.transform.position = transform.position;
             loot.GetComponent<UniqueId>().GenerateId();
             var lootItem = GenerateLoot();

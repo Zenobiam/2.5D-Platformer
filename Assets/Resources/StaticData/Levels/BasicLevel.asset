@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelKey: SampleScene
   EnemySpawners:
-  - Id: SampleScene_651e44fe-57d1-4c09-ba39-f308354548b8
-    EnemyTypeId: 0
-    Position: {x: 7.44, y: 3.77, z: -0.58}
   - Id: SampleScene_2d5851ac-79f3-40af-aeb1-27b590c17272
     EnemyTypeId: 10
     Position: {x: 23.02, y: 4.62, z: -0.58}
+  - Id: 
+    EnemyTypeId: 0
+    Position: {x: 7.44, y: 3.77, z: -0.58}
+  InitialPlayerPosition: {x: -6, y: 2, z: 0}
+  LevelTransfer:
+    TransferTo: SecondLevel
+    Position: {x: 7.72, y: 2.63, z: -1.35}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Game.Scripts.BaseLogic.EnemySpawners;
 using Game.Scripts.BaseLogic.Interfaces;
 using Game.Scripts.BaseLogic.LootLogic;
@@ -9,7 +10,9 @@ using Game.Scripts.Providers.Interfaces;
 using Game.Scripts.Services.PersistentProgress.Interfaces;
 using Game.Scripts.Services.Randomizer.Interfaces;
 using Game.Scripts.Services.StaticData.Interfaces;
+using Game.Scripts.StateMachine.Interfaces;
 using Game.Scripts.StaticData;
+using Game.Scripts.Triggers;
 using Game.Scripts.UI.Elements;
 using Game.Scripts.UI.Services.Windows.Interfaces;
 using UnityEngine;
@@ -25,6 +28,7 @@ namespace Game.Scripts.Factories
         private readonly IRandomService _randomService;
         private readonly IPersistentProgressService _progressService;
         private readonly IWindowService _windowService;
+        private readonly IGameStateMachine _stateMachine;
 
         public List<ISaveProgressReader> ProgressReaders { get; } = new List<ISaveProgressReader>();
         public List<ISaveProgress> ProgressWriters { get; } = new List<ISaveProgress>();
@@ -32,23 +36,46 @@ namespace Game.Scripts.Factories
         private GameObject _playerGameObject;
 
         public GameFactory(IAssetsProvider assetsProvider, IStaticDataService staticData, IRandomService randomService,
-            IPersistentProgressService progressService, IWindowService windowService)
+            IPersistentProgressService progressService, IWindowService windowService, IGameStateMachine stateMachine)
         {
             _assetsProvider = assetsProvider;
             _staticData = staticData;
             _randomService = randomService;
             _progressService = progressService;
             _windowService = windowService;
+            _stateMachine = stateMachine;
+        }
+
+        /// <summary>
+        /// Прогрев (урок 15): лут и спавнер загружаются заранее, пока грузится сцена, — первый CreateLoot берёт их из кэша.
+        /// </summary>
+        public async Task WarmUp()
+        {
+            await _assetsProvider.Load<GameObject>(AssetAddress.Loot);
+            await _assetsProvider.Load<GameObject>(AssetAddress.Spawner);
         }
 
         #region Create
 
-        public GameObject CreatePlayer(GameObject InitialPoint) =>
-            _playerGameObject = InstantiateAndRegister(AssetPath.PlayerPath, InitialPoint.transform.position);
+        public async Task<GameObject> CreatePlayer(Vector3 at) =>
+            _playerGameObject = await InstantiateAndRegisterAsync(AssetAddress.PlayerPath, at);
 
-        public GameObject CreateHud()
+        /// <summary>
+        /// В курсе TransferTo берётся из поля префаба — один префаб ведёт всех на одну сцену.
+        /// У нас два уровня ведут друг в друга, поэтому TransferTo — из LevelStaticData (course-deviations.md).
+        /// </summary>
+        public async Task CreateLevelTransfer(Vector3 at, string transferTo)
         {
-            GameObject hud = InstantiateAndRegister(AssetPath.HudPath);
+            GameObject prefab = await InstantiateAndRegisterAsync(AssetAddress.LevelTransferTrigger, at);
+            LevelTransferTrigger levelTransfer = prefab.GetComponent<LevelTransferTrigger>();
+
+            levelTransfer.Construct(_stateMachine);
+            levelTransfer.TransferTo = transferTo;
+        }
+
+        public async Task<GameObject> CreateHud()
+        {
+            GameObject hud = await InstantiateAndRegisterAsync(AssetAddress.HudPath);
 
             hud.GetComponentInChildren<LootCounter>()
                 .Construct(_progressService.Progress.WorldData);
@@ -59,10 +86,13 @@ namespace Game.Scripts.Factories
             return hud;
         }
 
-        public GameObject CreateEnemy(EnemyTypeId typeId, Transform parent)
+        public async Task<GameObject> CreateEnemy(EnemyTypeId typeId, Transform parent)
         {
             EnemyStaticData enemyData = _staticData.ForEnemy(typeId);
-            GameObject enemy = Object.Instantiate(enemyData.Prefab, parent.position, Quaternion.identity, parent);
+
+            GameObject prefab = await _assetsProvider.Load<GameObject>(enemyData.PrefabReference);
+            GameObject enemy = Object.Instantiate(prefab, parent.position, Quaternion.identity, parent);
+
             var health = enemy.GetComponent<IHealth>();
             health.Current = enemyData.Hp;
             health.Max = enemyData.Hp;
@@ -86,16 +116,19 @@ namespace Game.Scripts.Factories
             return enemy;
         }
 
-        public LootPiece CreateLoot()
+        public async Task<LootPiece> CreateLoot()
         {
-            var lootPiece = InstantiateAndRegister(AssetPath.Loot).GetComponent<LootPiece>();
+            GameObject prefab = await _assetsProvider.Load<GameObject>(AssetAddress.Loot);
+            var lootPiece = InstantiateAndRegister(prefab).GetComponent<LootPiece>();
+
             lootPiece.Construct(_progressService.Progress.WorldData);
             return lootPiece;
         }
 
-        public void CreateSpawner(string spawnerId, Vector3 at, EnemyTypeId enemyTypeId)
+        public async Task CreateSpawner(string spawnerId, Vector3 at, EnemyTypeId enemyTypeId)
         {
-            SpawnPoint spawner = InstantiateAndRegister(AssetPath.Spawner, at).GetComponent<SpawnPoint>();
+            GameObject prefab = await _assetsProvider.Load<GameObject>(AssetAddress.Spawner);
+            SpawnPoint spawner = InstantiateAndRegister(prefab, at).GetComponent<SpawnPoint>();
 
             spawner.Construct(this);
             spawner.EnemyTypeId = enemyTypeId;
@@ -106,16 +139,36 @@ namespace Game.Scripts.Factories
 
         #region Instantiate
 
-        private GameObject InstantiateAndRegister(string prefabPath, Vector3 position)
+        /// <summary>
+        /// Префаб уже загружен (Load, с кэшем) — создаём обычным Instantiate: так делает курс для лута, спавнера и врагов.
+        /// </summary>
+        private GameObject InstantiateAndRegister(GameObject prefab, Vector3 position)
         {
-            GameObject gameObject = _assetsProvider.Instantiate(prefabPath, at: position);
+            GameObject gameObject = Object.Instantiate(prefab, position, Quaternion.identity);
             RegisterProgressWatchers(gameObject);
             return gameObject;
         }
 
-        private GameObject InstantiateAndRegister(string prefabPath)
+        private GameObject InstantiateAndRegister(GameObject prefab)
         {
-            GameObject gameObject = _assetsProvider.Instantiate(prefabPath);
+            GameObject gameObject = Object.Instantiate(prefab);
+            RegisterProgressWatchers(gameObject);
+            return gameObject;
+        }
+
+        /// <summary>
+        /// Загрузка и создание одним вызовом (Addressables.InstantiateAsync): игрок, HUD, переход.
+        /// </summary>
+        private async Task<GameObject> InstantiateAndRegisterAsync(string address, Vector3 position)
+        {
+            GameObject gameObject = await _assetsProvider.Instantiate(address, at: position);
+            RegisterProgressWatchers(gameObject);
+            return gameObject;
+        }
+
+        private async Task<GameObject> InstantiateAndRegisterAsync(string address)
+        {
+            GameObject gameObject = await _assetsProvider.Instantiate(address);
             RegisterProgressWatchers(gameObject);
             return gameObject;
         }
@@ -144,6 +197,8 @@ namespace Game.Scripts.Factories
         {
             ProgressWriters.Clear();
             ProgressReaders.Clear();
+
+            _assetsProvider.CleanUp();
         }
     }
 }

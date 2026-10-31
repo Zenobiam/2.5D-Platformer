@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Game.Scripts.StaticData
 {
@@ -33,6 +34,9 @@ namespace Game.Scripts.StaticData
 
         public float MoveSpeed;
 
-        public GameObject Prefab;
+        /// <summary>
+        /// Префаб врага по ссылке Addressables (урок 15): грузится при спавне, а не вместе со статическими данными.
+        /// </summary>
+        public AssetReferenceGameObject PrefabReference;
     }
 }
