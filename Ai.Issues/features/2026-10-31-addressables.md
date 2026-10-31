@@ -12,9 +12,11 @@
 - `LevelStaticData`: `InitialPlayerPosition`, `LevelTransfer` (Collect по тегам `InitialPoint`, `LevelTransferInitialPoint`); `IGameStateMachine` как сервис; `LevelTransferTrigger`.
 - Отступления: баг курса в `Load<T>(string)` (лишняя загрузка, не освобождалась) исправлен; префабы урока перенесены из `Resources` в `Game/Prefabs`; `TransferTo` — из `LevelStaticData`, а не из поля префаба; второй уровень — копия `SampleScene`.
 - Editor: `Tools → Setup → Move Addressable Prefabs`, `Addressables`, `Second Level` (`AddressablesSetup.cs`).
+- Группы по времени жизни вместо одной `Default Local Group` (решение пользователя, вариант A): `Core`, `Level`, `Enemies` — группа с Pack Together = один бандл, бандл держится в памяти, пока не отпущены все его ассеты. Лейблы не заводили: они нужны коду, который грузит пачкой, — такого нет.
 
 ## Что сломалось по дороге
 
+- Меню `Tools → Setup → Addressables` запустили до перекомпиляции — отработала старая версия (всё в Default Local Group); видно по логу скрипта. После правки скрипта ждать конца компиляции.
 - Точка перехода, созданная через GameObject → Create Empty, оказалась на y = −616 (в точке камеры Scene view) — найдено по YAML сцены до Play Mode.
 - Collect меняет ассет в памяти: без File → Save Project `LevelStaticData` на диске остаётся старым.
 - **Скелет на втором уровне висел в воздухе.** Причина: при копировании сцены `NavMeshSurface.OnValidate` обнуляет ссылку на NavMesh («Duplicating NavMeshSurface does not duplicate the referenced NavMesh data»), в `Editor.log` — `Failed to create agent because there is no valid NavMesh`. Исправление — Bake в копии; скрипт теперь об этом предупреждает.

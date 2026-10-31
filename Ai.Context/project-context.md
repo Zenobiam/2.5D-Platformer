@@ -94,7 +94,7 @@ GameBootstrapper → GameMain → GameStateMachine
 Корень:  
 `G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\`
 
-Пройдено: 05 Enemy … 14 Rewarded ads, 15 Addressables (2026-10-31) — таблица уроков в `course-map.md`. Следующий урок — **16 InApps**: начало — zip `... InApps\knowledge-is-power-master.zip`, итога в архиве нет (переносить по видео). С урока 11 код уроков пишет агент по просьбе пользователя.
+Пройдено: 05 Enemy … 14 Rewarded ads, 15 Addressables (2026-10-31) — таблица уроков в `course-map.md`. Следующий урок — **16 InApps**: начало — zip `...\16 InApps\knowledge-is-power-master.zip`, итога в архиве нет (переносить по видео). С урока 11 код уроков пишет агент по просьбе пользователя.
 
 **Папка урока N — код на начало урока; итог урока N — в папке N+1** (в уроках 11–16 код лежит только в `.zip`).
 
@@ -166,16 +166,15 @@ _Обновлять в конце значимых сессий._
 ```text
 ### 2026-10-31 — пользователь + координатор (Opus, local) — урок 15 Addressables закрыт, следующий урок 16 InApps
 Где мы:
-- Ветка `feature/addressables` (от `feature/rewarded-ads`), урок 15 проверен пользователем в Play Mode («Работает»). **Не закоммичено** — коммит по просьбе пользователя.
-- Сделано: Addressables 2.7.6, `AssetsProvider` с кэшем и `CleanUp`, асинхронные фабрики и `LoadSceneState`, `WarmUp`, `EnemyStaticData.PrefabReference`; позиции игрока и перехода из `LevelStaticData` (Collect по тегам), `IGameStateMachine`, `LevelTransferTrigger`; второй уровень `SecondLevel` (копия `SampleScene`, свой NavMesh). Префабы урока перенесены из `Resources` в `Assets/Game/Prefabs/`. Подробности: `Ai.Issues/features/2026-10-31-addressables.md`, `course-deviations.md` (5 строк от 2026-10-31), `editor-setup.md`.
+- Ветка `feature/addressables` (от `feature/rewarded-ads`), урок 15 проверен пользователем в Play Mode («Работает»). Закоммичено и запушено: `6a71a88` (код), `ce51d1d` (доки), `772e7e3` + `2d7cadc` (группы Addressables). Ветки уроков в `main` не слиты.
+- Сделано: Addressables 2.7.6, `AssetsProvider` с кэшем и `CleanUp`, асинхронные фабрики и `LoadSceneState`, `WarmUp`, `EnemyStaticData.PrefabReference`; позиции игрока и перехода из `LevelStaticData` (Collect по тегам), `IGameStateMachine`, `LevelTransferTrigger`; второй уровень `SecondLevel` (копия `SampleScene`, свой NavMesh). Префабы урока перенесены из `Resources` в `Assets/Game/Prefabs/`. Группы Addressables по времени жизни: `Core` (Player, HUD, UIRoot), `Level` (Loot, SpawnPoint, LevelTransferTrigger), `Enemies` (Skeleton, Golem); `Default Local Group` пустая. Подробности: `Ai.Issues/features/2026-10-31-addressables.md`, `course-deviations.md` (6 строк от 2026-10-31), `editor-setup.md`.
 - Editor: `Tools → Setup → Move Addressable Prefabs`, `Addressables`, `Second Level` (`AddressablesSetup.cs`).
 Следующий шаг:
-- Коммит урока 15 (код и документы — отдельными коммитами; ассеты и сцены, которые сделал редактор, — в коммит урока: `AddressableAssetsData`, `Game/Prefabs`, сцены, `StaticData`, `TagManager`, `EditorBuildSettings`, `Packages`).
 - Урок 16 InApps: итога в архиве нет (папка `17 Build` — только видео) — переносить по видео; покупки на ПК — выбрать вариант (`Ai.Decisions/2026-10-30-pc-first.md` § «Монетизация на ПК»). Видео 11 урока 16 — Addressables для товаров.
 Решения, которые действуют:
 - Пока основная платформа — ПК; реклама — заглушка `StubAdsService`.
-- Урок 15: 1A — перенос только префабов урока (полный § 6 `project-structure-review.md` — позже), 2A — второй уровень копией, 3A — баг `Load<T>(string)` исправлен.
-- «Что и зачем по каждому компоненту» — `<Knowledge>\processgent-workflow.md` § 2 п. 11.
+- Урок 15: 1A — перенос только префабов урока (полный § 6 `project-structure-review.md` — позже), 2A — второй уровень копией, 3A — баг `Load<T>(string)` исправлен; группы — вариант A (без лейблов: кода, который грузит по лейблу, нет). Группу ассета менять в таблице `AddressablesSetup.Entries`, а не перетаскиванием.
+- «Что и зачем по каждому компоненту» — `<Knowledge>\process\agent-workflow.md` § 2 п. 11.
 Известные риски / хвосты:
 - Ассеты, на которые ссылаются адресуемые префабы, ещё в `Resources` → в билде дважды (до полного переноса § 6).
 - Объекты `InstantiateAsync` (игрок, HUD, UIRoot, триггер) провайдер не освобождает (как в курсе) — не проверено по документации, отпускает ли их Addressables при выгрузке сцены.
