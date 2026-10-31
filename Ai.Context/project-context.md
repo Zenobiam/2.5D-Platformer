@@ -94,7 +94,7 @@ GameBootstrapper → GameMain → GameStateMachine
 Корень:  
 `G:\MediaGetDownloads\RealyGood\k-syndicate.school - Архитектура мобильных игр на UNITY для профессионалов (2021)\`
 
-Пройдено: 05 Enemy, 06–07 Fighting (2026-10-24), 08 Enemy Spawner, 09 Static data + враг Golem (2026-10-25). Следующий урок — **10 Loot**: начало — `...\10 Loot\knowledge-is-power-master\…\CodeBase`, итог — `...\11 Spawner rework\knowledge-is-power-master\…\CodeBase` (есть и распакованная папка, и zip). Уроки делает пользователь сам, агент помогает по просьбе.
+Пройдено: 05 Enemy … 14 Rewarded ads, 15 Addressables (2026-10-31) — таблица уроков в `course-map.md`. Следующий урок — **16 InApps**: начало — zip `... InApps\knowledge-is-power-master.zip`, итога в архиве нет (переносить по видео). С урока 11 код уроков пишет агент по просьбе пользователя.
 
 **Папка урока N — код на начало урока; итог урока N — в папке N+1** (в уроках 11–16 код лежит только в `.zip`).
 
@@ -164,24 +164,25 @@ _Обновлять в конце значимых сессий._
 Здесь только последняя запись. Предыдущие — [`handoff-archive.md`](handoff-archive.md) (при новой записи старую переносить туда, наверх).
 
 ```text
-### 2026-10-30 (вечер) — пользователь + координатор (Opus, local) — уроки 11–14 закрыты, следующий урок 15 Addressables
+### 2026-10-31 — пользователь + координатор (Opus, local) — урок 15 Addressables закрыт, следующий урок 16 InApps
 Где мы:
-- Ветка `feature/rewarded-ads` (от `feature/ui` ← `feature/spawner-rework` ← `feature/static-data`), запушено, рабочая папка чистая (кроме локальных `Ai.Tasks`). Ветки уроков в `main` не слиты.
-- Уроки 11 Spawner rework, 12 UI part 1, 13 UI part 2, 14 Rewarded ads — закрыты (Play Mode — пользователь). Подробности: `Ai.Architecture/course-map.md` (таблица уроков), `Ai.Issues/features/2026-10-2*`, `2026-10-30-*`.
-- Как работали: код уроков 11–14 писал агент по просьбе пользователя; редактор — Editor-скриптами агента (`Tools → UI → Build Shop Window`, `Build Player HUD`), запускает пользователь, агент проверяет по логу и YAML.
+- Ветка `feature/addressables` (от `feature/rewarded-ads`), урок 15 проверен пользователем в Play Mode («Работает»). **Не закоммичено** — коммит по просьбе пользователя.
+- Сделано: Addressables 2.7.6, `AssetsProvider` с кэшем и `CleanUp`, асинхронные фабрики и `LoadSceneState`, `WarmUp`, `EnemyStaticData.PrefabReference`; позиции игрока и перехода из `LevelStaticData` (Collect по тегам), `IGameStateMachine`, `LevelTransferTrigger`; второй уровень `SecondLevel` (копия `SampleScene`, свой NavMesh). Префабы урока перенесены из `Resources` в `Assets/Game/Prefabs/`. Подробности: `Ai.Issues/features/2026-10-31-addressables.md`, `course-deviations.md` (5 строк от 2026-10-31), `editor-setup.md`.
+- Editor: `Tools → Setup → Move Addressable Prefabs`, `Addressables`, `Second Level` (`AddressablesSetup.cs`).
 Следующий шаг:
-- Урок 15 Addressables: начало — zip `...\15 Addressables\knowledge-is-power-master.zip`, итог — zip `...\16 InApps\knowledge-is-power-master.zip` (распаковывать во временную папку агента, без тяжёлых ассетов). Порядок: ветка → бриф в `Ai.Tasks/` с разделом «Компоненты: что и зачем» → план → «да» пользователя.
-- Урок 16 InApps: итога в архиве нет (папка `17 Build` — только видео) — переносить по видео; покупки на ПК — через магазин платформы, вариант выбрать (`Ai.Decisions/2026-10-30-pc-first.md` § «Монетизация на ПК»).
+- Коммит урока 15 (код и документы — отдельными коммитами; ассеты и сцены, которые сделал редактор, — в коммит урока: `AddressableAssetsData`, `Game/Prefabs`, сцены, `StaticData`, `TagManager`, `EditorBuildSettings`, `Packages`).
+- Урок 16 InApps: итога в архиве нет (папка `17 Build` — только видео) — переносить по видео; покупки на ПК — выбрать вариант (`Ai.Decisions/2026-10-30-pc-first.md` § «Монетизация на ПК»). Видео 11 урока 16 — Addressables для товаров.
 Решения, которые действуют:
-- Пока основная платформа — ПК (`Ai.Decisions/2026-10-30-pc-first.md`, `INTENT.md`); реклама — заглушка `StubAdsService`.
-- «Что и зачем по каждому компоненту» — `<Knowledge>\process\agent-workflow.md` § 2 п. 11; разобрали — сразу записали в файлы.
-- Перенос ассетов из `Resources` — «позже» (2026-10-26), план — `project-structure-review.md` § 6.
+- Пока основная платформа — ПК; реклама — заглушка `StubAdsService`.
+- Урок 15: 1A — перенос только префабов урока (полный § 6 `project-structure-review.md` — позже), 2A — второй уровень копией, 3A — баг `Load<T>(string)` исправлен.
+- «Что и зачем по каждому компоненту» — `<Knowledge>\processgent-workflow.md` § 2 п. 11.
 Известные риски / хвосты:
-- Первый `SpawnMarker` на сцене — пустой id (брал id из префаба); `BasicLevel` пока со старым id; пользователь: «забей». Исправление: выделить маркер, сохранить сцену, Collect, Clear Prefs.
-- Окна: при открытом окне ввод игрока не блокируется; повторный Shop открывает второе окно (как в курсе).
-- Мобилка: нет `OnScreenStick` в `HUD/Mobile/JoyStickArea` (не срочно при ПК-приоритете).
-- Коллегам перед клоном — Git LFS. Старые сохранения после смены формата — `Tools → Clear Prefs`.
-- Длинные сессии расходуют много лимита — новая сессия на каждый урок.
+- Ассеты, на которые ссылаются адресуемые префабы, ещё в `Resources` → в билде дважды (до полного переноса § 6).
+- Объекты `InstantiateAsync` (игрок, HUD, UIRoot, триггер) провайдер не освобождает (как в курсе) — не проверено по документации, отпускает ли их Addressables при выгрузке сцены.
+- Копия сцены теряет NavMesh — после `Tools → Setup → Second Level` запекать руками.
+- Первый `SpawnMarker` в `SampleScene` — пустой id (пользователь: «забей»). Окна: ввод не блокируется, второй Shop открывает второе окно (как в курсе).
+- Мобилка: нет `OnScreenStick` в `HUD/Mobile/JoyStickArea`. Коллегам — Git LFS; старые сохранения — `Tools → Clear Prefs`.
+- Новая сессия на каждый урок.
 ```
 
 ### Только на local / self-hosted

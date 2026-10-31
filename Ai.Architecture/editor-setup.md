@@ -10,7 +10,8 @@
 
 | Тег | Где стоит | Кто ищет | Если забыть |
 |---|---|---|---|
-| `InitialPoint` | `SampleScene` → `PlayerHandler` | `LoadSceneState`: `FindWithTag` → точка создания игрока | `NullReferenceException` при загрузке уровня |
+| `InitialPoint` | `SampleScene`, `SecondLevel` → `PlayerHandler` | с урока 15 — только кнопка Collect (`LevelStaticDataEditor`) → `LevelStaticData.InitialPlayerPosition`; в рантайме не ищется | Collect падает с `NullReferenceException` |
+| `LevelTransferInitialPoint` | `SampleScene`, `SecondLevel` → `LevelTransferInitialPoint` (урок 15, добавил пользователь 2026-10-31) | Collect → `LevelStaticData.LevelTransfer.Position` | Collect падает с NRE; триггер перехода встанет в старую позицию |
 | `EnemySpawner` | префаб `EnemySpawner` и его экземпляры на сцене | `LoadSceneState.InitSpawners()`: `FindGameObjectsWithTag` → `GameFactory.Register` | спавнер молча не регистрируется в прогрессе; если тега нет в проекте — `UnityException: Tag ... is not defined` |
 | `LoadingCurtain` | префаб `Curtain` | — (тег курса, кодом не ищется) | — |
 | `Player` (встроенный) | корень префаба `Player` | — | — |
@@ -34,7 +35,11 @@
 
 ### Сцены в билде (`EditorBuildSettings.asset`)
 
-`InitialScene` (0) → `SampleScene` (1). Play Mode с `SampleScene` тоже работает: `GameRunner` на сцене создаёт bootstrapper.
+`InitialScene` (0) → `SampleScene` (1) → `SecondLevel` (2, урок 15, `Tools → Setup → Second Level`). Play Mode с `SampleScene` тоже работает: `GameRunner` на сцене создаёт bootstrapper.
+
+### Addressables (`Assets/AddressableAssetsData/`, урок 15)
+
+Пакет `com.unity.addressables` 2.7.6. Группа `Default Local Group`, адреса ставит `Tools → Setup → Addressables` (сверено 2026-10-31): `Player`, `HUD`, `UIRoot`, `Loot`, `SpawnPoint`, `LevelTransferTrigger`, `Skeleton`, `Golem`. Адреса в коде — `Constants/AssetAddress` и `UIFactory.UIRootPath`; опечатка ломается только в рантайме (`InvalidKeyException`). Play Mode Script (окно Groups) хранится в настройках редактора пользователя, не в проекте: в редакторе — Use Asset Database; перед билдом проверить в режиме сборки бандлов.
 
 ## 2. Сцены
 
@@ -49,7 +54,8 @@
 
 | Объект | Компоненты, тег, слой | Зачем | Как сделано |
 |---|---|---|---|
-| `PlayerHandler` | только Transform, тег `InitialPoint` | точка появления игрока | руками |
+| `PlayerHandler` | только Transform, тег `InitialPoint` | точка появления игрока (в `LevelStaticData` через Collect) | руками |
+| `LevelTransferInitialPoint` (7.72, 2.63, −1.35) | только Transform, тег `LevelTransferInitialPoint` | где фабрика создаёт триггер перехода на `SecondLevel` (через Collect) | руками (урок 15) |
 | `Main Camera` | Camera, `CameraController` | `LoadSceneState` вызывает `Follow(player)` | руками |
 | `InputHandler` | `PlayerInput` (Invoke Unity Events, карта `Player`), `InputReceiver` | события `Move/Jump/Run/Crouch/Attack` → `InputReceiver.OnMove/OnJump/OnRun/OnCrouch/OnAttack` | руками; `Attack` — `Tools → Setup → Player Attack` |
 | `Level` → `DemoRoute` | `NavMeshSurface`; дети `Ground` (слой `Ground`), `Hazards`, `Decor` — `NavMeshModifier` | геометрия и навигация для врагов | геометрия — `Tools → Build Demo Level Geometry`; NavMesh — руками |
@@ -60,19 +66,25 @@
 | `Global Volume`, `Directional Light`, `EventSystem` (`InputSystemUIInputModule`) | стандарт URP / Input System | — | — |
 | `-------Managers-----------`, `--------Core----------`, `-----------------------` | пустые | разделители в иерархии | — |
 
-Игрок и HUD на сцене **не лежат**: их создаёт `GameFactory` из `Resources` в `LoadSceneState`.
+Игрок, HUD, спавнеры и триггер перехода на сцене **не лежат**: их создаёт `GameFactory` через Addressables в `LoadSceneState` по `LevelStaticData` (`BasicLevel.asset`).
+
+### `Assets/Game/Scenes/SecondLevel.unity` (урок 15)
+
+Копия `SampleScene` (`Tools → Setup → Second Level`, 2026-10-31): `UniqueId` спавнеров новые (`SecondLevel_…`); `LevelTransferInitialPoint` в (−20.16, 2.69, −1.2) — переход назад на `SampleScene`; данные — `Resources/StaticData/Levels/SecondLevel.asset`. **NavMesh свой** — `Scenes/SecondLevel/NavMesh-DemoRoute.asset` (запёк пользователь): при копировании сцены `NavMeshSurface` обнуляет ссылку на NavMesh, без запекания враги висят в точке спавна (`Failed to create agent because there is no valid NavMesh`).
 
 ## 3. Префабы
 
-| Префаб (`Assets/Resources/…`) | Устройство | Зачем / неочевидное |
+С урока 15 адресуемые префабы — в `Assets/Game/Prefabs/…` (перенёс `Tools → Setup → Move Addressable Prefabs`, guid прежние): `Player/Player`, `Player/HUD`, `UI/UIRoot`, `Loot/Loot`, `Enemies/{Enemy,Skeleton,Golem,SpawnPoint}`, `Triggers/LevelTransferTrigger`. Остальные — в `Assets/Resources/…`.
+
+| Префаб | Устройство | Зачем / неочевидное |
 |---|---|---|
-| `Prefabs/Player/Player` | корень: слой `Player`, `CharacterController`, `Rigidbody`, `PlayerMovementController`, `PlayerHealth`, `PlayerDeath`, `PlayerFacing`; модель — вложенный префаб `Yurowm/…/CyborgGirl` (на нём `Animator`, `PlayerAnimator`, `PlayerAttack`) | путь — `AssetPath.PlayerPath`; при смерти `Rigidbody` → kinematic |
+| `Prefabs/Player/Player` | корень: слой `Player`, `CharacterController`, `Rigidbody`, `PlayerMovementController`, `PlayerHealth`, `PlayerDeath`, `PlayerFacing`; модель — вложенный префаб `Yurowm/…/CyborgGirl` (на нём `Animator`, `PlayerAnimator`, `PlayerAttack`) | адрес — `AssetAddress.PlayerPath`; при смерти `Rigidbody` → kinematic |
 | `Prefabs/Player/HUD` | Canvas, `ActorUI`; `HpBar` (`Background`, `Fill`); группа `Mobile` (`MobileOnly`): `JoyStickArea`, `AttackButton` (`OnScreenButton` → `<Gamepad>/buttonWest`); `Shop_button` правый низ над атакой (`LoginButton_Hover` + `Button` + `OpenWindowButton`, `WindowId = Shop`; **вне `Mobile`**, урок 13); `LootCounter` справа сверху (`HorizontalLayoutGroup` управляет шириной детей; `LootCounter`; `Icon` — `Image` с `CFX3_T_Skull.png` + `LayoutElement` 100×100, `Counter` — `TextMeshProUGUI`, `LiberationSans SDF`, без переноса — длинное число растёт влево) — урок 10, 2026-10-27; цвет, размер и текст `Counter` и цвет `Icon` скрипт задаёт только при создании, правки в Inspector сохраняются | собирается `Tools → UI → Build Player HUD`; корень должен быть **активен**, иначе `GetComponentInChildren<ActorUI>()` = null |
 | `Enemies/Enemy` | **логика врага без модели**: `Animator` (без Avatar), `EnemyAnimator`, `NavMeshAgent`, `AgentMoveToPlayer` (выключен, включает `Aggro`), `AnimateAlongAgent`, `Aggro`, `EnemyAttack`, `CheckAttackRange`, `EnemyHealth`, `EnemyDeath`, `ActorUI`; дети: `AggroZone` и `AttackZone` (`SphereCollider` trigger + `TriggerObserver`), `HitBox` (слой `Hittable`), `Canvas` (`HpCamera`) → `HealthBar` (`HpBar`: `Current`, `Back`), `LootSpawner` (`EnemyLootSpawner`, `EnemyDeath` назначен; урок 10) | база для всех врагов, как `BaseEnemy` в курсе |
 | `Enemies/Golem` | **Prefab Variant** от `Enemy` (собирает `Tools → Setup → Enemy Variant: Golem`): `Hips` и `RockGolemMesh` под корнем, Animator — `Golem/Golem.overrideController` (база `Skeleton.controller`) + `FreeGolemMeshAvatar`; переопределено: `NavMeshAgent` Radius 0.8 / Stopping Distance 2, `AttackZone` 2.3, `AggroZone` 6, `HitBox` 3×3×3, `Canvas` y 4.36 | урок 09; что должно быть на новом враге — `<Knowledge>\mechanics\new-enemy.md` |
 | `Enemies/Skeleton` | **Prefab Variant** от `Enemy`: добавлены кости и меш (`Geometry/geo/Skeleton`), Avatar и `Skeleton.controller` | новый враг = новый Variant от `Enemy` |
 | `Enemies/EnemySpawner` | пустой объект: тег `EnemySpawner`, `EnemySpawner`, `UniqueId` с **пустым** `Id` | в Scene view — красная сфера 0.5 (`EnemySpawnerEditor`, `[DrawGizmo]`), в Game view не виден; `Id` генерирует `UniqueIdEditor` при выделении экземпляра на сцене (`<сцена>_<guid>`), ассет префаба пропускает. Не дублировать в Prefab Mode |
-| `Loot/Loot` | из курса (урок 10): корень — слой `Pickup`, `BoxCollider` trigger, `LootPiece` (`LootModel` → `Skull_damaged`, `PickableFxPrefab` → `LootPickupFX`, `LootText`/`PickupPopup` → вложенный `PickupPopup`), `UniqueId` (`Id` пустой — id получает экземпляр: `EnemyLootSpawner` → `GenerateId()` или `LoadSceneState.InitLootPieces` из сохранения); дети `Skull_damaged` (`Skull/mobile_skull_03.fbx`), `PickupPopup`, `CFX3_MagicAura_D_Runic` | путь — `AssetPath.Loot`; курсовые `UniqueId`/`EndlessRotation` удалены пользователем при переносе, `UniqueId` наш добавлен 2026-10-27 (проверено по файлу); без него — NRE при выпадении лута |
+| `Loot/Loot` | из курса (урок 10): корень — слой `Pickup`, `BoxCollider` trigger, `LootPiece` (`LootModel` → `Skull_damaged`, `PickableFxPrefab` → `LootPickupFX`, `LootText`/`PickupPopup` → вложенный `PickupPopup`), `UniqueId` (`Id` пустой — id получает экземпляр: `EnemyLootSpawner` → `GenerateId()` или `LoadSceneState.InitLootPieces` из сохранения); дети `Skull_damaged` (`Skull/mobile_skull_03.fbx`), `PickupPopup`, `CFX3_MagicAura_D_Runic` | адрес — `AssetAddress.Loot`; курсовые `UniqueId`/`EndlessRotation` удалены пользователем при переносе, `UniqueId` наш добавлен 2026-10-27 (проверено по файлу); без него — NRE при выпадении лута |
 | `Loot/PickupPopup` | TextMeshPro (3D) + `Animator` (`PickupPopup.controller`, клип `PickupPopup.anim`) | шрифт `LiberationSans SDF` — из TMP Essential Resources, без импорта текст пустой |
 | `Loot/LootPickupFX`, `Loot/CFX3_MagicAura_D_Runic` | `ParticleSystem` (+ `CFX_AutoDestructShuriken` у вспышки) на legacy Cartoon FX из `Effects/JMO Assets/Cartoon FX/` | материалы переводит на URP `Tools → Setup → Loot Materials to URP`, иначе розовые |
 | `UI/UIRoot` | `Canvas` Overlay **Sort Order 1**, `CanvasScaler` 1920×1080 **Match 0**, `GraphicRaycaster` | родитель окон; создаёт `UIFactory.CreateUIRoot` в `LoadSceneState` (урок 13). Собирает `Tools → UI → Build Shop Window` |
@@ -80,6 +92,7 @@
 | `UI/ShopItem` | `Inventory_Slot` (Sliced) + `LayoutElement` 450×550; `Item` (иконка), `Button` (`Button.png`, Sliced) → `Price_container` (`HorizontalLayoutGroup`: череп + `Price_text`), `Count_text` | товар; иконка — у каждого экземпляра своя |
 | `UI/Shop` | **`ShopWindow`** на корне (`CloseButton` → `Window/Close_button`, `SkullText` → `Skull_text`, `AdItem` → `AdsItem_container`); вложенный `Window`; `Content`: `AdsItem_container` (0–0.3 × 0.1–0.9, **`RewardedAdItem`** — урок 14: при «реклама есть» видны `WatchAd_button` и `Icon`, при «нет» — `Item/AdNotAvailable_text`; слот с иконкой и лентой FREE, `WatchAd_button`), `InApps_container` (0.3–1 × 0.1–0.9, **свой Canvas** + `GraphicRaycaster` → `Scroll` (`ScrollRect`, колесо 50) → `Viewport` (`Mask`) → `Content` → `ShopItem_1…4`), `Money_container` (правый верх 0.9–1: `Skulls_container` — `Money_Bar` + `HorizontalLayoutGroup` → череп + `Skull_text`), `Bottom_container` (подпись) | окно магазина; открывает `UIFactory` по `WindowStaticData` (урок 13), закрывает крестик (`Destroy`) |
 | `Prefabs/Triggers/SaveTrigger` | `BoxCollider` trigger, `SaveTrigger` | зелёный куб-гизмо в Scene view (`OnDrawGizmos`) |
+| `Game/Prefabs/Triggers/LevelTransferTrigger` (урок 15) | `BoxCollider` trigger 1×3×3 (центр y 1.5), `LevelTransferTrigger` (`TransferTo` пустой) | синий куб-гизмо; `TransferTo` ставит `GameFactory.CreateLevelTransfer` из `LevelStaticData`; срабатывает один раз на тег `Player`. Собирает `Tools → Setup → Addressables` |
 | `Prefabs/UI/Curtain` | Canvas, `CanvasGroup`, `LoadingCurtain`, тег `LoadingCurtain` | шторка загрузки |
 | `Prefabs/Infrastructure/GameBootstrapper`, `GameRunner` | один компонент | точка входа |
 
@@ -99,7 +112,10 @@
 | `Tools/Setup/Player Attack` | `PlayerAttackSetup.cs` | событие `Player/Attack` → `InputReceiver.OnAttack` в `PlayerInput`; состояние `Hit` в `FreeHandController` | не дублирует | **оставить** — показывает, как подключено; разовый, уже применён |
 | `Tools/Setup/Enemy Variant: Golem` | `EnemyVariantSetup.cs` | Exit Time атак (`LeftAttack/RightAttack/SplashAttack → …`) в `Skeleton.controller` = 1; `Golem/Golem.overrideController` по таблице клипов; `Enemies/Golem.prefab` — Variant от `Enemy` с моделью под корнем | Exit Time и override — перезаписываются; Variant не трогается, если есть | **оставить** — шаблон для следующих врагов (`<Knowledge>\mechanics\new-enemy.md`) |
 | `Tools/Setup/Loot Materials to URP` | `LootMaterialsSetup.cs` | 4 материала Cartoon FX (legacy `Particles/Additive`, `Additive (Soft)`) → `URP/Particles/Unlit` Additive; материал черепа (`Mobile/Diffuse`) → `URP/Simple Lit`; текстура и цвет переносятся | безопасен, перезаписывает | **оставить** — штатный конвертер legacy-частицы не переводит |
-| `Tools/UI/Build Shop Window` | `ShopWindowBuilder.cs` | импорт спрайтов окна (9-slice курса на 6 спрайтах, `Generate Physics Shape` выкл); префабы `Resources/UI/Window`, `ShopItem`, `Shop` (+ `ShopWindow`, `Money_container`), `UIRoot`; ассет `Resources/StaticData/UI/WindowStaticData` (Shop → `Shop.prefab`) | безопасен: раскладка и компоненты — каждый раз, спрайт/цвет/текст — только при создании | **оставить** — воспроизводит UI урока 12 |
+| `Tools/UI/Build Shop Window` | `ShopWindowBuilder.cs` | импорт спрайтов окна (9-slice курса на 6 спрайтах, `Generate Physics Shape` выкл); префабы `Resources/UI/Window`, `ShopItem`, `Shop` (+ `ShopWindow`, `Money_container`), `Game/Prefabs/UI/UIRoot`; ассет `Resources/StaticData/UI/WindowStaticData` (Shop → `Shop.prefab`) | безопасен: раскладка и компоненты — каждый раз, спрайт/цвет/текст — только при создании | **оставить** — воспроизводит UI урока 12 |
+| `Tools/Setup/Move Addressable Prefabs` | `AddressablesSetup.cs` | 8 префабов урока 15 из `Resources` в `Game/Prefabs/…` (`AssetDatabase.MoveAsset`, guid тот же) | уже перенесённое пропускает | **оставить** до полного переноса § 6 (`project-structure-review.md`) |
+| `Tools/Setup/Addressables` | `AddressablesSetup.cs` | префаб `LevelTransferTrigger`; адреса в `Default Local Group`; `EnemyStaticData.PrefabReference` по `EnemyTypeId` | безопасен; нужен Create Addressables Settings | **оставить** — новый адресуемый префаб добавлять сюда и в `AssetAddress` |
+| `Tools/Setup/Second Level` | `AddressablesSetup.cs` | копия `SampleScene` → `SecondLevel` с новыми `UniqueId`, Build Settings, `SecondLevel.asset`, `TransferTo` в обе стороны | сцену и ассет не пересоздаёт, `TransferTo` не перезаписывает | **оставить**; после копии — запечь NavMesh руками (скрипт предупреждает) |
 | `Tools/Setup/Skeleton Animations` | `SkeletonAnimationsSetup.cs` | кривые заглушек `Damage.anim`, `Death.anim`; `Death` → `Death.anim` | перезаписывает кривые | **временный**: удалить вместе с заглушками, когда появятся настоящие клипы Skeleton |
 | `Tools/Build Demo Level Geometry` | `BuildDemoLevel.cs` | удаляет и заново строит `Level/DemoRoute` из тайлов AssetHunts | **разрушительный**: удаляет `DemoRoute` вместе с `NavMeshSurface` и `NavMeshModifier`, слой `Ground` не ставит — после запуска враги не ходят | **не запускать** без доработки; доработка — отдельная задача |
 | `Tools/Level/Build Demo Geometry (SampleScene)` | `DemoLevelBuilder.cs` | то же самое, но строит `Level/DemoGeometry` | — | **не используется** (в сцене нет `DemoGeometry`) — дубликат, кандидат на удаление |

@@ -3,6 +3,27 @@
 Предыдущие записи из `project-context.md` § 6, новые сверху. Исторические записи не переписываются: имена и пути в них — на момент записи.
 
 ```text
+### 2026-10-30 (вечер) — пользователь + координатор (Opus, local) — уроки 11–14 закрыты, следующий урок 15 Addressables
+Где мы:
+- Ветка `feature/rewarded-ads` (от `feature/ui` ← `feature/spawner-rework` ← `feature/static-data`), запушено, рабочая папка чистая (кроме локальных `Ai.Tasks`). Ветки уроков в `main` не слиты.
+- Уроки 11 Spawner rework, 12 UI part 1, 13 UI part 2, 14 Rewarded ads — закрыты (Play Mode — пользователь). Подробности: `Ai.Architecture/course-map.md` (таблица уроков), `Ai.Issues/features/2026-10-2*`, `2026-10-30-*`.
+- Как работали: код уроков 11–14 писал агент по просьбе пользователя; редактор — Editor-скриптами агента (`Tools → UI → Build Shop Window`, `Build Player HUD`), запускает пользователь, агент проверяет по логу и YAML.
+Следующий шаг:
+- Урок 15 Addressables: начало — zip `...\15 Addressables\knowledge-is-power-master.zip`, итог — zip `...\16 InApps\knowledge-is-power-master.zip` (распаковывать во временную папку агента, без тяжёлых ассетов). Порядок: ветка → бриф в `Ai.Tasks/` с разделом «Компоненты: что и зачем» → план → «да» пользователя.
+- Урок 16 InApps: итога в архиве нет (папка `17 Build` — только видео) — переносить по видео; покупки на ПК — через магазин платформы, вариант выбрать (`Ai.Decisions/2026-10-30-pc-first.md` § «Монетизация на ПК»).
+Решения, которые действуют:
+- Пока основная платформа — ПК (`Ai.Decisions/2026-10-30-pc-first.md`, `INTENT.md`); реклама — заглушка `StubAdsService`.
+- «Что и зачем по каждому компоненту» — `<Knowledge>\process\agent-workflow.md` § 2 п. 11; разобрали — сразу записали в файлы.
+- Перенос ассетов из `Resources` — «позже» (2026-10-26), план — `project-structure-review.md` § 6.
+Известные риски / хвосты:
+- Первый `SpawnMarker` на сцене — пустой id (брал id из префаба); `BasicLevel` пока со старым id; пользователь: «забей». Исправление: выделить маркер, сохранить сцену, Collect, Clear Prefs.
+- Окна: при открытом окне ввод игрока не блокируется; повторный Shop открывает второе окно (как в курсе).
+- Мобилка: нет `OnScreenStick` в `HUD/Mobile/JoyStickArea` (не срочно при ПК-приоритете).
+- Коллегам перед клоном — Git LFS. Старые сохранения после смены формата — `Tools → Clear Prefs`.
+- Длинные сессии расходуют много лимита — новая сессия на каждый урок.
+```
+
+```text
 ### 2026-10-30 — пользователь + координатор (Opus, local) — урок 11 Spawner rework, старт урока 12 UI
 Сделано:
 - Урок 11 (код — агент по просьбе, редактор — пользователь), ветка `feature/spawner-rework` (`e066983`, `5591207`, запушено): `LevelStaticData` + Collect, `SpawnMarker`/`SpawnPoint`, `CreateSpawner`, `Register` private, `SerializableDictionary`, `UniqueId` → `BaseLogic/`; старый `EnemySpawner` удалён. **В Play Mode не проверен.**
